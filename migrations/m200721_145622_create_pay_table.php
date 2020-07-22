@@ -16,8 +16,6 @@ class m200721_145622_create_pay_table extends Migration
             'id' => $this->primaryKey()->unsigned(),
             'value' => $this->decimal(10,2)->notNull(),
             'installments' => $this->smallInteger()->unsigned(),
-            'created_at' => $this->dateTime()->notNull(),
-            'updated_at' => $this->dateTime(),
             'payment_method_id' => $this->integer()->unsigned()->notNull(),
             'sale_id' => $this->integer()->unsigned()->notNull(),
         ]);

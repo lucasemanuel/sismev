@@ -20,7 +20,7 @@ class m200721_145613_create_payment_method_table extends Migration
             'created_at' => $this->dateTime()->notNull(),
             'updated_at' => $this->dateTime(),
             'deleted_at' => $this->dateTime(),
-            'company_id' => $this->integer()->unsigned(),
+            'company_id' => $this->integer()->unsigned()->notNull(),
         ]);
 
         $this->addForeignKey('fk-payment_method-company_id', 'payment_method', 'company_id', 'company', 'id', 'CASCADE');

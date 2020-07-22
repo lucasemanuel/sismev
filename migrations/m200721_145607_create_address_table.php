@@ -21,8 +21,6 @@ class m200721_145607_create_address_table extends Migration
             'city' => $this->string(64)->notNull(),
             'federated_unit' => $this->string(2)->notNull(),
             'complement' => $this->string(128)->notNull(),
-            'created_at' => $this->dateTime()->notNull(),
-            'updated_at' => $this->dateTime(),
         ]);
     }
 

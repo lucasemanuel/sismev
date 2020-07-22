@@ -19,8 +19,6 @@ class m200721_145625_create_junction_table_for_product_and_variation_attribute_t
         $this->createTable('{{%product_variation_attribute}}', [
             'product_id' => $this->integer()->unsigned(),
             'variation_attribute_id' => $this->integer()->unsigned(),
-            'created_at' => $this->dateTime()->notNull(),
-            'updated_at' => $this->dateTime(),
             'PRIMARY KEY(product_id, variation_attribute_id)',
         ]);
 

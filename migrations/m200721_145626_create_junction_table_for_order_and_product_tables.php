@@ -21,8 +21,6 @@ class m200721_145626_create_junction_table_for_order_and_product_tables extends 
             'product_id' => $this->integer()->unsigned(),
             'amount' => $this->decimal(10,2)->notNull(),
             'unit_price' => $this->decimal(10,2)->notNull(),
-            'created_at' => $this->dateTime()->notNull(),
-            'updated_at' => $this->dateTime(),
             'PRIMARY KEY(order_id, product_id)',
         ]);
 

@@ -18,7 +18,6 @@ class m200721_145621_create_sale_table extends Migration
             'discount' => $this->decimal(10,2),
             'sale_at' => $this->dateTime(),
             'canceled_at' => $this->dateTime(),
-            'created_at' => $this->dateTime()->notNull(),
             'updated_at' => $this->dateTime(),
             'order_id' => $this->integer()->unsigned()->notNull()
         ]);

@@ -19,8 +19,6 @@ class m200721_145624_create_junction_table_for_employee_and_phone_tables extends
         $this->createTable('{{%employee_phone}}', [
             'employee_id' => $this->integer()->unsigned(),
             'phone_id' => $this->integer()->unsigned(),
-            'created_at' => $this->dateTime()->notNull(),
-            'updated_at' => $this->dateTime(),
             'PRIMARY KEY(employee_id, phone_id)',
         ]);
 
