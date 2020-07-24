@@ -3,6 +3,9 @@
 namespace app\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
+use yii\db\Expression;
 
 /**
  * This is the model class for table "company".
@@ -25,7 +28,7 @@ use Yii;
  * @property Order[] $orders
  * @property PaymentMethod[] $paymentMethods
  */
-class Company extends \yii\db\ActiveRecord
+class Company extends ActiveRecord
 {
     /**
      * {@inheritdoc}
@@ -35,14 +38,25 @@ class Company extends \yii\db\ActiveRecord
         return 'company';
     }
 
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::class,
+                'value' => new Expression('NOW()'),
+            ],
+        ];
+    }
+
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['name', 'ein', 'email', 'created_at', 'address_id'], 'required'],
+            [['name', 'ein', 'email'], 'required'],
             [['created_at', 'updated_at'], 'safe'],
+            [['created_at'], 'default', 'value' => null],
             [['address_id'], 'integer'],
             [['name', 'trade_name', 'email'], 'string', 'max' => 64],
             [['ein'], 'string', 'max' => 18],
