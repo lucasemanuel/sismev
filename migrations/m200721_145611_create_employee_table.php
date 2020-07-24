@@ -25,7 +25,7 @@ class m200721_145611_create_employee_table extends Migration
             'created_at' => $this->dateTime()->notNull(),
             'updated_at' => $this->dateTime(),
             'deleted_at' => $this->dateTime(),
-            'address_id' => $this->integer()->unsigned()->notNull(),
+            'address_id' => $this->integer()->unsigned(),
             'company_id' => $this->integer()->unsigned()->notNull(),
         ]);
 
