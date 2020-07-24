@@ -3,6 +3,9 @@
 namespace app\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
+use yii\db\Expression;
 
 /**
  * This is the model class for table "employee".
@@ -27,7 +30,7 @@ use Yii;
  * @property EmployeePhone[] $employeePhones
  * @property Phone[] $phones
  */
-class Employee extends \yii\db\ActiveRecord
+class Employee extends ActiveRecord
 {
     /**
      * {@inheritdoc}
@@ -37,14 +40,25 @@ class Employee extends \yii\db\ActiveRecord
         return 'employee';
     }
 
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::class,
+                'value' => new Expression('NOW()'),
+            ],
+        ];
+    }
+
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['full_name', 'usual_name', 'ssn', 'birthday', 'email', 'password', 'created_at', 'address_id', 'company_id'], 'required'],
+            [['full_name', 'usual_name', 'ssn', 'birthday', 'email', 'password', 'company_id'], 'required'],
             [['birthday', 'created_at', 'updated_at', 'deleted_at'], 'safe'],
+            [['created_at'], 'default', 'value' => null],
             [['is_manager', 'is_deleted', 'address_id', 'company_id'], 'integer'],
             [['full_name'], 'string', 'max' => 128],
             [['usual_name'], 'string', 'max' => 32],
