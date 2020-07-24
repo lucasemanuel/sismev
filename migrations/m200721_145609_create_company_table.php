@@ -20,7 +20,7 @@ class m200721_145609_create_company_table extends Migration
             'email' => $this->string(64)->notNull(),
             'created_at' => $this->dateTime()->notNull(),
             'updated_at' => $this->dateTime(),
-            'address_id' => $this->integer()->unsigned()->notNull(),
+            'address_id' => $this->integer()->unsigned(),
         ]);
 
         $this->addForeignKey('fk-company-address_id', 'company', 'address_id', 'address', 'id', 'CASCADE');
