@@ -7,6 +7,7 @@ use app\widgets\Alert;
 use yii\helpers\Html;
 use yii\bootstrap4\Breadcrumbs;
 use app\assets\SBAdmin;
+use yii\helpers\Url;
 
 SBAdmin::register($this);
 
@@ -169,9 +170,9 @@ SBAdmin::register($this);
               </a>
               <!-- Dropdown - User Information -->
               <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                <a class="dropdown-item" href="#">
+                <a class="dropdown-item" href=<?= Url::to(['/employee/view/', 'id' => Yii::$app->user->id ])?>>
                   <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                  Profile
+                  <?= Yii::t('app', 'Profile') ?>
                 </a>
                 <a class="dropdown-item" href="#">
                   <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
@@ -241,7 +242,9 @@ SBAdmin::register($this);
         <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
         <div class="modal-footer">
           <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-          <a class="btn btn-primary" href="login.html">Logout</a>
+            <?= Html::beginForm(['/site/logout'], 'post')
+              .Html::submitButton(Yii::t('app', 'Logout'), ['class' => 'btn btn-primary'])
+              .Html::endForm() ?>
         </div>
       </div>
     </div>
