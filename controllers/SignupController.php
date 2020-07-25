@@ -9,21 +9,24 @@ use yii\db\Exception;
 
 class SignupController extends \yii\web\Controller
 {
+    public $layout = "center";
+
     public function actionIndex()
     {
-        return $this->actionOne();
+        return $this->actionStepOne();
     }
 
-    public function actionOne()
+    public function actionStepOne()
     {
-        Yii::$app->session->destroy();
-
         $model = new SignupForm(['scenario' => SignupForm::SCENARIO_COMPANY]);
 
+        if (Yii::$app->session['signup_form'] !== null)
+            $model->setAttributes(Yii::$app->session['signup_form']);
+            
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             Yii::$app->session['signup_form'] = $model->attributes;
 
-            return $this->redirect('two');
+            return $this->redirect(['step-two']);
         }
 
         return $this->render('signup_company', [
@@ -31,33 +34,26 @@ class SignupController extends \yii\web\Controller
         ]);
     }
 
-    public function actionTwo()
+    public function actionStepTwo()
     {
-        $this->validateStepOne();
+        if (Yii::$app->session['signup_form'] === null)
+            return $this->redirect(['step-one']);
+
         $model = new SignupForm(['scenario' => SignupForm::SCENARIO_EMPLOYEE]);
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             try {
                 AccountFactory::create(Yii::$app->session['signup_form'], $model->attributes);
+                Yii::$app->session->destroy();
                 return $this->redirect('/site/login');
             } catch (Exception $e) {
                 // Show falied to web user
-                return $this->redirect('one');
+                return $this->redirect(['step-one']);
             }
         }
 
         return $this->render('signup_employee', [
             'model' => $model,
         ]);
-    }
-
-
-    private function validateStepOne()
-    {
-        if (Yii::$app->session['signup_form'] === null) {
-            return $this->render('signup_company', [
-                'model' => new SignupForm(),
-            ]);
-        }
     }
 }
