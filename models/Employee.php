@@ -6,6 +6,7 @@ use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\db\Expression;
+use yii\web\IdentityInterface;
 
 /**
  * This is the model class for table "employee".
@@ -30,8 +31,10 @@ use yii\db\Expression;
  * @property EmployeePhone[] $employeePhones
  * @property Phone[] $phones
  */
-class Employee extends ActiveRecord
+class Employee extends ActiveRecord implements IdentityInterface
 {
+    const SCENARIO_UPDATE = 'update';
+
     /**
      * {@inheritdoc}
      */
@@ -70,6 +73,16 @@ class Employee extends ActiveRecord
         ];
     }
 
+    public function scenarios()
+    {
+        $scenarios = parent::scenarios();
+        $scenarios[self::SCENARIO_UPDATE] = array_filter($scenarios[self::SCENARIO_DEFAULT], function ($attribute) {
+            return $attribute != 'password';
+        });
+
+        return $scenarios;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -91,6 +104,93 @@ class Employee extends ActiveRecord
             'address_id' => Yii::t('app', 'Address ID'),
             'company_id' => Yii::t('app', 'Company ID'),
         ];
+    }
+
+    /**
+     * Finds an identity by the given ID.
+     *
+     * @param string|int $id the ID to be looked for
+     * @return IdentityInterface|null the identity object that matches the given ID.
+     */
+    public static function findIdentity($id)
+    {
+        return static::findOne(['id' => $id]);
+    }
+
+    /**
+     * Finds an identity by the given token.
+     *
+     * @param string $token the token to be looked for
+     * @return IdentityInterface|null the identity object that matches the given token.
+     */
+    public static function findIdentityByAccessToken($token, $type = null)
+    {
+        return null;
+    }
+
+    /**
+     * @return int|string current user ID
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return string current user auth key
+     */
+    public function getAuthKey()
+    {
+        return null;
+    }
+
+    /**
+     * @param string $authKey
+     * @return bool if auth key is valid for current user
+     */
+    public function validateAuthKey($authKey)
+    {
+        return null;
+    }
+
+    /**
+     * Finds user by email
+     *
+     * @param string $email
+     * @return static|null
+     */
+    public static function findByEmail($email)
+    {
+        $user = self::findOne(['email' => $email]);
+
+        if ($user) return new static($user);
+        
+        return null;
+    }
+
+    public function validatePassword($hash)
+    {
+        return Yii::$app->getSecurity()->validatePassword($hash, $this->password);
+    }
+
+    public function beforeSave($insert)
+    {
+        $this->encryptingPassword();
+        return parent::beforeSave($insert);    
+    }
+
+    private function encryptingPassword()
+    {
+        
+        if ($this->isNewPassword()) {
+            $hash = Yii::$app->getSecurity()->generatePasswordHash($this->password);
+            $this->password = $hash;
+        }
+    }
+
+    private function isNewPassword()
+    {
+        return empty($this->oldAttributes) || ($this->oldAttributes['password'] != $this->password);
     }
 
     /**
