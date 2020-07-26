@@ -36,8 +36,7 @@ class SignupForm extends Model
             [['ssn'], 'string', 'max' => 12],
             [['email'], 'email'],
             [['birthday'], 'safe'],
-            [['password'], 'compare'],
-            [['password'], 'compare', 'compareAttribute' => 'password_repeat'],
+            [['password_repeat'], 'compare', 'compareAttribute' => 'password'],
         ];
     }
 
