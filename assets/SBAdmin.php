@@ -17,7 +17,7 @@ class SBAdmin extends AssetBundle
 
     public $js = [
         'js/sb-admin-2.js',
-        'jquery.easing.min.js'
+        'js/jquery.easing.min.js'
     ];
 
     public $depends = [
