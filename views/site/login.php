@@ -22,7 +22,7 @@ $title = Yii::t('app', 'Login');
                             <h1 class="h5 text-gray-900 mb-4"><?= Yii::t('app', 'Welcome Back!') ?></h1>
                         </div>
                         <?php $form = ActiveForm::begin([]); ?>
-                        <?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
+                        <?= $form->field($model, 'email')->textInput(['autofocus' => true]) ?>
                         <?= $form->field($model, 'password')->passwordInput() ?>
                         <?= $form->field($model, 'rememberMe')->checkbox() ?>
                         <div class="form-group">
