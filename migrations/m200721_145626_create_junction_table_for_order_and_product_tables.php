@@ -17,8 +17,6 @@ class m200721_145626_create_junction_table_for_order_and_product_tables extends 
     public function safeUp()
     {
         $this->createTable('{{%order_product}}', [
-            'order_id' => $this->integer()->unsigned(),
-            'product_id' => $this->integer()->unsigned(),
             'amount' => $this->decimal(10,2)->notNull(),
             'unit_price' => $this->decimal(10,2)->notNull(),
             'PRIMARY KEY(order_id, product_id)',
