@@ -20,9 +20,11 @@ class m200721_145618_create_operation_table extends Migration
             'created_at' => $this->dateTime()->notNull(),
             'updated_at' => $this->dateTime(),
             'product_id' => $this->integer()->unsigned()->notNull(),
+            'employee_id' => $this->integer()->unsigned()->notNull(),
         ]);
 
         $this->addForeignKey('fk-operation-product_id', 'operation', 'product_id', 'product', 'id', 'CASCADE');
+        $this->addForeignKey('fk-operation-employee_id', 'operation', 'employee_id', 'employee', 'id', 'CASCADE');
     }
 
     /**
@@ -31,6 +33,7 @@ class m200721_145618_create_operation_table extends Migration
     public function safeDown()
     {
         $this->dropForeignKey('fk-operation-product_id', 'operation');
+        $this->dropForeignKey('fk-operation-employee_id', 'operation');
         $this->dropTable('{{%operation}}');
     }
 }
