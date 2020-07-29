@@ -16,6 +16,7 @@ class m200721_145621_create_sale_table extends Migration
             'id' => $this->primaryKey()->unsigned(),
             'amount_paid' => $this->decimal(10,2),
             'discount' => $this->decimal(10,2),
+            'is_canceled' => $this->tinyInteger(1),
             'sale_at' => $this->dateTime(),
             'canceled_at' => $this->dateTime(),
             'updated_at' => $this->dateTime(),
