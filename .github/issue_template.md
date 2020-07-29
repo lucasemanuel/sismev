@@ -1,8 +1,10 @@
-## Nome da Issue
 Descrição da Issue.
 
 ### Restrições
 Descrição das restrições.
+
+### Ideas 
+Descrição das Ideias
 
 ### Código
 ```
