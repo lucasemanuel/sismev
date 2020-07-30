@@ -9,7 +9,7 @@ use yii\db\Exception;
 
 class SignupController extends \yii\web\Controller
 {
-    public $layout = "center";
+    public $layout = "register";
 
     public function actionIndex()
     {
