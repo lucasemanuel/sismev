@@ -34,6 +34,9 @@ use yii\web\IdentityInterface;
 class Employee extends ActiveRecord implements IdentityInterface
 {
     const SCENARIO_UPDATE = 'update';
+    const SCENARIO_SIGNUP = 'signup';
+    
+    public $password_repeat;
 
     /**
      * {@inheritdoc}
@@ -60,6 +63,7 @@ class Employee extends ActiveRecord implements IdentityInterface
     {
         return [
             [['full_name', 'usual_name', 'ssn', 'birthday', 'email', 'password', 'company_id'], 'required'],
+            [['password_repeat'], 'required', 'on' => self::SCENARIO_SIGNUP],
             [['birthday', 'created_at', 'updated_at', 'deleted_at'], 'safe'],
             [['created_at'], 'default', 'value' => null],
             [['is_manager', 'is_deleted', 'address_id', 'company_id'], 'integer'],
@@ -67,7 +71,12 @@ class Employee extends ActiveRecord implements IdentityInterface
             [['usual_name'], 'string', 'max' => 32],
             [['ssn'], 'string', 'max' => 12],
             [['email'], 'string', 'max' => 64],
+            [['email'], 'email'],
+            [['email'], 'unique'],
             [['password'], 'string', 'max' => 255],
+            [['is_manager'], 'default', 'value' => 0],
+            [['password_repeat'], 'compare', 'compareAttribute' => 'password'],
+            [['phone_number'], 'match', 'pattern' => '/(\(\d{2}\)\ \d{4,5}\-\d{4})/'],
             [['address_id'], 'exist', 'skipOnError' => true, 'targetClass' => Address::class, 'targetAttribute' => ['address_id' => 'id']],
             [['company_id'], 'exist', 'skipOnError' => true, 'targetClass' => Company::class, 'targetAttribute' => ['company_id' => 'id']],
         ];
@@ -76,6 +85,7 @@ class Employee extends ActiveRecord implements IdentityInterface
     public function scenarios()
     {
         $scenarios = parent::scenarios();
+        $scenarios[self::SCENARIO_SIGNUP] = ['full_name', 'usual_name', 'ssn', 'birthday', 'email', 'password', 'password_repeat', 'phone_number'];
         $scenarios[self::SCENARIO_UPDATE] = array_filter($scenarios[self::SCENARIO_DEFAULT], function ($attribute) {
             return $attribute != 'password';
         });
@@ -103,6 +113,7 @@ class Employee extends ActiveRecord implements IdentityInterface
             'deleted_at' => Yii::t('app', 'Deleted At'),
             'address_id' => Yii::t('app', 'Address ID'),
             'company_id' => Yii::t('app', 'Company ID'),
+            'phone_number' => Yii::t('app', 'Phone Number'),
         ];
     }
 

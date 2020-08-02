@@ -30,6 +30,10 @@ use yii\db\Expression;
  */
 class Company extends ActiveRecord
 {
+    const SCENARIO_SIGNUP = 'signup';
+
+    public $phone_number;
+
     /**
      * {@inheritdoc}
      */
@@ -59,9 +63,19 @@ class Company extends ActiveRecord
             [['created_at'], 'default', 'value' => null],
             [['address_id'], 'integer'],
             [['name', 'trade_name', 'email'], 'string', 'max' => 64],
+            [['email'], 'email'],
             [['ein'], 'string', 'max' => 18],
+            [['phone_number'], 'match', 'pattern' => '/(\(\d{2}\)\ \d{4,5}\-\d{4})/'],
             [['address_id'], 'exist', 'skipOnError' => true, 'targetClass' => Address::class, 'targetAttribute' => ['address_id' => 'id']],
         ];
+    }
+
+    public function scenarios()
+    {
+        $scenarios = parent::scenarios();
+        $scenarios[self::SCENARIO_SIGNUP] = ['name', 'ein', 'email', 'trade_name', 'phone_number'];
+
+        return $scenarios;
     }
 
     /**
@@ -78,6 +92,7 @@ class Company extends ActiveRecord
             'created_at' => Yii::t('app', 'Created At'),
             'updated_at' => Yii::t('app', 'Updated At'),
             'address_id' => Yii::t('app', 'Address ID'),
+            'phone_number' => Yii::t('app', 'Phone Number'),
         ];
     }
 
