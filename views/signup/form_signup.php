@@ -13,6 +13,17 @@ $this->registerJs(
     <<< 'JS'
         const form = $('#form_signup');
 
+        form.on('beforeSubmit', function() {
+            const data = form.serialize();
+            axios({
+                method: 'post',
+                headers: {'X-Requested-With': 'XMLHttpRequest'},
+                url: '/signup/index',
+                data: data
+            })
+            return false; // prevent default submit
+        });
+
         $("#next-button").click(function() {
             const data = form.serialize();
             axios({
@@ -21,8 +32,13 @@ $this->registerJs(
                 url: '/signup/next',
                 data: data
             }).then(function (response) {
-                toggleForm();
-            }).catch(function (e) {});
+                if (Object.keys(response.data).length === 0) { 
+                    toggleForm();
+                    form.yiiActiveForm("resetForm");
+                } else {
+                    form.submit();
+                }
+            })
             return false; // prevent default submit
         });
 
@@ -52,7 +68,6 @@ $this->registerJs(
         <?= Yii::t('app','Register your account') ?>
     </p>
 
-
     <?php $form = ActiveForm::begin([
         'id' => 'form_signup',
         'enableAjaxValidation' => true,
@@ -61,7 +76,7 @@ $this->registerJs(
     ]); ?>
 
     <div class="fields-company">
-        <?= $form->field($company, 'name')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($company, 'name')->textInput(['maxlength' => true, 'autofocus' => true]) ?>
         <?= $form->field($company, 'trade_name')->textInput(['maxlength' => true]) ?>
         <?= $form->field($company, 'ein')->textInput(['maxlength' => true]) ?>
         <?= $form->field($company, 'phone_number')->widget(MaskedInput::class, [
@@ -76,6 +91,7 @@ $this->registerJs(
         <?= $form->field($employee, 'ssn')->textInput(['maxlength' => true]) ?>
         <?= $form->field($employee, 'birthday')->textInput() ?>
         <?= $form->field($employee, 'email')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($employee, 'phone_number')->textInput(['maxlength' => true]) ?>
         <?= $form->field($employee, 'password')->passwordInput(['maxlength' => true]) ?>
         <?= $form->field($employee, 'password_repeat')->passwordInput(['maxlength' => true]) ?>
     </div>
@@ -83,7 +99,7 @@ $this->registerJs(
     <div class="form-group actions-company">
         <div class="row justify-content-end">
             <div class="col-4">
-                <?= Html::a(Yii::t('app', 'Next'), ['signup/index'], ['class' => 'btn btn-primary btn-block', 'id' => 'next-button']) ?>
+                <?= Html::submitButton(Yii::t('app', 'Next'), ['class' => 'btn btn-primary btn-block', 'id' => 'next-button']) ?>
             </div>
         </div>
     </div>
