@@ -62,7 +62,7 @@ class Employee extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['full_name', 'usual_name', 'ssn', 'birthday', 'email', 'password', 'company_id'], 'required'],
+            [['full_name', 'usual_name', 'ssn', 'birthday', 'email', 'password', 'company_id', 'phone_number'], 'required'],
             [['password_repeat'], 'required', 'on' => self::SCENARIO_SIGNUP],
             [['birthday', 'created_at', 'updated_at', 'deleted_at'], 'safe'],
             [['created_at'], 'default', 'value' => null],
@@ -222,25 +222,5 @@ class Employee extends ActiveRecord implements IdentityInterface
     public function getCompany()
     {
         return $this->hasOne(Company::class, ['id' => 'company_id']);
-    }
-
-    /**
-     * Gets query for [[EmployeePhones]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getEmployeePhones()
-    {
-        return $this->hasMany(EmployeePhone::class, ['employee_id' => 'id']);
-    }
-
-    /**
-     * Gets query for [[Phones]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getPhones()
-    {
-        return $this->hasMany(Phone::class, ['id' => 'phone_id'])->viaTable('employee_phone', ['employee_id' => 'id']);
     }
 }

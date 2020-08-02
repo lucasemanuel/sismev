@@ -32,8 +32,6 @@ class Company extends ActiveRecord
 {
     const SCENARIO_SIGNUP = 'signup';
 
-    public $phone_number;
-
     /**
      * {@inheritdoc}
      */
@@ -58,7 +56,7 @@ class Company extends ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'ein', 'email'], 'required'],
+            [['name', 'ein', 'email', 'phone_number'], 'required'],
             [['created_at', 'updated_at'], 'safe'],
             [['created_at'], 'default', 'value' => null],
             [['address_id'], 'integer'],
@@ -114,26 +112,6 @@ class Company extends ActiveRecord
     public function getAddress()
     {
         return $this->hasOne(Address::class, ['id' => 'address_id']);
-    }
-
-    /**
-     * Gets query for [[CompanyPhones]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCompanyPhones()
-    {
-        return $this->hasMany(CompanyPhone::class, ['company_id' => 'id']);
-    }
-
-    /**
-     * Gets query for [[Phones]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getPhones()
-    {
-        return $this->hasMany(Phone::class, ['id' => 'phone_id'])->viaTable('company_phone', ['company_id' => 'id']);
     }
 
     /**
