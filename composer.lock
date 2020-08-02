@@ -4,8 +4,47 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c7fd7469124b6b060d2c4f295eb4433d",
+    "content-hash": "33679f46a8c81014324cdbc37c42ed39",
     "packages": [
+        {
+            "name": "almasaeed2010/adminlte",
+            "version": "v3.0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ColorlibHQ/AdminLTE.git",
+                "reference": "6b8b69261f1aacbb4be037c934f3c3652e6dff27"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ColorlibHQ/AdminLTE/zipball/6b8b69261f1aacbb4be037c934f3c3652e6dff27",
+                "reference": "6b8b69261f1aacbb4be037c934f3c3652e6dff27",
+                "shasum": ""
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Colorlib"
+                }
+            ],
+            "description": "AdminLTE - admin control panel and dashboard that's based on Bootstrap 4",
+            "homepage": "http://adminlte.io/",
+            "keywords": [
+                "JS",
+                "admin",
+                "back-end",
+                "css",
+                "less",
+                "responsive",
+                "template",
+                "theme",
+                "web"
+            ],
+            "time": "2020-05-19T20:41:11+00:00"
+        },
         {
             "name": "bower-asset/inputmask",
             "version": "3.3.11",
@@ -456,6 +495,21 @@
             "license": [
                 "MIT"
             ]
+        },
+        {
+            "name": "npm-asset/source-sans-pro",
+            "version": "3.012",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/adobe-fonts/source-sans-pro.git",
+                "reference": "c24bd28d808331daea50a60aadd4799daa4a57dd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/adobe-fonts/source-sans-pro/zipball/c24bd28d808331daea50a60aadd4799daa4a57dd",
+                "reference": "c24bd28d808331daea50a60aadd4799daa4a57dd"
+            },
+            "type": "npm-asset"
         },
         {
             "name": "paragonie/random_compat",
