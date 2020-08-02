@@ -15,12 +15,13 @@ class AccountFactory
         
         try {
             $company = self::createCompany($company);
-            $employee += ['company_id' => $company->id];
+            $employee['company_id'] = $company->id;
             self::createEmployee($employee);
 
             $trasaction->commit();
         } catch (Exception $e) {
             $trasaction->rollBack();
+            throw $e;
         }
     }
 
