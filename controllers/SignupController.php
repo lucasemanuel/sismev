@@ -67,7 +67,7 @@ class SignupController extends \yii\web\Controller
         $transaction = Yii::$app->getDb()->beginTransaction();
         
         try {
-            $company['is_manager'] = 1;
+            $employee['is_manager'] = 1;
             AccountFactory::create($company, $employee);
 
             $transaction->commit();
