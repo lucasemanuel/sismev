@@ -8,7 +8,6 @@ use app\models\Employee;
 use Yii;
 use yii\db\Exception;
 use yii\filters\VerbFilter;
-use yii\web\BadRequestHttpException;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
 
@@ -57,8 +56,7 @@ class SignupController extends \yii\web\Controller
 
         if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
             Yii::$app->response->format = Response::FORMAT_JSON;
-            if (!$model->validate())
-                throw new BadRequestHttpException(Yii::t('app', 'Failed validation company'));
+            return ActiveForm::validate($model);
         }
     }
 
