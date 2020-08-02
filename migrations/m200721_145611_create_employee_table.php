@@ -18,6 +18,7 @@ class m200721_145611_create_employee_table extends Migration
             'usual_name' => $this->string(32)->notNull(),
             'ssn' => $this->string(12)->notNull(),
             'birthday' => $this->date()->notNull(),
+            'phone_number' => $this->string(16)->notNull(),
             'email' => $this->string(64)->notNull(),
             'password' => $this->string(255)->notNull(),
             'is_manager' => $this->tinyInteger(1)->defaultValue(0),

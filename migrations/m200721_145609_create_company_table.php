@@ -17,6 +17,7 @@ class m200721_145609_create_company_table extends Migration
             'name' => $this->string(64)->notNull(),
             'trade_name' => $this->string(64),
             'ein' => $this->string(18)->notNull(),
+            'phone_number' => $this->string(16)->notNull(),
             'email' => $this->string(64)->notNull(),
             'created_at' => $this->dateTime()->notNull(),
             'updated_at' => $this->dateTime(),
