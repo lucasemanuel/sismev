@@ -3,57 +3,79 @@
 namespace app\controllers;
 
 use app\components\factories\AccountFactory;
-use app\models\SignupForm;
+use app\models\Company;
+use app\models\Employee;
 use Yii;
 use yii\db\Exception;
+use yii\filters\VerbFilter;
+use yii\web\BadRequestHttpException;
+use yii\web\Response;
+use yii\widgets\ActiveForm;
 
 class SignupController extends \yii\web\Controller
 {
     public $layout = "register";
 
+    public function behaviors()
+    {
+        return [
+            'verbs' => [
+                'class' => VerbFilter::class,
+                'actions' => [
+                    'index' => ['get', 'post'],
+                    'next' => ['post'],
+                ],
+            ],
+        ];
+    }
+
     public function actionIndex()
     {
-        return $this->actionStepOne();
-    }
+        $company = new Company(['scenario' => Company::SCENARIO_SIGNUP]);
+        $employee = new Employee(['scenario' => Employee::SCENARIO_SIGNUP]);
 
-    public function actionStepOne()
-    {
-        $model = new SignupForm(['scenario' => SignupForm::SCENARIO_COMPANY]);
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $company->load(Yii::$app->request->post());
+            $employee->load(Yii::$app->request->post());
 
-        if (Yii::$app->session['signup_form'] !== null)
-            $model->setAttributes(Yii::$app->session['signup_form']);
+            if ($company->validate() && $employee->validate())
+                $this->register($company->attributes, $employee->attributes);
             
-        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            Yii::$app->session['signup_form'] = $model->attributes;
-
-            return $this->redirect(['step-two']);
+            return array_merge(ActiveForm::validate($company),ActiveForm::validate($employee));
         }
 
-        return $this->render('signup_company', [
-            'model' => $model,
+        return $this->render('form_signup', [
+            'company' => $company,
+            'employee' => $employee,
         ]);
     }
 
-    public function actionStepTwo()
+    public function actionNext()
     {
-        if (Yii::$app->session['signup_form'] === null)
-            return $this->redirect(['step-one']);
+        $model = new Company(['scenario' => Company::SCENARIO_SIGNUP]);
 
-        $model = new SignupForm(['scenario' => SignupForm::SCENARIO_EMPLOYEE]);
+        if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            if (!$model->validate())
+                throw new BadRequestHttpException(Yii::t('app', 'Failed validation company'));
+        }
+    }
 
-        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            try {
-                AccountFactory::create(Yii::$app->session['signup_form'], $model->attributes);
-                Yii::$app->session->destroy();
-                return $this->redirect('/site/login');
-            } catch (Exception $e) {
-                // Show falied to web user
-                return $this->redirect(['step-one']);
-            }
+    private function register($company, $employee)
+    {
+        $transaction = Yii::$app->getDb()->beginTransaction();
+        
+        try {
+            $company['is_manager'] = 1;
+            AccountFactory::create($company, $employee);
+
+            $transaction->commit();
+        } catch (Exception $e) {
+            $transaction->rollBack();
+            throw $e;
         }
 
-        return $this->render('signup_employee', [
-            'model' => $model,
-        ]);
+        $this->redirect(['site/login']);
     }
 }
