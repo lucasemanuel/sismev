@@ -21,7 +21,7 @@ AdminLteAsset::register($this);
 
 <body class="hold-transition register-page">
 	<?php $this->beginBody() ?>
-	<div class="register-box">
+	<div class="register-div">
   		<div class="register-logo">
 			<a href="#"><b><?= Yii::$app->name ?></b></a>
 		</div>
