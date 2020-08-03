@@ -63,6 +63,7 @@ class Company extends ActiveRecord
             [['name', 'trade_name', 'email'], 'string', 'max' => 64],
             [['email'], 'email'],
             [['ein'], 'string', 'max' => 18],
+            [['ein'], 'match', 'pattern' => '/(\d{2}\.\d{3}\.\d{3}\/\d{4}\-\d{2})/'],
             [['phone_number'], 'match', 'pattern' => '/(\(\d{2}\)\ \d{4,5}\-\d{4})/'],
             [['address_id'], 'exist', 'skipOnError' => true, 'targetClass' => Address::class, 'targetAttribute' => ['address_id' => 'id']],
         ];
