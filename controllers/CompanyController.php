@@ -4,7 +4,6 @@ namespace app\controllers;
 
 use Yii;
 use app\models\Company;
-use app\models\CompanySearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -29,49 +28,16 @@ class CompanyController extends Controller
         ];
     }
 
-    /**
-     * Lists all Company models.
-     * @return mixed
-     */
     public function actionIndex()
     {
-        $searchModel = new CompanySearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $company_id = Yii::$app->user->identity->company_id;
+        $model = $this->findModel($company_id);
+
+        if (!isset($model->address_id))
+            Yii::$app->session->setFlash('info', Yii::t('app', "Haven't you registered your business address yet? Register now."));
 
         return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
-    }
-
-    /**
-     * Displays a single Company model.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
-    }
-
-    /**
-     * Creates a new Company model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
-    public function actionCreate()
-    {
-        $model = new Company();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
-
-        return $this->render('create', [
-            'model' => $model,
+            'model' => $this->findModel($company_id),
         ]);
     }
 
