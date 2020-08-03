@@ -64,6 +64,8 @@ class SignupController extends \yii\web\Controller
     {
         $transaction = Yii::$app->getDb()->beginTransaction();
         
+        $employee['birthday'] = implode("-",array_reverse(explode("/",$employee['birthday'])));
+
         try {
             $employee['is_manager'] = 1;
             AccountFactory::create($company, $employee);
