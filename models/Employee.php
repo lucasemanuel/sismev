@@ -69,7 +69,7 @@ class Employee extends ActiveRecord implements IdentityInterface
             [['is_manager', 'is_deleted', 'address_id', 'company_id'], 'integer'],
             [['full_name'], 'string', 'max' => 128],
             [['usual_name'], 'string', 'max' => 32],
-            [['ssn'], 'string', 'max' => 12],
+            [['ssn'], 'string', 'max' => 14],
             [['email'], 'string', 'max' => 64],
             [['email'], 'email'],
             [['email'], 'unique'],
@@ -77,6 +77,7 @@ class Employee extends ActiveRecord implements IdentityInterface
             [['is_manager'], 'default', 'value' => 0],
             [['password_repeat'], 'compare', 'compareAttribute' => 'password'],
             [['phone_number'], 'match', 'pattern' => '/(\(\d{2}\)\ \d{4,5}\-\d{4})/'],
+            [['ssn'], 'match', 'pattern' => '/(\d{3}\.\d{3}\.\d{3}\-\d{2})/'],
             [['address_id'], 'exist', 'skipOnError' => true, 'targetClass' => Address::class, 'targetAttribute' => ['address_id' => 'id']],
             [['company_id'], 'exist', 'skipOnError' => true, 'targetClass' => Company::class, 'targetAttribute' => ['company_id' => 'id']],
         ];
