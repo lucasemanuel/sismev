@@ -16,7 +16,7 @@ use Yii;
  * @property string $federated_unit
  * @property string $complement
  *
- * @property Company[] $companies
+ * @property Company $company
  * @property Employee[] $employees
  */
 class Address extends \yii\db\ActiveRecord
@@ -67,9 +67,9 @@ class Address extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getCompanies()
+    public function getCompany()
     {
-        return $this->hasMany(Company::class, ['address_id' => 'id']);
+        return $this->hasOne(Company::class, ['address_id' => 'id']);
     }
 
     /**
@@ -80,5 +80,10 @@ class Address extends \yii\db\ActiveRecord
     public function getEmployees()
     {
         return $this->hasMany(Employee::class, ['address_id' => 'id']);
+    }
+
+    public function __toString()
+    {
+        return "$this->street, $this->number, $this->neighborhood, $this->city - $this->federated_unit, $this->zip_code ($this->complement)";
     }
 }
