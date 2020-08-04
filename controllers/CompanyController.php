@@ -2,8 +2,9 @@
 
 namespace app\controllers;
 
-use Yii;
+use app\models\Address;
 use app\models\Company;
+use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -41,6 +42,27 @@ class CompanyController extends Controller
         ]);
     }
 
+    public function actionUpdateAddress()
+    {
+        $company_id = Yii::$app->user->identity->company_id;
+        $model = $this->findModel($company_id);
+
+        $address = new Address();
+
+        if (!is_null($model->address_id))
+            $address = Address::findOne($model->address_id);            
+
+        if ($address->load(Yii::$app->request->post()) && $address->save()) {
+            $address->link('company', $model);
+            return $this->redirect(['index']);
+        }
+
+        return $this->render('address', [
+            'address' => $address,
+            'model' => $model
+        ]);
+    }
+
     /**
      * Updates an existing Company model.
      * If update is successful, the browser will be redirected to the 'view' page.
@@ -48,12 +70,13 @@ class CompanyController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id)
+    public function actionUpdate()
     {
-        $model = $this->findModel($id);
+        $company_id = Yii::$app->user->identity->company_id;
+        $model = $this->findModel($company_id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['index']);
         }
 
         return $this->render('update', [
@@ -68,11 +91,15 @@ class CompanyController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($id)
+    public function actionDelete()
     {
-        $this->findModel($id)->delete();
+        $company_id = Yii::$app->user->identity->company_id;
+        $company = $this->findModel($company_id);
 
-        return $this->redirect(['index']);
+        Yii::$app->user->logout();
+
+        $company->delete();
+        return $this->redirect(['/site/index']);
     }
 
     /**
