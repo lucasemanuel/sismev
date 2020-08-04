@@ -20,7 +20,7 @@ class m200721_145607_create_address_table extends Migration
             'neighborhood' => $this->string(64)->notNull(),
             'city' => $this->string(64)->notNull(),
             'federated_unit' => $this->string(2)->notNull(),
-            'complement' => $this->string(128)->notNull(),
+            'complement' => $this->string(128),
         ]);
     }
 
