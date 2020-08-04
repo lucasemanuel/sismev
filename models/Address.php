@@ -35,11 +35,12 @@ class Address extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['zip_code', 'number', 'street', 'neighborhood', 'city', 'federated_unit', 'complement'], 'required'],
-            [['zip_code'], 'string', 'max' => 9],
+            [['zip_code', 'number', 'street', 'neighborhood', 'city', 'federated_unit'], 'required'],
+            [['zip_code'], 'string', 'max' => 8],
             [['number'], 'string', 'max' => 8],
             [['street', 'neighborhood', 'city'], 'string', 'max' => 64],
             [['federated_unit'], 'string', 'max' => 2],
+            [['zip_code'], 'match', 'pattern' => '/\d{8}/'],
             [['complement'], 'string', 'max' => 128],
         ];
     }
