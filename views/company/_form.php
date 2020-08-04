@@ -1,8 +1,7 @@
 <?php
 
-use yii\bootstrap4\ActiveForm;
 use yii\helpers\Html;
-use yii\widgets\MaskedInput;
+use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Company */
@@ -12,20 +11,22 @@ use yii\widgets\MaskedInput;
 <div class="company-form">
 
     <?php $form = ActiveForm::begin(); ?>
-    
-    <div class="card-body">
-        <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
-        <?= $form->field($model, 'trade_name')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
-        <?= $form->field($model, 'ein')->widget(MaskedInput::class, [
-            'mask' => ['99.999.999/9999-99'],
-        ]) ?>
+    <?= $form->field($model, 'trade_name')->textInput(['maxlength' => true]) ?>
 
-        <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
-    </div>
+    <?= $form->field($model, 'ein')->textInput(['maxlength' => true]) ?>
 
-    <div class="card-footer">
+    <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'created_at')->textInput() ?>
+
+    <?= $form->field($model, 'updated_at')->textInput() ?>
+
+    <?= $form->field($model, 'address_id')->textInput() ?>
+
+    <div class="form-group">
         <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>
     </div>
 

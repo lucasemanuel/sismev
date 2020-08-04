@@ -2,9 +2,9 @@
 
 namespace app\controllers;
 
-use app\models\Address;
-use app\models\Company;
 use Yii;
+use app\models\Company;
+use app\models\CompanySearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -29,37 +29,49 @@ class CompanyController extends Controller
         ];
     }
 
+    /**
+     * Lists all Company models.
+     * @return mixed
+     */
     public function actionIndex()
     {
-        $company_id = Yii::$app->user->identity->company_id;
-        $model = $this->findModel($company_id);
-
-        if (!isset($model->address_id))
-            Yii::$app->session->setFlash('info', Yii::t('app', "Haven't you registered your business address yet? Register now."));
+        $searchModel = new CompanySearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
-            'model' => $this->findModel($company_id),
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
         ]);
     }
 
-    public function actionUpdateAddress()
+    /**
+     * Displays a single Company model.
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionView($id)
     {
-        $company_id = Yii::$app->user->identity->company_id;
-        $model = $this->findModel($company_id);
+        return $this->render('view', [
+            'model' => $this->findModel($id),
+        ]);
+    }
 
-        $address = new Address();
+    /**
+     * Creates a new Company model.
+     * If creation is successful, the browser will be redirected to the 'view' page.
+     * @return mixed
+     */
+    public function actionCreate()
+    {
+        $model = new Company();
 
-        if (!is_null($model->address_id))
-            $address = Address::findOne($model->address_id);            
-
-        if ($address->load(Yii::$app->request->post()) && $address->save()) {
-            $address->link('company', $model);
-            return $this->redirect(['index']);
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
         }
 
-        return $this->render('address', [
-            'address' => $address,
-            'model' => $model
+        return $this->render('create', [
+            'model' => $model,
         ]);
     }
 
@@ -70,13 +82,12 @@ class CompanyController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate()
+    public function actionUpdate($id)
     {
-        $company_id = Yii::$app->user->identity->company_id;
-        $model = $this->findModel($company_id);
+        $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['index']);
+            return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('update', [
@@ -91,15 +102,11 @@ class CompanyController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete()
+    public function actionDelete($id)
     {
-        $company_id = Yii::$app->user->identity->company_id;
-        $company = $this->findModel($company_id);
+        $this->findModel($id)->delete();
 
-        Yii::$app->user->logout();
-
-        $company->delete();
-        return $this->redirect(['/site/index']);
+        return $this->redirect(['index']);
     }
 
     /**
