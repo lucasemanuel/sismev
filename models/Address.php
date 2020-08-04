@@ -16,7 +16,7 @@ use Yii;
  * @property string $federated_unit
  * @property string $complement
  *
- * @property Company[] $companies
+ * @property Company $company
  * @property Employee[] $employees
  */
 class Address extends \yii\db\ActiveRecord
@@ -35,11 +35,12 @@ class Address extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['zip_code', 'number', 'street', 'neighborhood', 'city', 'federated_unit', 'complement'], 'required'],
-            [['zip_code'], 'string', 'max' => 9],
+            [['zip_code', 'number', 'street', 'neighborhood', 'city', 'federated_unit'], 'required'],
+            [['zip_code'], 'string', 'max' => 8],
             [['number'], 'string', 'max' => 8],
             [['street', 'neighborhood', 'city'], 'string', 'max' => 64],
             [['federated_unit'], 'string', 'max' => 2],
+            [['zip_code'], 'match', 'pattern' => '/\d{8}/'],
             [['complement'], 'string', 'max' => 128],
         ];
     }
@@ -66,9 +67,9 @@ class Address extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getCompanies()
+    public function getCompany()
     {
-        return $this->hasMany(Company::class, ['address_id' => 'id']);
+        return $this->hasOne(Company::class, ['address_id' => 'id']);
     }
 
     /**
@@ -79,5 +80,10 @@ class Address extends \yii\db\ActiveRecord
     public function getEmployees()
     {
         return $this->hasMany(Employee::class, ['address_id' => 'id']);
+    }
+
+    public function __toString()
+    {
+        return "$this->street, $this->number, $this->neighborhood, $this->city - $this->federated_unit, $this->zip_code ($this->complement)";
     }
 }
