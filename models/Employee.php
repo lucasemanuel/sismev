@@ -2,10 +2,12 @@
 
 namespace app\models;
 
+use app\components\traits\FilterTrait;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\db\Expression;
+use yii\db\Query;
 use yii\web\IdentityInterface;
 
 /**
@@ -33,9 +35,17 @@ use yii\web\IdentityInterface;
  */
 class Employee extends ActiveRecord implements IdentityInterface
 {
+    use FilterTrait;
+
+    const JOINS = [
+        [
+            'table' => 'company',
+            'on' => 'employee.company_id = company.id'
+        ]
+    ];
     const SCENARIO_UPDATE = 'update';
     const SCENARIO_SIGNUP = 'signup';
-    
+
     public $password_repeat;
 
     /**
