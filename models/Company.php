@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\components\traits\FilterTrait;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
@@ -30,6 +31,9 @@ use yii\db\Expression;
  */
 class Company extends ActiveRecord
 {
+    use FilterTrait;
+
+    const JOINS = [];
     const SCENARIO_SIGNUP = 'signup';
 
     /**
