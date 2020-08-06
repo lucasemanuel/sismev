@@ -84,6 +84,7 @@ class Employee extends ActiveRecord implements IdentityInterface
             [['email'], 'email'],
             [['email'], 'unique'],
             [['password'], 'string', 'max' => 255],
+            [['password'], 'string', 'min' => 6],
             [['is_manager'], 'default', 'value' => 0],
             [['password_repeat'], 'compare', 'compareAttribute' => 'password'],
             [['phone_number'], 'match', 'pattern' => '/(\(\d{2}\)\ \d{4,5}\-\d{4})/'],
