@@ -45,6 +45,7 @@ class Employee extends ActiveRecord implements IdentityInterface
     ];
     const SCENARIO_UPDATE = 'update';
     const SCENARIO_SIGNUP = 'signup';
+    const SCENARIO_CREATE = 'create';
 
     public $password_repeat;
 
@@ -98,6 +99,7 @@ class Employee extends ActiveRecord implements IdentityInterface
     {
         $scenarios = parent::scenarios();
         $scenarios[self::SCENARIO_SIGNUP] = ['full_name', 'usual_name', 'ssn', 'birthday', 'email', 'password', 'password_repeat', 'phone_number'];
+        $scenarios[self::SCENARIO_CREATE] = ['full_name', 'usual_name', 'ssn', 'birthday', 'email', 'password', 'password_repeat', 'phone_number', 'is_manager'];
         $scenarios[self::SCENARIO_UPDATE] = array_filter($scenarios[self::SCENARIO_DEFAULT], function ($attribute) {
             return $attribute != 'password';
         });
