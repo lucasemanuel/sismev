@@ -7,7 +7,8 @@ use app\models\Employee;
 use app\models\EmployeeSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
+use yii\web\BadRequestHttpException;
+use yii\web\Response;
 
 /**
  * EmployeeController implements the CRUD actions for Employee model.
@@ -134,9 +135,21 @@ class EmployeeController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+        $transaction = Yii::$app->getDb()->beginTransaction();
 
-        return $this->redirect(['index']);
+        try {
+            $address = Address::findOne($model->address_id);
+            if ($model->delete() && $address->delete()){
+                $transaction->commit();
+                return $this->redirect(['index']);
+            }
+    
+            throw new BadRequestHttpException(Yii::t('app', 'Failed to delete collaborator.'));
+        } catch (BadRequestHttpException $e) {
+            $transaction->rollBack();
+            throw $e;
+        }
     }
 
     /**
