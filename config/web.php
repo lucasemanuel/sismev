@@ -53,7 +53,30 @@ $config = [
                 'login' => 'site/login',
             ],
         ],
+        'i18n' => [
+            'translations' => [
+                'app' => [
+                    'class' => 'yii\i18n\PhpMessageSource',
+                    'basePath' => '@app/messages',
+                ],
+                'kvgrid' => [
+                    'class' => 'yii\i18n\PhpMessageSource',
+                    'basePath' => '@app/messages',
+                ],
+            ]
+        ],
+        'formatter' => [
+            'class' => 'app\components\formatters\AppFormatter',
+            'dateFormat' => 'php:d/m/Y',
+            'datetimeFormat' => 'php:d/m/Y H:i:s',
+            'defaultTimeZone' => 'America/Fortaleza',
+        ],
     ],
+    'modules' => [
+        'gridview' => [
+            'class' => 'kartik\grid\Module'
+        ],
+    ],  
     'params' => $params,
 ];
 
