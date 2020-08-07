@@ -70,7 +70,9 @@ class EmployeeController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Employee();
+        $model = new Employee(['scenario' => Employee::SCENARIO_CREATE]);
+        $model->is_manager = 0;
+        $model->company_id = Yii::$app->user->identity->company_id;
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -91,11 +93,14 @@ class EmployeeController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $model->scenario = Employee::SCENARIO_UPDATE;
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
+        $model->birthday = Yii::$app->formatter->asDate($model->birthday);
+        
         return $this->render('update', [
             'model' => $model,
         ]);
