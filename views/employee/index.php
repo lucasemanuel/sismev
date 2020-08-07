@@ -1,7 +1,8 @@
 <?php
 
 use yii\helpers\Html;
-use yii\grid\GridView;
+use kartik\grid\GridView;
+use yii\widgets\MaskedInput;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\EmployeeSearch */
@@ -12,38 +13,67 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="employee-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <!-- <h1><?= Html::encode($this->title) ?></h1> -->
 
     <p>
-        <?= Html::a(Yii::t('app', 'Create Employee'), ['create'], ['class' => 'btn btn-success']) ?>
+        <!-- <?= Html::a(Yii::t('app', 'Create Employee'), ['create'], ['class' => 'btn btn-success']) ?> -->
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
+    <?php
+    echo GridView::widget([
+        'dataProvider'=> $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
-            'id',
+            ['class' => 'kartik\grid\SerialColumn'],
             'full_name',
-            'usual_name',
-            'ssn',
-            'birthday',
-            //'email:email',
-            //'password',
-            //'is_manager',
-            //'is_deleted',
-            //'created_at',
-            //'updated_at',
-            //'deleted_at',
-            //'address_id',
-            //'company_id',
+            [
+                'attribute' => 'ssn',
+                'filterType' => MaskedInput::class,
+                'filterWidgetOptions' => [
+                    'mask' => ['999.999.999-99'],
 
-            ['class' => 'yii\grid\ActionColumn'],
+                ],
+            ],
+            [
+                'attribute' => 'birthday',
+                'format' => 'date',
+                'filterType' => GridView::FILTER_DATE, 
+                'filterWidgetOptions' => [
+                    'pluginOptions' => [
+                        'format' => 'dd/mm/yyyy',
+                    ]
+                ],
+            ],
+            'email',
+            [
+                'attribute' => 'phone_number',
+                'filterType' => MaskedInput::class,
+                'filterWidgetOptions' => [
+                    'mask' => ['(99) 9999-9999', '(99) 99999-9999'],
+                ]
+            ],
+            [
+                'class' => 'kartik\grid\ActionColumn',
+            ],
         ],
-    ]); ?>
+        'hover' => true,
+        // 'toolbar' => [
+        //     '{export}',
+        //     '{toggleData}'
+        // ],
+        // 'toggleDataContainer' => ['class' => 'btn-group-sm'],
+        // 'exportContainer' => ['class' => 'btn-group-sm'],
+        'panel' => [
+            'heading' => '<h3 class="panel-title">'.Html::encode($this->title).'</h3>',
+            'type' => 'default',
+            'before'=> Html::a(Yii::t('app', 'Create Employee'), ['create'], ['class' => 'btn btn-success']),
+            // 'after'=>Html::a('<i class="fas fa-redo"></i> Reset Grid', ['index'], ['class' => 'btn btn-info']),
+            'footer'=>false
+        ],
+    ]);
+    ?>
 
 
 </div>
