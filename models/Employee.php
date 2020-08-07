@@ -2,12 +2,12 @@
 
 namespace app\models;
 
+use app\components\behaviors\FormatterDateBehavior;
 use app\components\traits\FilterTrait;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\db\Expression;
-use yii\db\Query;
 use yii\web\IdentityInterface;
 
 /**
@@ -30,8 +30,6 @@ use yii\web\IdentityInterface;
  *
  * @property Address $address
  * @property Company $company
- * @property EmployeePhone[] $employeePhones
- * @property Phone[] $phones
  */
 class Employee extends ActiveRecord implements IdentityInterface
 {
@@ -46,8 +44,10 @@ class Employee extends ActiveRecord implements IdentityInterface
     const SCENARIO_UPDATE = 'update';
     const SCENARIO_SIGNUP = 'signup';
     const SCENARIO_CREATE = 'create';
+    const SCENARIO_CHANGE_PASSWORD = 'change_password';
 
     public $password_repeat;
+    public $password_new;
 
     /**
      * {@inheritdoc}
@@ -64,6 +64,12 @@ class Employee extends ActiveRecord implements IdentityInterface
                 'class' => TimestampBehavior::class,
                 'value' => new Expression('NOW()'),
             ],
+            'formatterDateBehavior' => [
+                'class' => FormatterDateBehavior::class,
+                'attributes' => [
+                    'birthday' => FormatterDateBehavior::FORMAT_DATE
+                ]
+            ],
         ];
     }
 
@@ -73,8 +79,13 @@ class Employee extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['full_name', 'usual_name', 'ssn', 'birthday', 'email', 'password', 'company_id', 'phone_number'], 'required'],
-            [['password_repeat'], 'required', 'on' => self::SCENARIO_SIGNUP],
+            [['full_name', 'usual_name', 'ssn', 'birthday', 'email', 'password', 'company_id', 'phone_number', 'password_repeat'], 'required'],
+            [['password_new'], 'required'],
+            [['password'], function ($attribute, $params, $validator) {
+                if (!Yii::$app->getSecurity()->validatePassword($this->password, $this->oldAttributes['password'])) {
+                    $this->addError($attribute, Yii::t('app', 'The password must be the same as the current one'));
+                }
+            }, 'on' => self::SCENARIO_CHANGE_PASSWORD],
             [['birthday', 'created_at', 'updated_at', 'deleted_at'], 'safe'],
             [['created_at'], 'default', 'value' => null],
             [['is_manager', 'is_deleted', 'address_id', 'company_id'], 'integer'],
@@ -84,10 +95,12 @@ class Employee extends ActiveRecord implements IdentityInterface
             [['email'], 'string', 'max' => 64],
             [['email'], 'email'],
             [['email'], 'unique'],
-            [['password'], 'string', 'max' => 255],
-            [['password'], 'string', 'min' => 6],
+            [['password', 'password_new'], 'string', 'max' => 255],
+            [['password', 'password_new'], 'string', 'min' => 6],
             [['is_manager'], 'default', 'value' => 0],
-            [['password_repeat'], 'compare', 'compareAttribute' => 'password'],
+            [['is_deleted'], 'default', 'value' => 0],
+            [['password_repeat'], 'compare', 'compareAttribute' => 'password', 'on' => self::SCENARIO_SIGNUP, 'except' => self::SCENARIO_CHANGE_PASSWORD],
+            [['password_repeat'], 'compare', 'compareAttribute' => 'password_new', 'on' => self::SCENARIO_CHANGE_PASSWORD],
             [['phone_number'], 'match', 'pattern' => '/(\(\d{2}\)\ \d{4,5}\-\d{4})/'],
             [['ssn'], 'match', 'pattern' => '/(\d{3}\.\d{3}\.\d{3}\-\d{2})/'],
             [['address_id'], 'exist', 'skipOnError' => true, 'targetClass' => Address::class, 'targetAttribute' => ['address_id' => 'id']],
@@ -101,8 +114,9 @@ class Employee extends ActiveRecord implements IdentityInterface
         $scenarios[self::SCENARIO_SIGNUP] = ['full_name', 'usual_name', 'ssn', 'birthday', 'email', 'password', 'password_repeat', 'phone_number'];
         $scenarios[self::SCENARIO_CREATE] = ['full_name', 'usual_name', 'ssn', 'birthday', 'email', 'password', 'password_repeat', 'phone_number', 'is_manager'];
         $scenarios[self::SCENARIO_UPDATE] = array_filter($scenarios[self::SCENARIO_DEFAULT], function ($attribute) {
-            return $attribute != 'password';
+            return !in_array($attribute, ['password', 'password_repeat', 'password_new']);
         });
+        $scenarios[self::SCENARIO_CHANGE_PASSWORD] = ['password', 'password_repeat', 'password_new'];
 
         return $scenarios;
     }
