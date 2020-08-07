@@ -57,6 +57,12 @@ class EmployeeController extends Controller
         ]);
     }
 
+    public function actionProfile()
+    {
+        $id = Yii::$app->user->id;
+        return $this->redirect(['view', 'id' => $id]);
+    }
+
     /**
      * Creates a new Employee model.
      * If creation is successful, the browser will be redirected to the 'view' page.
