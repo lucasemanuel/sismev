@@ -17,7 +17,7 @@ use Yii;
  * @property string $complement
  *
  * @property Company $company
- * @property Employee[] $employees
+ * @property Employee $employee
  */
 class Address extends \yii\db\ActiveRecord
 {
@@ -77,9 +77,9 @@ class Address extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getEmployees()
+    public function getEmployee()
     {
-        return $this->hasMany(Employee::class, ['address_id' => 'id']);
+        return $this->hasOne(Employee::class, ['address_id' => 'id']);
     }
 
     public function __toString()
