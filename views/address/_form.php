@@ -43,7 +43,6 @@ $this->registerJs(
         function toggleReadOnly(data) {
             Object.keys(data).forEach(function(element) {
                 const target =  $('#address-'+element);
-                console.log(target);
                 if (target.val() == '')
                     target.prop('readonly', false);
                 else if (!target.is('[readonly]'))
