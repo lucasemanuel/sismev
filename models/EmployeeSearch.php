@@ -5,6 +5,7 @@ namespace app\models;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\models\Employee;
+use Yii;
 
 /**
  * EmployeeSearch represents the model behind the search form of `app\models\Employee`.
@@ -18,7 +19,7 @@ class EmployeeSearch extends Employee
     {
         return [
             [['id', 'is_manager', 'is_deleted', 'address_id', 'company_id'], 'integer'],
-            [['full_name', 'usual_name', 'ssn', 'birthday', 'email', 'password', 'created_at', 'updated_at', 'deleted_at'], 'safe'],
+            [['full_name', 'usual_name', 'ssn', 'birthday', 'email', 'password', 'created_at', 'updated_at', 'deleted_at', 'phone_number'], 'safe'],
         ];
     }
 
@@ -58,23 +59,31 @@ class EmployeeSearch extends Employee
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'birthday' => $this->birthday,
-            'is_manager' => $this->is_manager,
-            'is_deleted' => $this->is_deleted,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-            'deleted_at' => $this->deleted_at,
-            'address_id' => $this->address_id,
-            'company_id' => $this->company_id,
+            'employee.id' => $this->id,
+            'employee.birthday' => $this->getBirthDay(),
+            'employee.is_manager' => $this->is_manager,
+            'employee.is_deleted' => $this->is_deleted,
+            'employee.created_at' => $this->created_at,
+            'employee.updated_at' => $this->updated_at,
+            'employee.deleted_at' => $this->deleted_at,
+            'employee.address_id' => $this->address_id,
+            'employee.company_id' => $this->company_id,
         ]);
 
-        $query->andFilterWhere(['like', 'full_name', $this->full_name])
-            ->andFilterWhere(['like', 'usual_name', $this->usual_name])
-            ->andFilterWhere(['like', 'ssn', $this->ssn])
-            ->andFilterWhere(['like', 'email', $this->email])
-            ->andFilterWhere(['like', 'password', $this->password]);
+        $query->andFilterWhere(['like', 'employee.full_name', $this->full_name])
+            ->andFilterWhere(['like', 'employee.usual_name', $this->usual_name])
+            ->andFilterWhere(['like', 'employee.ssn', $this->ssn])
+            ->andFilterWhere(['like', 'employee.email', $this->email])
+            ->andFilterWhere(['like', 'employee.phone_number', $this->phone_number])
+            ->andFilterWhere(['like', 'employee.password', $this->password]);
 
         return $dataProvider;
+    }
+
+    public function getBirthDay()
+    {
+        return isset($this->birthday)
+            ? Yii::$app->formatter->asDateDefault($this->birthday)
+            : null;
     }
 }
