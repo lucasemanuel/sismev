@@ -52,8 +52,8 @@ AdminLteAsset::register($this);
 					<div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
 						<span class="dropdown-item dropdown-header">15 Notifications</span>
 						<div class="dropdown-divider"></div>
-						<a href="#" class="dropdown-item">
-							<i class="fas fa-envelope mr-2"></i> 4 new messages
+						<a href=<?= Url::to(['/employee/profile']) ?> class="dropdown-item">
+							<i class="fas fa-user mr-2"></i> <?= Yii::t('app', 'Profile') ?>
 						</a>
 						<a href="#" class="dropdown-item">
 							<i class="fas fa-users mr-2"></i> 8 friend requests
