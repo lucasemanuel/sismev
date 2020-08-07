@@ -2,7 +2,7 @@
 
 namespace app\controllers;
 
-use Yii;
+use app\models\Address;
 use app\models\Employee;
 use app\models\EmployeeSearch;
 use yii\web\Controller;
@@ -80,6 +80,25 @@ class EmployeeController extends Controller
 
         return $this->render('create', [
             'model' => $model,
+        ]);
+    }
+
+    public function actionUpdateAddress($id)
+    {
+        $model = $this->findModel($id);
+        $address = new Address();
+
+        if (!is_null($model->address_id))
+            $address = Address::findOne($model->address_id);            
+
+        if ($address->load(Yii::$app->request->post()) && $address->save()) {
+            $address->link('employee', $model);
+            return $this->redirect(['view', 'id' => $model->id]);
+        }
+
+        return $this->render('address', [
+            'address' => $address,
+            'model' => $model
         ]);
     }
 
