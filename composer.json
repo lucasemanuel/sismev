@@ -22,7 +22,9 @@
         "npm-asset/axios": "~0.19.0",
         "almasaeed2010/adminlte": "~3.0",
         "npm-asset/source-sans-pro" : "^3.012",
-        "kartik-v/yii2-widget-datepicker": "^1.4"
+        "kartik-v/yii2-widget-datepicker": "^1.4",
+        "kartik-v/yii2-grid": "^3.3",
+        "kartik-v/yii2-icons": "^1.4"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",
