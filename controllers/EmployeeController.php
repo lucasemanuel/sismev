@@ -5,6 +5,9 @@ namespace app\controllers;
 use app\models\Address;
 use app\models\Employee;
 use app\models\EmployeeSearch;
+use Yii;
+use yii\bootstrap4\ActiveForm;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\BadRequestHttpException;
@@ -124,6 +127,38 @@ class EmployeeController extends Controller
         return $this->render('update', [
             'model' => $model,
         ]);
+    }
+
+    public function actionChangePassword($id)
+    {
+        $model = $this->findModel($id);
+        $model->scenario = Employee::SCENARIO_CHANGE_PASSWORD;
+        
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->validate()) {
+                $model->password = $model->password_new;
+                $model->save(false);
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
+
+        }
+        $model->password = '';
+
+        return $this->render('change_password', [
+            'model' => $model,
+        ]);
+    }
+
+    public function actionValidatePassword($id)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $model = $this->findModel($id);
+        $model->scenario = Employee::SCENARIO_CHANGE_PASSWORD;
+
+        if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
+            return ActiveForm::validate($model);
+        }
     }
 
     /**
