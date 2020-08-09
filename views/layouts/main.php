@@ -92,9 +92,16 @@ AdminLteAsset::register($this);
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="/employee" class="nav-link">
+							<a href="<?= Url::to(['/employee']) ?>" class="nav-link">
 								<i class="nav-icon fas fa-users"></i>
 								<p><?= Yii::t('app', 'Employee') ?></p>
+							</a>
+						</li>
+						<li class="nav-header"><?= strtoupper(Yii::t('app', 'Products')) ?></li>
+						<li class="nav-item">
+							<a href="<?= Url::to(['/category']) ?>" class="nav-link">
+								<i class="nav-icon fas fa-tags"></i>
+								<p><?= Yii::t('app', 'Category') ?></p>
 							</a>
 						</li>
 					</ul>
