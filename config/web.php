@@ -61,7 +61,7 @@ $config = [
                 ],
                 'kvgrid' => [
                     'class' => 'yii\i18n\PhpMessageSource',
-                    'basePath' => '@app/messages',
+                    'basePath' => '@kvgrid/messages',
                 ],
             ]
         ],
