@@ -2,14 +2,13 @@
 
 namespace app\controllers;
 
-use Yii;
 use app\models\Category;
 use app\models\CategorySearch;
+use Yii;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 use yii\web\BadRequestHttpException;
-use yii\web\Response;
 
 /**
  * CategoryController implements the CRUD actions for Category model.
@@ -69,19 +68,14 @@ class CategoryController extends Controller
         $model = new Category();
         $model->company_id = Yii::$app->user->identity->company_id;
 
-        $request = Yii::$app->request;
-        if ($request->isAjax) {
-            if ($request->isPost && $model->load($request->post())) {
-                Yii::$app->response->format = Response::FORMAT_JSON;
-                if ($model->save())
-                    return;
-                throw new BadRequestHttpException(Yii::t('app', 'Failed to save category.'));
-            }
-
-            return $this->renderAjax('create', [
-                'model' => $model,
-            ]);
-        }
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+            return $this->redirect(['index']);
+        else if (!Yii::$app->request->isAjax)
+            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+            
+        return $this->renderAjax('create', [
+            'model' => $model,
+        ]);
     }
 
     /**
