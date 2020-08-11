@@ -13,12 +13,10 @@ $this->params['breadcrumbs'][] = $this->title;
 
 $this->registerJs(
     <<< 'JS'
-        $(function() {
-            $('#btn-modal').click(function (e) {
-                $('#modal').modal('show')
-                    .find('#content-modal')
-                    .load($(this).attr('value'));
-            });
+        $('body').on('click', '.btn-modal', function (e) {
+            $('#modal').modal('show')
+                .find('#content-modal')
+                .load($(this).attr('value'));
         });
     JS,
     $this::POS_END
@@ -34,6 +32,16 @@ $gridColumns = [
     [
         'class' => 'kartik\grid\ActionColumn',
         'template' => '{update} {delete}',
+        'buttons' => [
+            'update' => function($url, $model) {
+                return Html::a(
+                    '<span class="fas fa-pencil-alt" aria-hidden="true"></span>',
+                    $url,
+                    ['value' => $url, 'title' => Yii::t('kvgrid', 'Update'), 'class' => 'btn-modal', 'data-toggle' => 'modal']
+                );
+
+            }
+        ]
     ],
 ];
 ?>
@@ -57,9 +65,8 @@ $gridColumns = [
                         'content' =>
                             Html::button('<i class="fas fa-plus"></i>', [
                                 'value' => Url::to(['create']),
-                                'class' => 'btn btn-success',
-                                'id' => 'btn-modal',
-                                'title' => Yii::t('app', 'Create Category'),
+                                'class' => 'btn btn-success btn-modal',
+                                'title' => Yii::t('app', 'Add Category'),
                             ]),
                         'options' => ['class' => 'btn-group mr-2']
                     ],
