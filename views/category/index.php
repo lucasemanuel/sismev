@@ -22,38 +22,55 @@ $this->registerJs(
         });
     JS,
     $this::POS_END
-)
+);
+
+$gridColumns = [
+    ['class' => 'kartik\grid\SerialColumn'],
+
+    'name',
+    'created_at',
+    'updated_at',
+
+    [
+        'class' => 'kartik\grid\ActionColumn',
+        'template' => '{update} {delete}',
+    ],
+];
 ?>
 <div class="category-index">
     <div class="row">
         <div class="col">
-            <h1><?= Html::encode($this->title) ?></h1>
-
-            <p>
-                <?= Html::button(Yii::t('app', 'Create Category'), ['value' => Url::to(['create']), 'class' => 'btn btn-success', 'id' => 'btn-modal']) ?>
-            </p>
-
             <?= $this->render('@app/views/layouts/modal.php', ['options' => ['title' => Yii::t('app', 'Category')]]) ?>
 
             <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
             <?= GridView::widget([
+                'id' => 'grid_categories',
                 'dataProvider' => $dataProvider,
                 'filterModel' => $searchModel,
-                'pjax' => true,
+                'columns' => $gridColumns,
                 'responsive' => true,
                 'responsiveWrap' => false,
-                'columns' => [
-                    ['class' => 'kartik\grid\SerialColumn'],
-
-                    'name',
-                    'created_at',
-                    'updated_at',
-
+                'hover' => true,
+                'toolbar' =>  [
                     [
-                        'class' => 'kartik\grid\ActionColumn',
-                        'template' => '{update} {delete}',
+                        'content' =>
+                            Html::button('<i class="fas fa-plus"></i>', [
+                                'value' => Url::to(['create']),
+                                'class' => 'btn btn-success',
+                                'id' => 'btn-modal',
+                                'title' => Yii::t('app', 'Create Category'),
+                            ]),
+                        'options' => ['class' => 'btn-group mr-2']
                     ],
+                    '{toggleData}',
+                ],
+                'panel' => [
+                    'type' => GridView::TYPE_DEFAULT,
+                    'heading' => Html::encode($this->title),
+                    // 'headingOptions' => ['class' => ''],
+                    // 'footer' => false,
+                    'afterOptions' => ['class' => ''],
                 ],
             ]); ?>
         </div>
