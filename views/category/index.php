@@ -24,14 +24,11 @@ $this->registerJs(
 
 $gridColumns = [
     ['class' => 'kartik\grid\SerialColumn'],
-
     'name',
-    'created_at',
-    'updated_at',
-
     [
         'class' => 'kartik\grid\ActionColumn',
-        'template' => '{update} {delete}',
+        'width' => '100px',
+        // 'template' => '{update} {delete}',
         'buttons' => [
             'update' => function($url, $model) {
                 return Html::a(
