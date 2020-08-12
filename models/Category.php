@@ -2,7 +2,11 @@
 
 namespace app\models;
 
+use app\components\traits\FilterTrait;
 use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
+use yii\db\Expression;
 
 /**
  * This is the model class for table "category".
@@ -17,8 +21,16 @@ use Yii;
  * @property Product[] $products
  * @property VariationSet[] $variationSets
  */
-class Category extends \yii\db\ActiveRecord
+class Category extends ActiveRecord
 {
+    use FilterTrait;
+
+    const JOINS = [
+        [
+            'table' => 'company',
+            'on' => 'category.company_id = company.id'
+        ]
+    ];
     /**
      * {@inheritdoc}
      */
@@ -27,13 +39,23 @@ class Category extends \yii\db\ActiveRecord
         return 'category';
     }
 
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::class,
+                'value' => new Expression('NOW()'),
+            ],
+        ];
+    }
+
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['name', 'created_at', 'company_id'], 'required'],
+            [['name', 'company_id'], 'required'],
             [['created_at', 'updated_at'], 'safe'],
             [['company_id'], 'integer'],
             [['name'], 'string', 'max' => 64],
