@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\components\traits\FilterTrait;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
@@ -32,6 +33,19 @@ use yii\db\Expression;
  */
 class Product extends ActiveRecord
 {
+    use FilterTrait;
+
+    const JOINS = [
+        [
+            'table' => 'category',
+            'on' => 'product.category_id = category.id'
+        ],
+        [
+            'table' => 'company',
+            'on' => 'category.company_id = company.id'
+        ]
+    ];
+
     /**
      * {@inheritdoc}
      */
