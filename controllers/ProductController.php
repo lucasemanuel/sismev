@@ -65,9 +65,10 @@ class ProductController extends Controller
         $model = new Product();
         $list = ArrayHelper::map(Category::find()->all(), 'id', 'name');
         
-        if ($model->load(Yii::$app->request->post())) {
+        if ($model->load(Yii::$app->request->post()))
             return $this->redirect(['create', 'category' => $model->category_id]);
-        }
+        else if (!Yii::$app->request->isAjax)
+            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
 
         return $this->renderAjax('category', [
             'model' => $model,
@@ -86,7 +87,8 @@ class ProductController extends Controller
             throw new NotFoundHttpException(Yii::t('app', 'Seleted category not found.'));
 
         $model = new Product();
-
+        $model->category_id = $category;
+        
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
