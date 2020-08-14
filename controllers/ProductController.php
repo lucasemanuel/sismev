@@ -2,12 +2,15 @@
 
 namespace app\controllers;
 
+use app\models\Category;
 use Yii;
 use app\models\Product;
 use app\models\ProductSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
+use yii\web\BadRequestHttpException;
 
 /**
  * ProductController implements the CRUD actions for Product model.
@@ -57,13 +60,31 @@ class ProductController extends Controller
         ]);
     }
 
+    public function actionCategory()
+    {
+        $model = new Product();
+        $list = ArrayHelper::map(Category::find()->all(), 'id', 'name');
+        
+        if ($model->load(Yii::$app->request->post())) {
+            return $this->redirect(['create', 'category' => $model->category_id]);
+        }
+
+        return $this->renderAjax('category', [
+            'model' => $model,
+            'list' => $list
+        ]);
+    }
+
     /**
      * Creates a new Product model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
+    public function actionCreate($category)
     {
+        if (is_null(Category::findOne($category)))
+            throw new NotFoundHttpException(Yii::t('app', 'Seleted category not found.'));
+
         $model = new Product();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
