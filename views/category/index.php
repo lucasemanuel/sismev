@@ -1,5 +1,6 @@
 <?php
 
+use app\assets\AppAsset;
 use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\helpers\Url;
@@ -11,16 +12,7 @@ use yii\helpers\Url;
 $this->title = Yii::t('app', 'Categories');
 $this->params['breadcrumbs'][] = $this->title;
 
-$this->registerJs(
-    <<< 'JS'
-        $('body').on('click', '.btn-modal', function (e) {
-            $('#modal').modal('show')
-                .find('#content-modal')
-                .load($(this).attr('value'));
-        });
-    JS,
-    $this::POS_END
-);
+$this->registerJsFile('@web/js/modal.js', ['depends' => [yii\web\JqueryAsset::class]]);
 
 $gridColumns = [
     ['class' => 'kartik\grid\SerialColumn'],
