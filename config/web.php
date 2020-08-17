@@ -70,6 +70,9 @@ $config = [
             'dateFormat' => 'php:d/m/Y',
             'datetimeFormat' => 'php:d/m/Y H:i:s',
             'defaultTimeZone' => 'America/Fortaleza',
+            'numberFormatterSymbols' => 'R$ ',
+            'thousandSeparator' => '.',
+            'decimalSeparator' => ',',
         ],
     ],
     'modules' => [
