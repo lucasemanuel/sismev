@@ -71,7 +71,7 @@ class Product extends ActiveRecord
     {
         return [
             [['code', 'name', 'unit_price', 'max_amount', 'min_amount', 'category_id'], 'required'],
-            [['unit_price', 'amount', 'max_amount', 'min_amount'], 'number'],
+            [['unit_price', 'amount', 'max_amount', 'min_amount'], 'number', 'min' => '00.01', 'max' => '10000000.00'],
             [['is_deleted', 'category_id'], 'integer'],
             [['created_at', 'updated_at', 'deleted_at'], 'safe'],
             [['code'], 'string', 'max' => 32],
