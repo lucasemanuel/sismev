@@ -25,7 +25,9 @@
         "kartik-v/yii2-widget-datepicker": "^1.4",
         "kartik-v/yii2-grid": "^3.3",
         "kartik-v/yii2-icons": "^1.4",
-        "kartik-v/yii2-widget-select2": "^2.1"
+        "kartik-v/yii2-widget-select2": "^2.1",
+        "kartik-v/yii2-number": "@dev",
+        "kartik-v/yii2-widget-activeform": "^1.5"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",
