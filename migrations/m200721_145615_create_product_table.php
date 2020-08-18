@@ -14,12 +14,12 @@ class m200721_145615_create_product_table extends Migration
     {
         $this->createTable('{{%product}}', [
             'id' => $this->primaryKey()->unsigned(),
-            'code' => $this->string(32)->notNull(),
+            'code' => $this->string(32),
             'name' => $this->string(64)->notNull(),
             'unit_price' => $this->decimal(10,2)->notNull(),
             'amount' => $this->decimal(10,2)->notNull(),
-            'max_amount' => $this->decimal(10,2)->notNull(),
-            'min_amount' => $this->decimal(10,2)->notNull(),
+            'max_amount' => $this->decimal(10,2),
+            'min_amount' => $this->decimal(10,2),
             'is_deleted' => $this->tinyInteger(1)->defaultValue(0),
             'created_at' => $this->dateTime()->notNull(),
             'updated_at' => $this->dateTime(),
