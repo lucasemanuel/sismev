@@ -70,12 +70,16 @@ class Product extends ActiveRecord
     public function rules()
     {
         return [
-            [['code', 'name', 'unit_price', 'max_amount', 'min_amount', 'category_id'], 'required'],
-            [['unit_price', 'amount', 'max_amount', 'min_amount'], 'number', 'min' => '00.01', 'max' => '10000000.00'],
+            [['name', 'unit_price', 'category_id'], 'required'],
+            [['unit_price', 'max_amount', 'min_amount', 'amount'], 'double', 'max' => '99999999.99'],
+            [['unit_price'], 'double', 'min' => '00.01'],
             [['is_deleted', 'category_id'], 'integer'],
             [['created_at', 'updated_at', 'deleted_at'], 'safe'],
             [['code'], 'string', 'max' => 32],
             [['name'], 'string', 'max' => 64],
+            [['code'], 'trim'],
+            [['code'], 'unique'],
+            [['min_amount'], 'compare', 'compareAttribute' => 'max_amount', 'operator' => '<'],
             [['amount'], 'default', 'value' => 0],
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::class, 'targetAttribute' => ['category_id' => 'id']],
         ];
