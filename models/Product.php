@@ -2,7 +2,11 @@
 
 namespace app\models;
 
+use app\components\traits\FilterTrait;
 use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
+use yii\db\Expression;
 
 /**
  * This is the model class for table "product".
@@ -27,8 +31,21 @@ use Yii;
  * @property ProductVariationAttribute[] $productVariationAttributes
  * @property VariationAttribute[] $variationAttributes
  */
-class Product extends \yii\db\ActiveRecord
+class Product extends ActiveRecord
 {
+    use FilterTrait;
+
+    const JOINS = [
+        [
+            'table' => 'category',
+            'on' => 'product.category_id = category.id'
+        ],
+        [
+            'table' => 'company',
+            'on' => 'category.company_id = company.id'
+        ]
+    ];
+
     /**
      * {@inheritdoc}
      */
@@ -37,18 +54,33 @@ class Product extends \yii\db\ActiveRecord
         return 'product';
     }
 
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::class,
+                'value' => new Expression('NOW()'),
+            ],
+        ];
+    }
+
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['code', 'name', 'unit_price', 'amount', 'max_amount', 'min_amount', 'created_at', 'category_id'], 'required'],
-            [['unit_price', 'amount', 'max_amount', 'min_amount'], 'number'],
+            [['name', 'unit_price', 'category_id'], 'required'],
+            [['unit_price', 'max_amount', 'min_amount', 'amount'], 'double', 'max' => '99999999.99'],
+            [['unit_price'], 'double', 'min' => '00.01'],
             [['is_deleted', 'category_id'], 'integer'],
             [['created_at', 'updated_at', 'deleted_at'], 'safe'],
             [['code'], 'string', 'max' => 32],
             [['name'], 'string', 'max' => 64],
+            [['code'], 'trim'],
+            [['code'], 'unique'],
+            [['min_amount'], 'compare', 'compareAttribute' => 'max_amount', 'operator' => '<'],
+            [['amount'], 'default', 'value' => 0],
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::class, 'targetAttribute' => ['category_id' => 'id']],
         ];
     }

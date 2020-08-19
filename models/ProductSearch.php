@@ -17,8 +17,8 @@ class ProductSearch extends Product
     public function rules()
     {
         return [
-            [['id', 'is_deleted', 'category_id'], 'integer'],
-            [['code', 'name', 'created_at', 'updated_at', 'deleted_at'], 'safe'],
+            [['id', 'is_deleted'], 'integer'],
+            [['code', 'name', 'created_at', 'updated_at', 'deleted_at', 'category_id'], 'safe'],
             [['unit_price', 'amount', 'max_amount', 'min_amount'], 'number'],
         ];
     }
@@ -51,6 +51,13 @@ class ProductSearch extends Product
 
         $this->load($params);
 
+        $dataProvider->sort->attributes = array_merge($dataProvider->sort->attributes, [
+            'category_id' => [
+                'asc' => ['category.name' => SORT_ASC],
+                'desc' => ['category.name' => SORT_DESC],
+            ],
+        ]); 
+        
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
@@ -68,11 +75,12 @@ class ProductSearch extends Product
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'deleted_at' => $this->deleted_at,
-            'category_id' => $this->category_id,
         ]);
 
-        $query->andFilterWhere(['like', 'code', $this->code])
-            ->andFilterWhere(['like', 'name', $this->name]);
+        $query->andFilterWhere(['like', 'product.code', $this->code])
+            ->andFilterWhere(['like', 'category.name', $this->category_id])
+            ->andFilterWhere(['like', 'product.name', $this->name]);
+            
 
         return $dataProvider;
     }

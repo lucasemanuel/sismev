@@ -104,6 +104,12 @@ AdminLteAsset::register($this);
 								<p><?= Yii::t('app', 'Category') ?></p>
 							</a>
 						</li>
+						<li class="nav-item">
+							<a href="<?= Url::to(['/product']) ?>" class="nav-link">
+								<i class="nav-icon fas fa-box"></i>
+								<p><?= Yii::t('app', 'Product') ?></p>
+							</a>
+						</li>
 					</ul>
 				</nav>
 				<!-- /.sidebar-menu -->
