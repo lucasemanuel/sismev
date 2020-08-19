@@ -19,6 +19,11 @@ class AppFormatter extends Formatter
         return implode("-",array_reverse(explode("/", $attr)));
     }
 
+    public function asAmount($value)
+    {
+        return number_format($value, 2, ',', '.');
+    }
+
     public function getCurrencySymbol()
     {
         $formatter = new NumberFormatter($this->locale, NumberFormatter::CURRENCY);
