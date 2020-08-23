@@ -26,6 +26,10 @@ $config = [
             'identityClass' => 'app\models\Employee',
             'enableAutoLogin' => true,
         ],
+        'authManager' => [
+            'class' => 'yii\rbac\PhpManager',
+            'defaultRoles' => ['admin', 'cashier'],
+        ],
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
