@@ -6,11 +6,13 @@ use app\models\Address;
 use app\models\Employee;
 use app\models\EmployeeSearch;
 use Yii;
-use yii\bootstrap4\ActiveForm;
+use yii\widgets\ActiveForm;
+use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\BadRequestHttpException;
+use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
 /**
@@ -24,10 +26,26 @@ class EmployeeController extends Controller
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'actions' => ['profile', 'change-password'],
+                        'allow' => true,
+                        'roles' => ['cashier']
+                    ],
+                    [
+                        'actions' => ['index', 'view', 'create', 'update', 'update-address', 'delete'],
+                        'allow' => true,
+                        'roles' => ['admin']
+                    ]
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['POST'],
+                    'validate-password' => ['POST'],
                 ],
             ],
         ];
@@ -64,7 +82,10 @@ class EmployeeController extends Controller
     public function actionProfile()
     {
         $id = Yii::$app->user->id;
-        return $this->redirect(['view', 'id' => $id]);
+
+        return $this->render('view', [
+            'model' => $this->findModel($id),
+        ]);    
     }
 
     /**
@@ -131,7 +152,11 @@ class EmployeeController extends Controller
 
     public function actionChangePassword($id)
     {
+        if (!Yii::$app->user->can('update_employee', ['employee_id' => $id]))
+            throw new ForbiddenHttpException;
+
         $model = $this->findModel($id);
+            
         $model->scenario = Employee::SCENARIO_CHANGE_PASSWORD;
         
         if ($model->load(Yii::$app->request->post())) {
@@ -140,8 +165,8 @@ class EmployeeController extends Controller
                 $model->save(false);
                 return $this->redirect(['view', 'id' => $model->id]);
             }
-
         }
+
         $model->password = '';
 
         return $this->render('change_password', [

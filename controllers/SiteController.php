@@ -45,6 +45,7 @@ class SiteController extends Controller
         return [
             'error' => [
                 'class' => 'yii\web\ErrorAction',
+                'layout' => Yii::$app->user->isGuest ? 'center' : 'main',
             ],
             'captcha' => [
                 'class' => 'yii\captcha\CaptchaAction',
@@ -105,6 +106,9 @@ class SiteController extends Controller
 
     public function actionSignup()
     {
-        $this->redirect('/signup/index');
+        if (Yii::$app->user->isGuest) 
+            $this->redirect('/signup/index');
+        
+        return $this->goHome();
     }
 }
