@@ -2,6 +2,7 @@
 
 namespace app\commands;
 
+use app\rbac\UpdateOnwer;
 use app\rbac\UserGroupRule;
 use Yii;
 use yii\console\Controller;
@@ -15,6 +16,14 @@ class RbacController extends Controller
         // Create Rule
         $user_group = new UserGroupRule;
         $auth->add($user_group);
+        $update_owner = new UpdateOnwer; 
+        $auth->add($update_owner);
+
+        // Create Permissions
+        $update_employee = $auth->createPermission('update_employee');
+        $update_employee->description = 'Update Employee';
+        $update_employee->ruleName = $update_owner->name;
+        $auth->add($update_employee);
 
         // Create Roles
         $admin = $auth->createRole('admin');
@@ -25,6 +34,7 @@ class RbacController extends Controller
         $auth->add($cashier);
 
         // Chinding
+        $auth->addChild($cashier, $update_employee);
         $auth->addChild($admin, $cashier);
     }
 

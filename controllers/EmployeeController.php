@@ -12,6 +12,7 @@ use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\BadRequestHttpException;
+use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
 /**
@@ -151,7 +152,11 @@ class EmployeeController extends Controller
 
     public function actionChangePassword($id)
     {
+        if (!Yii::$app->user->can('update_employee', ['employee_id' => $id]))
+            throw new ForbiddenHttpException;
+
         $model = $this->findModel($id);
+            
         $model->scenario = Employee::SCENARIO_CHANGE_PASSWORD;
         
         if ($model->load(Yii::$app->request->post())) {
@@ -160,8 +165,8 @@ class EmployeeController extends Controller
                 $model->save(false);
                 return $this->redirect(['view', 'id' => $model->id]);
             }
-
         }
+
         $model->password = '';
 
         return $this->render('change_password', [
