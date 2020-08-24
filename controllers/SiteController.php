@@ -45,6 +45,7 @@ class SiteController extends Controller
         return [
             'error' => [
                 'class' => 'yii\web\ErrorAction',
+                'layout' => Yii::$app->user->isGuest ? 'center' : 'main',
             ],
             'captcha' => [
                 'class' => 'yii\captcha\CaptchaAction',
