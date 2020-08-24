@@ -106,6 +106,9 @@ class SiteController extends Controller
 
     public function actionSignup()
     {
-        $this->redirect('/signup/index');
+        if (Yii::$app->user->isGuest) 
+            $this->redirect('/signup/index');
+        
+        return $this->goHome();
     }
 }

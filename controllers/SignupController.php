@@ -8,10 +8,11 @@ use app\models\Employee;
 use Yii;
 use yii\db\Exception;
 use yii\filters\VerbFilter;
+use yii\web\Controller;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
 
-class SignupController extends \yii\web\Controller
+class SignupController extends Controller
 {
     public $layout = "register";
 
@@ -30,6 +31,9 @@ class SignupController extends \yii\web\Controller
 
     public function actionIndex()
     {
+        if (!Yii::$app->user->isGuest)
+            return $this->goHome();
+
         $company = new Company(['scenario' => Company::SCENARIO_SIGNUP]);
         $employee = new Employee(['scenario' => Employee::SCENARIO_SIGNUP]);
 
@@ -52,6 +56,9 @@ class SignupController extends \yii\web\Controller
 
     public function actionNext()
     {
+        if (!Yii::$app->user->isGuest)
+            return $this->goHome();
+
         $model = new Company(['scenario' => Company::SCENARIO_SIGNUP]);
 
         if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {

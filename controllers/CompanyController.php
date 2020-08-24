@@ -5,9 +5,10 @@ namespace app\controllers;
 use app\models\Address;
 use app\models\Company;
 use Yii;
+use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * CompanyController implements the CRUD actions for Company model.
@@ -20,6 +21,21 @@ class CompanyController extends Controller
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'actions' => ['index'],
+                        'allow' => true,
+                        'roles' => ['cashier']
+                    ],
+                    [
+                        'actions' => ['update', 'update-address', 'delete'],
+                        'allow' => true,
+                        'roles' => ['admin']
+                    ],
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
