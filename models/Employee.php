@@ -80,7 +80,7 @@ class Employee extends ActiveRecord implements IdentityInterface
     {
         return [
             [['full_name', 'usual_name', 'ssn', 'birthday', 'email', 'password', 'company_id', 'phone_number', 'password_repeat'], 'required'],
-            [['password_new'], 'required'],
+            [['password_new'], 'required', 'on' => self::SCENARIO_CHANGE_PASSWORD],
             [['password'], function ($attribute, $params, $validator) {
                 if (!Yii::$app->getSecurity()->validatePassword($this->password, $this->oldAttributes['password'])) {
                     $this->addError($attribute, Yii::t('app', 'The password must be the same as the current one'));
@@ -142,6 +142,8 @@ class Employee extends ActiveRecord implements IdentityInterface
             'address_id' => Yii::t('app', 'Address ID'),
             'company_id' => Yii::t('app', 'Company ID'),
             'phone_number' => Yii::t('app', 'Phone Number'),
+            'password_repeat' => Yii::t('app', 'Password Repeat'),
+            'password_new' => Yii::t('app', 'New Password'),
         ];
     }
 
