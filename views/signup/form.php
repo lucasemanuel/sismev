@@ -6,7 +6,7 @@ use yii\bootstrap4\Html;
 use yii\widgets\MaskedInput;
 use kartik\date\DatePicker;
 
-$this->title = Yii::t('app', 'Sign Up - Your Company');
+$this->title = Yii::t('app', 'Sign Up');
 
 AxiosAsset::register($this);
 
@@ -14,42 +14,56 @@ $this->registerJs(
     <<< 'JS'
         const form = $('#form_signup');
 
-        form.on('beforeSubmit', function() {
-            const data = form.serialize();
-            axios({
-                method: 'post',
-                headers: {'X-Requested-With': 'XMLHttpRequest'},
-                url: '/signup/index',
-                data: data
-            })
-            return false; // prevent default submit
-        });
-
         $("#next-button").click(function() {
             const data = form.serialize();
             axios({
                 method: 'post',
                 headers: {'X-Requested-With': 'XMLHttpRequest'},
-                url: '/signup/next',
+                url: '/signup/company',
                 data: data
             }).then(function (response) {
-                if (Object.keys(response.data).length === 0) { 
-                    toggleForm();
-                    form.yiiActiveForm("resetForm");
-                } else {
-                    form.submit();
-                }
-            })
+                toggleForm();
+                form.yiiActiveForm('data').settings.validationUrl = '/signup/validate-employee';
+            }).catch(function (error) {
+                const data = error.response.data;
+                showToast(data.name, data.message);
+            });
             return false; // prevent default submit
         });
 
+        $("#register-button").click(function() {
+            const data = form.serialize();
+            axios({
+                method: 'post',
+                headers: {'X-Requested-With': 'XMLHttpRequest'},
+                url: '/signup/employee',
+                data: data
+            }).then(function (response) {
+                window.location = '/site/index';
+            }).catch(function (error){
+                const data = error.response.data;
+                showToast(data.name, data.message);
+            });
+            return false; // prevent default submit
+        });
+
+        function showToast(title, message) {
+            $(document).Toasts('create', {
+                title: title,
+                body: message,
+                autohide: true,
+                delay: 4000,
+                class: 'bg-warning'
+            });
+        }
+
         function toggleForm() {
-            $('.title-company, .fields-company, .actions-company, .title-employee, .fields-employee, .actions-employee').toggleClass('d-none');
+            $('.title-company, .fields-company, .actions-company, .title-employee, .fields-employee, .actions-employee')
+                .toggleClass('d-none');
 
             $('label#company-btn, label#employee-btn').toggleClass('btn-primary btn-default');
             $('label#company-btn, label#employee-btn').toggleClass('disabled');
         }
-
     JS,
     $this::POS_END
 );
@@ -75,7 +89,6 @@ $this->registerCss(
 
 ?>
 <div id="signup">
-
     <p class="register-box-msg title-company">
         <?= Yii::t('app','Complete the form with your company details.') ?>
     </p>
@@ -101,7 +114,8 @@ $this->registerCss(
         'id' => 'form_signup',
         'enableAjaxValidation' => true,
         'enableClientValidation' => false,
-        'action' => ['/signup/index']
+        'validationUrl' => ['/signup/validate-company'],
+        'action' => ['#']
     ]); ?>
 
     <div class="fields-company row">
@@ -159,7 +173,7 @@ $this->registerCss(
                 <a href="#" class="btn btn-secondary btn-block" id="back" onclick="toggleForm()" ><?= Yii::t('app', 'Back') ?></a>
             </div>
             <div class="col-4">
-                <?= Html::submitButton(Yii::t('app', 'Register'), ['class' => 'btn btn-primary btn-block']) ?>
+                <?= Html::submitButton(Yii::t('app', 'Register'), ['class' => 'btn btn-primary btn-block', 'id' => 'register-button']) ?>
             </div>
         </div>
     </div>
