@@ -29,8 +29,11 @@ class AccountFactory
     {
         $company = new Company();
         $company->setAttributes($attributes);
-        if (!$company->save())
-            throw new Exception(Yii::t('app', 'Failed to register company.'));
+        
+        if (!$company->save()){
+            foreach($company->firstErrors as $erro) break;
+            throw new Exception(Yii::t('app', 'Failed to register company.').' '.$erro);
+        }
 
         return $company;
     }
@@ -38,9 +41,13 @@ class AccountFactory
     private static function createEmployee($attributes)
     {
         $employee = new Employee();
-        $employee->setAttributes($attributes);
-        if (!$employee->save())
-            throw new Exception(Yii::t('app', 'Failed to register your account.'));
+        $employee->setAttributes($attributes); 
+        $employee->password_repeat = $employee->password;
+
+        if (!$employee->save()){
+            foreach($employee->firstErrors as $erro) break;
+            throw new Exception(Yii::t('app', 'Failed to register your account.').' '.$erro);
+        }
 
         return $employee;
     }
