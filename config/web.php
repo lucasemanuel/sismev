@@ -62,6 +62,10 @@ $config = [
                 'app' => [
                     'class' => 'yii\i18n\PhpMessageSource',
                     'basePath' => '@app/messages',
+                    'fileMap' => [
+                        'app' => 'app.php',
+                    ],
+                    // 'on missingTranslation' => ['app\components\TranslationEventHandler', 'handleMissingTranslation']
                 ],
                 'kvgrid' => [
                     'class' => 'yii\i18n\PhpMessageSource',
