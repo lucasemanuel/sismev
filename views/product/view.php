@@ -6,7 +6,7 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model app\models\Product */
 
-$this->title = $model->name;
+$this->title = $model;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Products'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -34,7 +34,16 @@ $this->registerCssFile('@web/css/detailView.css');
                                 'attribute' => 'category_id',
                                 'value' => $model->category->name
                             ],
-
+                            [
+                                'attribute' => 'variations',
+                                'value' => function ($model) {
+                                    $variations = [];
+                                    foreach($model->variationAttributes as $variation)
+                                        array_push($variations, $variation->name);
+                                    
+                                    return implode(", ", $variations);
+                                }
+                            ],
                             'unit_price:currency',
                             'amount:amount',
                             'max_amount:amount',
