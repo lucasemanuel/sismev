@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\models\Category;
 use app\models\Product;
 use app\models\ProductSearch;
+use app\models\VariationAttribute;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
@@ -100,6 +101,9 @@ class ProductController extends Controller
         $model->category_id = $category;
         
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            foreach ($model->variations as $var_id)
+                (VariationAttribute::findOne($var_id))->link('products', $model);
+
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -118,8 +122,14 @@ class ProductController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $model->loadVariations();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            $model->variations = array_filter($model->variations);
+            $model->unlinkAll('variationAttributes', true);
+            foreach ($model->variations as $var_id)
+                (VariationAttribute::findOne($var_id))->link('products', $model);
+
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
