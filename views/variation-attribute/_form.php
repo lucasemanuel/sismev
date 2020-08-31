@@ -1,7 +1,8 @@
 <?php
 
+use kartik\select2\Select2;
+use yii\bootstrap4\ActiveForm;
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\VariationAttribute */
@@ -12,13 +13,15 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
+    <?php if (Yii::$app->controller->action->id != 'update'): ?>
+
+    <?= $form->field($model, 'variation_set_id')->widget(Select2::class, [
+        'data' => $list
+    ]) ?>
+
+    <?php endif; ?>
+
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'created_at')->textInput() ?>
-
-    <?= $form->field($model, 'updated_at')->textInput() ?>
-
-    <?= $form->field($model, 'variation_set_id')->textInput() ?>
 
     <div class="form-group">
         <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>

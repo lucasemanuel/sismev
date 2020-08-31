@@ -2,7 +2,11 @@
 
 namespace app\models;
 
+use app\components\traits\FilterTrait;
 use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
+use yii\db\Expression;
 
 /**
  * This is the model class for table "variation_attribute".
@@ -17,8 +21,25 @@ use Yii;
  * @property Product[] $products
  * @property VariationSet $variationSet
  */
-class VariationAttribute extends \yii\db\ActiveRecord
+class VariationAttribute extends ActiveRecord
 {
+    use FilterTrait;
+
+    const JOINS = [
+        [
+            'table' => 'variation_set',
+            'on' => 'variation_attribute.variation_set_id = variation_set.id'
+        ],
+        [
+            'table' => 'category',
+            'on' => 'variation_set.category_id = category.id'
+        ],
+        [
+            'table' => 'company',
+            'on' => 'category.company_id = company.id'
+        ],
+    ];
+
     /**
      * {@inheritdoc}
      */
@@ -27,13 +48,23 @@ class VariationAttribute extends \yii\db\ActiveRecord
         return 'variation_attribute';
     }
 
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::class,
+                'value' => new Expression('NOW()'),
+            ],
+        ];
+    }
+
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['name', 'created_at', 'variation_set_id'], 'required'],
+            [['name', 'variation_set_id'], 'required'],
             [['created_at', 'updated_at'], 'safe'],
             [['variation_set_id'], 'integer'],
             [['name'], 'string', 'max' => 64],

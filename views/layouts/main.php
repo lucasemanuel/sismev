@@ -100,9 +100,31 @@ AdminLteAsset::register($this);
 						<li class="nav-header"><?= strtoupper(Yii::t('app', 'Products')) ?></li>
 						<li class="nav-item">
 							<a href="<?= Url::to(['/category']) ?>" class="nav-link">
-								<i class="nav-icon fas fa-tags"></i>
+								<i class="nav-icon fas fa-tag"></i>
 								<p><?= Yii::t('app', 'Category') ?></p>
 							</a>
+						</li>
+						<li class="nav-item has-treeview">
+							<a href="#" class="nav-link">
+								<i class="nav-icon fas fa-tags"></i>
+								<p><?= Yii::t('app', 'Variations') ?></p>
+							</a>
+							<ul class="nav nav-treeview">
+								<li class="nav-item">
+									<a href="<?= Url::to(['/variation-set']) ?>" class="nav-link">
+										<i class="nav-icon far fa-circle"></i>
+										<p><?= Yii::t('app', 'Set') ?></p>
+									</a>
+								</li>
+							</ul>
+							<ul class="nav nav-treeview">
+								<li class="nav-item">
+									<a href="<?= Url::to(['/variation-attribute']) ?>" class="nav-link">
+										<i class="nav-icon far fa-circle"></i>
+										<p><?= Yii::t('app', 'Property') ?></p>
+									</a>
+								</li>
+							</ul>
 						</li>
 						<li class="nav-item">
 							<a href="<?= Url::to(['/product']) ?>" class="nav-link">
@@ -156,7 +178,7 @@ AdminLteAsset::register($this);
 
 		<!-- Footer -->
 		<footer class="main-footer">
-			<strong>&copy; <?= Yii::$app->name.' '.date('Y') ?></strong> <?= Yii::powered() ?>
+			<strong>&copy; <?= Yii::$app->name . ' ' . date('Y') ?></strong> <?= Yii::powered() ?>
 			<div class="float-right d-sm-inline-block">
 				<b>Version</b> - dev
 			</div>

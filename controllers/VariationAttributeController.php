@@ -2,12 +2,14 @@
 
 namespace app\controllers;
 
-use Yii;
 use app\models\VariationAttribute;
 use app\models\VariationAttributeSearch;
+use app\models\VariationSet;
+use Yii;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 
 /**
  * VariationAttributeController implements the CRUD actions for VariationAttribute model.
@@ -65,13 +67,16 @@ class VariationAttributeController extends Controller
     public function actionCreate()
     {
         $model = new VariationAttribute();
+        $listVariationGroup = ArrayHelper::map(VariationSet::find()->orderBy('name')->all(), 'id', 'fullName');
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
             return $this->redirect(['view', 'id' => $model->id]);
-        }
+        else if (!Yii::$app->request->isAjax)
+            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
 
-        return $this->render('create', [
+        return $this->renderAjax('create', [
             'model' => $model,
+            'list' => $listVariationGroup
         ]);
     }
 
@@ -84,13 +89,14 @@ class VariationAttributeController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $model = new VariationAttribute();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
             return $this->redirect(['view', 'id' => $model->id]);
-        }
+        else if (!Yii::$app->request->isAjax)
+            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
 
-        return $this->render('update', [
+        return $this->renderAjax('create', [
             'model' => $model,
         ]);
     }

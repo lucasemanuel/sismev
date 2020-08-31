@@ -2,12 +2,14 @@
 
 namespace app\controllers;
 
-use Yii;
+use app\models\Category;
 use app\models\VariationSet;
 use app\models\VariationSetSearch;
+use Yii;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 
 /**
  * VariationSetController implements the CRUD actions for VariationSet model.
@@ -65,13 +67,16 @@ class VariationSetController extends Controller
     public function actionCreate()
     {
         $model = new VariationSet();
+        $listCategory = ArrayHelper::map(Category::find()->orderBy('name')->all(), 'id', 'name');
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
             return $this->redirect(['view', 'id' => $model->id]);
-        }
+        else if (!Yii::$app->request->isAjax)
+            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
 
-        return $this->render('create', [
+        return $this->renderAjax('create', [
             'model' => $model,
+            'list' => $listCategory
         ]);
     }
 
@@ -86,11 +91,12 @@ class VariationSetController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
             return $this->redirect(['view', 'id' => $model->id]);
-        }
+        else if (!Yii::$app->request->isAjax)
+            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
 
-        return $this->render('update', [
+        return $this->renderAjax('update', [
             'model' => $model,
         ]);
     }
