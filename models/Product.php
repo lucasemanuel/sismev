@@ -179,4 +179,17 @@ class Product extends ActiveRecord
 
         return $this->name." (".implode(", ", $variations).")";
     }
+
+    public function loadVariations()
+    {
+        $variation_sets = VariationSet::findByCategory($this->category);
+        
+        foreach ($variation_sets as $variation_set) {
+            $variation = $this->getVariationAttributes()
+                ->andWhere(['variation_set_id' => $variation_set->id])
+                ->one(); 
+            
+            $this->variations[$variation_set->name] = is_null($variation) ? null : $variation->id;
+        }
+    }
 }
