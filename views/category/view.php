@@ -12,16 +12,7 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Categories'), 'url' 
 $this->params['breadcrumbs'][] = $this->title;
 
 $this->registerCssFile('@web/css/detailView.css');
-$this->registerJs(
-    <<< 'JS'
-        $('body').on('click', '.btn-modal', function (e) {
-            $('#modal').modal('show')
-                .find('#content-modal')
-                .load($(this).attr('value'));
-        });
-    JS,
-    $this::POS_END
-);
+$this->registerJsFile('@web/js/modal.js', ['depends' => [yii\web\JqueryAsset::class]]);
 
 ?>
 <div class="category-view">
