@@ -167,4 +167,16 @@ class Product extends ActiveRecord
     {
         return $this->hasMany(VariationAttribute::class, ['id' => 'variation_attribute_id'])->viaTable('product_variation_attribute', ['product_id' => 'id']);
     }
+
+    public function __toString()
+    {
+        $variations = [];
+        foreach($this->variationAttributes as $variation)
+            array_push($variations, $variation->name);
+
+        if (empty($variations))
+            return $this->name;
+
+        return $this->name." (".implode(", ", $variations).")";
+    }
 }
