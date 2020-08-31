@@ -1,7 +1,10 @@
 <?php
 
+use app\models\VariationSet;
+use kartik\grid\GridView;
 use yii\helpers\Html;
-use yii\grid\GridView;
+use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\VariationAttributeSearch */
@@ -9,32 +12,80 @@ use yii\grid\GridView;
 
 $this->title = Yii::t('app', 'Variation Attributes');
 $this->params['breadcrumbs'][] = $this->title;
-?>
-<div class="variation-attribute-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+$this->registerJsFile('@web/js/modal.js', ['depends' => [yii\web\JqueryAsset::class]]);
 
-    <p>
-        <?= Html::a(Yii::t('app', 'Create Variation Attribute'), ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+$listVariationGroup = ArrayHelper::map(VariationSet::find()->orderBy('name')->all(), 'id', 'fullName');
 
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
-            'id',
-            'name',
-            'created_at',
-            'updated_at',
-            'variation_set_id',
-
-            ['class' => 'yii\grid\ActionColumn'],
+$gridColumns = [
+    ['class' => 'kartik\grid\SerialColumn'],
+    'name', 
+    [
+        'attribute' => 'variation_set_id',
+        // 'width' => '310px',
+        'value' => function ($model, $key, $index, $widget) {
+            return $model->variationSet->name." ({$model->variationSet->category->name})";
+        },
+        'filterType' => GridView::FILTER_SELECT2,
+        'filter' => $listVariationGroup,
+        'filterWidgetOptions' => [
+            'pluginOptions' => ['allowClear' => true],
         ],
-    ]); ?>
+        'filterInputOptions' => ['placeholder' => 'Any supplier'],
+        'group' => true,  // enable grouping
+    ],
+    [
+        'class' => 'kartik\grid\ActionColumn',
+        'width' => '100px',
+        // 'template' => '{update} {delete}',
+        'buttons' => [
+            'update' => function ($url, $model) {
+                return Html::a(
+                    '<span class="fas fa-pencil-alt" aria-hidden="true"></span>',
+                    $url,
+                    ['value' => $url, 'title' => Yii::t('kvgrid', 'Update'), 'class' => 'btn-modal', 'data-toggle' => 'modal']
+                );
+            }
+        ]
+    ],
+];
+?>
+<div class="row variation-attribute-index">
+    <div class="col">
+        <?= $this->render('@app/views/layouts/modal.php', ['options' => ['title' => Yii::t('app', 'Category')]]) ?>
 
+        <h1><?= Html::encode($this->title) ?></h1>
 
+        <?php // echo $this->render('_search', ['model' => $searchModel]); 
+        ?>
+
+        <?= GridView::widget([
+            'id' => 'grid_categories',
+            'dataProvider' => $dataProvider,
+            'filterModel' => $searchModel,
+            'columns' => $gridColumns,
+            'responsive' => true,
+            'responsiveWrap' => false,
+            'hover' => true,
+            'toolbar' =>  [
+                [
+                    'content' =>
+                    Html::button('<i class="fas fa-plus"></i>', [
+                        'value' => Url::to(['create']),
+                        'class' => 'btn btn-success btn-modal',
+                        'title' => Yii::t('app', 'Add Variation'),
+                    ]),
+                    'options' => ['class' => 'btn-group mr-2']
+                ],
+                '{toggleData}',
+            ],
+            'panel' => [
+                'type' => GridView::TYPE_DEFAULT,
+                'heading' => Html::encode($this->title),
+                // 'headingOptions' => ['class' => ''],
+                // 'footer' => false,
+                'afterOptions' => ['class' => ''],
+            ],
+        ]); ?>
+    </div>
 </div>
