@@ -2,7 +2,11 @@
 
 namespace app\models;
 
+use app\components\traits\FilterTrait;
 use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
+use yii\db\Expression;
 
 /**
  * This is the model class for table "variation_set".
@@ -16,8 +20,23 @@ use Yii;
  * @property VariationAttribute[] $variationAttributes
  * @property Category $category
  */
-class VariationSet extends \yii\db\ActiveRecord
+class VariationSet extends ActiveRecord
 {
+    use FilterTrait;
+
+    const JOINS = [
+        [
+            'table' => 'category',
+            'on' => 'variation_set.category_id = category.id'
+        ],
+        [
+            'table' => 'company',
+            'on' => 'category.company_id = company.id'
+        ],
+    ];
+
+    private $fullName;
+    
     /**
      * {@inheritdoc}
      */
@@ -26,13 +45,23 @@ class VariationSet extends \yii\db\ActiveRecord
         return 'variation_set';
     }
 
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::class,
+                'value' => new Expression('NOW()')
+            ],
+        ];
+    }
+
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['name', 'created_at', 'category_id'], 'required'],
+            [['name', 'category_id'], 'required'],
             [['created_at', 'updated_at'], 'safe'],
             [['category_id'], 'integer'],
             [['name'], 'string', 'max' => 64],
@@ -72,5 +101,10 @@ class VariationSet extends \yii\db\ActiveRecord
     public function getCategory()
     {
         return $this->hasOne(Category::class, ['id' => 'category_id']);
+    }
+
+    public function getFullName()
+    {
+        return $this->name." ({$this->category->name})";
     }
 }
