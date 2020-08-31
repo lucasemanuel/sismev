@@ -107,4 +107,11 @@ class VariationSet extends ActiveRecord
     {
         return $this->name." ({$this->category->name})";
     }
+
+    public static function findByCategory($category)
+    {
+        return self::find()
+            ->andWhere(['category_id' => $category])
+            ->all();
+    }
 }
