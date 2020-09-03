@@ -192,7 +192,7 @@ class ProductController extends Controller
             $query->andWhere(['not', ['product.id' => $model->id]]);
 
         if (empty($model->variations))
-            return $query->one() === null;
+            return $query->one() !== null;
 
         $query = $query->asArray()->all();
 
