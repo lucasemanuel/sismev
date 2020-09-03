@@ -6,10 +6,11 @@ use app\models\VariationAttribute;
 use app\models\VariationAttributeSearch;
 use app\models\VariationSet;
 use Yii;
+use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\helpers\ArrayHelper;
 
 /**
  * VariationAttributeController implements the CRUD actions for VariationAttribute model.
@@ -22,6 +23,16 @@ class VariationAttributeController extends Controller
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'actions' => ['index', 'view', 'create', 'update', 'delete'],
+                        'allow' => true,
+                        'roles' => ['admin']
+                    ],
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [

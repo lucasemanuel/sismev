@@ -6,10 +6,11 @@ use app\models\Category;
 use app\models\VariationSet;
 use app\models\VariationSetSearch;
 use Yii;
+use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\helpers\ArrayHelper;
 
 /**
  * VariationSetController implements the CRUD actions for VariationSet model.
@@ -22,6 +23,16 @@ class VariationSetController extends Controller
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'actions' => ['index', 'view', 'create', 'update', 'delete'],
+                        'allow' => true,
+                        'roles' => ['admin']
+                    ],
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
