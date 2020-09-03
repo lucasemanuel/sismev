@@ -167,4 +167,38 @@ class ProductController extends Controller
 
         throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
     }
+
+    protected function modelExists($model)
+    {
+        $query = Product::find()
+            ->with('variationAttributes')
+            ->andWhere(['product.name' => $model->name])
+            ->andWhere(['product.category_id' => $model->category_id])
+            ->innerJoin('product_variation_attribute', 'product_variation_attribute.product_id = product.id');
+
+        if (!$model->isNewRecord)
+            $query->andWhere(['not', ['product.id' => $model->id]]);
+
+        if (empty($model->variations))
+            return $query->one() === null;
+
+        $query = $query->asArray()->all();
+
+        $product_variations = array_map(function ($products) {
+            $variation_attributes = $products['variationAttributes'];
+            $array = [];
+            foreach ($variation_attributes as $variation_attr)
+                $array[$variation_attr['variation_set_id']] = $variation_attr['id'];
+            return $array;
+        }, $query);
+
+        ksort($model->variations);
+        foreach ($product_variations as $variations) {
+            ksort($variations);
+            if (!array_diff($model->variations, $variations))
+                return true;
+        }
+
+        return false;
+    }
 }
