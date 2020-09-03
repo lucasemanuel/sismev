@@ -19,18 +19,30 @@ use yii\helpers\Html;
     <div class="card-body">
         <?= $form->field($model, 'code')->textInput(['maxlength' => true]) ?>
 
-        <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'name')->widget(Select2::class, [
+            'data' => ArrayHelper::map($model::find()->all(), 'name', 'name'),
+            'options' => [
+                'placeholder' => '',
+                'value' => $model->name,
+            ],
+            'pluginOptions' => [
+                'tags' => true,
+                'allowClear' => true,
+            ],
+        ]) ?>
 
         <?php
         $variation_sets = VariationSet::findByCategory($model->category);
         foreach ($variation_sets as $variation_set) {
             // $variation = $model->getVariationAttributes()->andWhere(['variation_set_id' => $variation_set->id])->one();
-            echo $form->field($model, "variations[$variation_set->name]")->widget(Select2::class, [
+            echo $form->field($model, "variations[$variation_set->id]")->widget(Select2::class, [
                 'data' => ArrayHelper::map($variation_set->variationAttributes, 'id', 'name'),
-                'theme' => Select2::THEME_KRAJEE_BS4,
                 'options' => [
                     // 'value' => is_null($variation) ? null : $variation->id,
-                    'placeholder' => Yii::t('app', 'Please select a value.')
+                    'placeholder' => ''
+                ],
+                'pluginOptions' => [
+                    'allowClear' => true,
                 ],
             ])->label($variation_set->name);
         }
