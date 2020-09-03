@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "49ea53a8f6cf68c55997b7163dc4491f",
+    "content-hash": "b12fe4066207e4320570ab949e137a8e",
     "packages": [
         {
             "name": "almasaeed2010/adminlte",
@@ -50,7 +50,7 @@
             "version": "3.3.11",
             "source": {
                 "type": "git",
-                "url": "git@github.com:RobinHerbots/Inputmask.git",
+                "url": "https://github.com/RobinHerbots/Inputmask.git",
                 "reference": "5e670ad62f50c738388d4dcec78d2888505ad77b"
             },
             "dist": {
@@ -71,7 +71,7 @@
             "version": "3.5.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/jquery/jquery-dist.git",
+                "url": "git@github.com:jquery/jquery-dist.git",
                 "reference": "4c0e4becb8263bb5b3e6dadc448d8e7305ef8215"
             },
             "dist": {
@@ -915,16 +915,16 @@
         },
         {
             "name": "kartik-v/yii2-widget-select2",
-            "version": "v2.1.8",
+            "version": "v2.1.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kartik-v/yii2-widget-select2.git",
-                "reference": "78efbcd1ae87b87803f9beb5e692acf790106cfb"
+                "reference": "b8cdb76b8dcc363e1e25b8f04f69aeabe98c6be3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kartik-v/yii2-widget-select2/zipball/78efbcd1ae87b87803f9beb5e692acf790106cfb",
-                "reference": "78efbcd1ae87b87803f9beb5e692acf790106cfb",
+                "url": "https://api.github.com/repos/kartik-v/yii2-widget-select2/zipball/b8cdb76b8dcc363e1e25b8f04f69aeabe98c6be3",
+                "reference": "b8cdb76b8dcc363e1e25b8f04f69aeabe98c6be3",
                 "shasum": ""
             },
             "require": {
@@ -965,13 +965,7 @@
                 "widget",
                 "yii2"
             ],
-            "funding": [
-                {
-                    "url": "https://opencollective.com/yii2-widget-select2",
-                    "type": "open_collective"
-                }
-            ],
-            "time": "2020-07-22T10:40:59+00:00"
+            "time": "2019-11-15T16:16:16+00:00"
         },
         {
             "name": "npm-asset/axios",
