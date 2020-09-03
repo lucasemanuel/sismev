@@ -189,7 +189,7 @@ class Product extends ActiveRecord
                 ->andWhere(['variation_set_id' => $variation_set->id])
                 ->one(); 
             
-            $this->variations[$variation_set->name] = is_null($variation) ? null : $variation->id;
+            $this->variations[$variation_set->id] = is_null($variation) ? null : $variation->id;
         }
     }
 }
