@@ -107,6 +107,7 @@ class ProductController extends Controller
             if ($this->modelExists($model))
                 throw new ConflictHttpException(Yii::t('app', 'Could not save because the product already exists.'));
 
+            $model->save();
             foreach ($model->variations as $var_id)
                 (VariationAttribute::findOne($var_id))->link('products', $model);
 
