@@ -17,7 +17,7 @@ class OperationSearch extends Operation
     public function rules()
     {
         return [
-            [['id', 'in_out', 'product_id'], 'integer'],
+            [['id', 'in_out', 'product_id', 'employee_id'], 'integer'],
             [['amount'], 'number'],
             [['reason', 'created_at', 'updated_at'], 'safe'],
         ];
@@ -65,6 +65,7 @@ class OperationSearch extends Operation
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'product_id' => $this->product_id,
+            'employee_id' => $this->employee_id,
         ]);
 
         $query->andFilterWhere(['like', 'reason', $this->reason]);
