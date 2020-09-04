@@ -51,7 +51,7 @@ class Operation extends \yii\db\ActiveRecord
 
     public function validateAmount($attribute, $params, $validator)
     {
-        $amount = Product::findOne($this->product_id)->select(['amount']);
+        $amount = Product::findOne($this->product_id)->amount;
 
         if ($this->in_out == 0) {
             if ($this->$attribute > $amount) {
