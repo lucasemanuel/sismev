@@ -21,6 +21,8 @@ use Yii;
  */
 class Operation extends \yii\db\ActiveRecord
 {
+    const MAX_AMOUNT = 99999999.99;
+
     /**
      * {@inheritdoc}
      */
@@ -37,13 +39,33 @@ class Operation extends \yii\db\ActiveRecord
         return [
             [['in_out', 'amount', 'reason', 'product_id', 'employee_id'], 'required'],
             [['in_out', 'product_id', 'employee_id'], 'integer'],
-            [['amount'], 'number', 'max' => '99999999.99'],
-            [['amount'], 'number', 'min' => '00.01'],
+            [['in_out'], 'default', 'value' => 1],
+            [['amount'], 'number', 'min' => '00.01', 'max' => self::MAX_AMOUNT],
+            [['amount'], 'validateAmount'],
             [['created_at', 'updated_at'], 'safe'],
             [['reason'], 'string', 'max' => 64],
             [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::class, 'targetAttribute' => ['product_id' => 'id']],
             [['employee_id'], 'exist', 'skipOnError' => true, 'targetClass' => Employee::class, 'targetAttribute' => ['employee_id' => 'id']],
         ];
+    }
+
+    public function validateAmount($attribute, $params, $validator)
+    {
+        $amount = Product::findOne($this->product_id)->select(['amount']);
+
+        if ($this->in_out == 0) {
+            if ($this->$attribute > $amount) {
+                $this->addError($attribute, Yii::t('app', '"{attribute}" cannot be greater than the total quantity of the product.', [
+                    'attribute' => $attribute
+                ]));
+            }
+        } else {
+            if (($this->$attribute + $amount) > self::MAX_AMOUNT) {
+                $this->addError($attribute, Yii::t('app', 'The total quantity of the product may not exceed {max_amount}.', [
+                    'max_amount' => self::MAX_AMOUNT
+                ]));
+            }
+        }
     }
 
     /**
