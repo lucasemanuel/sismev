@@ -3,6 +3,7 @@
 namespace app\models;
 
 use app\components\traits\FilterTrait;
+use app\components\traits\UpdateCountersTrait;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
@@ -34,6 +35,7 @@ use yii\db\Expression;
 class Product extends ActiveRecord
 {
     use FilterTrait;
+    use UpdateCountersTrait;
 
     const JOINS = [
         [
