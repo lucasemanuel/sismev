@@ -2,12 +2,14 @@
 
 namespace app\controllers;
 
-use Yii;
 use app\models\Operation;
 use app\models\OperationSearch;
+use app\models\Product;
+use Yii;
+use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * OperationController implements the CRUD actions for Operation model.
@@ -62,36 +64,27 @@ class OperationController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
+    public function actionCreate($product_id = null)
     {
         $model = new Operation();
+        $model->attributes = [
+            'employee_id' => Yii::$app->user->id,
+            'product_id' => $product_id
+        ];
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            $amount = $model->in_out == 0 ? $model->amount * -1 : $model->amount;
+
+            if ($model->save())
+                $model->product->updateCounters(['amount' => $amount]);
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('create', [
             'model' => $model,
-        ]);
-    }
-
-    /**
-     * Updates an existing Operation model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionUpdate($id)
-    {
-        $model = $this->findModel($id);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
-
-        return $this->render('update', [
-            'model' => $model,
+            'products' => ArrayHelper::map(Product::find()->all(), 'id', function ($product) {
+                return $product->__toString();
+            })
         ]);
     }
 
