@@ -19,7 +19,7 @@ class OperationSearch extends Operation
         return [
             [['id', 'in_out', 'product_id', 'employee_id'], 'integer'],
             [['amount'], 'number'],
-            [['reason', 'created_at', 'updated_at'], 'safe'],
+            [['reason', 'created_at'], 'safe'],
         ];
     }
 
@@ -63,7 +63,6 @@ class OperationSearch extends Operation
             'in_out' => $this->in_out,
             'amount' => $this->amount,
             'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
             'product_id' => $this->product_id,
             'employee_id' => $this->employee_id,
         ]);
