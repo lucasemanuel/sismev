@@ -38,6 +38,9 @@ class Operation extends \yii\db\ActiveRecord
             [
                 'class' => TimestampBehavior::class,
                 'value' => new Expression('NOW()'),
+                'attributes' => [
+                    self::EVENT_BEFORE_INSERT => ['created_at'],
+                ]
             ],
         ];
     }
