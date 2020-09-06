@@ -5,19 +5,22 @@ namespace app\models;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\models\Operation;
+use yii\db\ActiveQuery;
 
 /**
  * OperationSearch represents the model behind the search form of `app\models\Operation`.
  */
 class OperationSearch extends Operation
 {
+    public $setting_amount = 0;
+
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['id', 'in_out', 'product_id', 'employee_id'], 'integer'],
+            [['id', 'in_out', 'product_id', 'employee_id', 'setting_amount'], 'integer'],
             [['amount'], 'number'],
             [['reason', 'created_at'], 'safe'],
         ];
@@ -58,10 +61,10 @@ class OperationSearch extends Operation
         }
 
         // grid filtering conditions
+        $this->amountSearch($query);
         $query->andFilterWhere([
             'id' => $this->id,
             'in_out' => $this->in_out,
-            'amount' => $this->amount,
             'created_at' => $this->created_at,
             'product_id' => $this->product_id,
             'employee_id' => $this->employee_id,
@@ -70,5 +73,18 @@ class OperationSearch extends Operation
         $query->andFilterWhere(['like', 'reason', $this->reason]);
 
         return $dataProvider;
+    }
+
+    public function amountSearch(ActiveQuery &$query)
+    {
+        $operator = '=';
+        if (isset($this->amount)) {
+            if ($this->setting_amount == 1)
+                $operator = '>=';
+            else if ($this->setting_amount == 2)
+                $operator = '<=';
+        }
+
+        $query->andFilterWhere([$operator, 'amount', $this->amount]);
     }
 }
