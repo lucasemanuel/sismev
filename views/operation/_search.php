@@ -1,6 +1,8 @@
 <?php
 
+use kartik\daterange\DateRangePicker;
 use kartik\form\ActiveForm;
+use kartik\number\NumberControl;
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
@@ -11,8 +13,7 @@ use yii\helpers\Html;
     'action' => ['index'],
     'method' => 'get',
 ]); ?>
-<!-- <div class="card card-outline card-secondary collapsed-card operation-search"> -->
-<div class="card card-outline card-secondary operation-search">
+<div class="card card-outline card-secondary collapsed-card operation-search">
     <div class="card-header">
         <h3 class="card-title"><?= Yii::t('app', 'Advanced Search') ?></h3>
         <div class="card-tools">
@@ -22,7 +23,14 @@ use yii\helpers\Html;
         </div>
     </div> <!-- /.card-body -->
     <div class="card-body">
-        <?= $form->field($model, 'amount') ?>
+        <?= $form->field($model, 'product_code') ?>
+        
+        <?= $form->field($model, 'amount')->widget(NumberControl::class, [
+            'maskedInputOptions' => [
+                'allowMinus' => false,
+                'rightAlign' => false,
+            ],
+        ]) ?>
 
         <?= $form->field($model, 'setting_amount')->radioList([
             0 => Yii::t('app', 'Specific amount'),
@@ -30,13 +38,16 @@ use yii\helpers\Html;
             2 => Yii::t('app', 'Up to')
         ]) ?>
 
-        <?= $form->field($model, 'created_at') ?>
-
-        <?php // echo $form->field($model, 'updated_at') 
-        ?>
-
-        <?php // echo $form->field($model, 'product_id') 
-        ?>
+        <?= $form->field($model, 'range_date')->widget(DateRangePicker::class, [
+            'presetDropdown' => true,
+            'convertFormat' => true,
+            'pluginOptions' => [
+                'timePicker' => true,
+                'timePickerIncrement' => 5,
+                'locale' => ['format' => 'd/m/Y h:i:s']
+            ],
+            'options' => ['placeholder' => Yii::t('app', 'Select range dates')]
+        ]) ?>
     </div><!-- /.card-body -->
     <div class="card-footer">
         <div class="row">

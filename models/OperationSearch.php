@@ -5,6 +5,7 @@ namespace app\models;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\models\Operation;
+use Yii;
 use yii\db\ActiveQuery;
 
 /**
@@ -13,6 +14,8 @@ use yii\db\ActiveQuery;
 class OperationSearch extends Operation
 {
     public $setting_amount = 0;
+    public $product_code;
+    public $range_date;
 
     /**
      * {@inheritdoc}
@@ -20,9 +23,18 @@ class OperationSearch extends Operation
     public function rules()
     {
         return [
-            [['id', 'in_out', 'product_id', 'employee_id', 'setting_amount'], 'integer'],
+            [['id', 'in_out', 'product_id', 'product_code', 'employee_id', 'setting_amount'], 'integer'],
             [['amount'], 'number'],
-            [['reason', 'created_at'], 'safe'],
+            [['reason', 'range_date'], 'safe'],
+        ];
+    }
+
+    public function attributeLabels()
+    {
+        return [
+            'product_code' => Yii::t('app', 'Product code'),
+            'range_date' => Yii::t('app', 'Range Date'),
+            'setting_amount' => Yii::t('app', 'Setting amount'),
         ];
     }
 
@@ -47,7 +59,8 @@ class OperationSearch extends Operation
         $query = Operation::find();
 
         // add conditions that should always apply here
-
+        $query->innerJoin('product', 'product.id = operation.product_id');
+        
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
@@ -62,11 +75,12 @@ class OperationSearch extends Operation
 
         // grid filtering conditions
         $this->amountSearch($query);
+        $this->dateSearch($query);
         $query->andFilterWhere([
             'id' => $this->id,
             'in_out' => $this->in_out,
-            'created_at' => $this->created_at,
             'product_id' => $this->product_id,
+            'product.code' => $this->product_code,
             'employee_id' => $this->employee_id,
         ]);
 
@@ -85,6 +99,17 @@ class OperationSearch extends Operation
                 $operator = '<=';
         }
 
-        $query->andFilterWhere([$operator, 'amount', $this->amount]);
+        $query->andFilterWhere([$operator, 'operation.amount', $this->amount]);
+    }
+
+    public function dateSearch(ActiveQuery &$query)
+    {
+        if (!empty($this->range_date)) {
+            $dates = explode(" - ", $this->range_date);
+            $start = Yii::$app->formatter->asDateTimeDefault($dates[0]);
+            $end = Yii::$app->formatter->asDateTimeDefault($dates[1]);
+
+            $query->andFilterWhere(['between', 'operation.created_at', $start, $end]);
+        }
     }
 }
