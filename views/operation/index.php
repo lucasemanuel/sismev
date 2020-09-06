@@ -13,29 +13,41 @@ $this->params['breadcrumbs'][] = $this->title;
 
 $gridColumns = [
     ['class' => 'kartik\grid\SerialColumn'],
-    'in_out:InputOrOutput',
-    'reason',
-    'created_at',
-    //'product_id',
+    [
+        'attribute' => 'in_out',
+        'format' => 'inputOrOutput',
+        'filter' => [
+            0 => Yii::t('app', 'Output'),
+            1 => Yii::t('app', 'Input')
+        ],
+        'filterType' => GridView::FILTER_SELECT2,
+        'filterWidgetOptions' => [
+            'options' => ['prompt' => ''],
+            'pluginOptions' => [
+                'allowClear' => true,
+            ],
+        ],
+        'width'=> '20%'
+    ],
     [
         'attribute' => 'product_id',
         'value' => function ($model) {
             return $model->product;
         }
     ],
+    'reason',
     [
         'attribute' => 'amount',
         'format' => 'amount',
-        'filterType' => GridView::FILTER_NUMBER, 
-        'filterWidgetOptions' => [
-            'maskedInputOptions' => [
-                'allowMinus' => false,
-                'rightAlign' => false,
-            ]
-        ],
+        'filter' => false
+    ],
+    [
+        'attribute' => 'created_at',
+        'format' => 'datetime',
     ],
     [
         'class' => 'kartik\grid\ActionColumn',
+        'template' => '{view} {delete}',
         'width' => '100px',
     ],
 ];
@@ -56,10 +68,9 @@ $gridColumns = [
                 'toolbar' =>  [
                     [
                         'content' =>
-                            Html::button('<i class="fas fa-plus"></i>', [
-                                'value' => Url::to(['category']),
-                                'class' => 'btn btn-success btn-modal',
-                                'title' => Yii::t('app', 'Add Product'),
+                            Html::a('<i class="fas fa-plus"></i>', Url::to(['create']),[
+                                'class' => 'btn btn-success',
+                                'title' => Yii::t('app', 'Add Operation'),
                             ]),
                         'options' => ['class' => 'btn-group mr-2']
                     ],
