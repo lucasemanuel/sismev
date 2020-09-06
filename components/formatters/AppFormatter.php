@@ -11,7 +11,7 @@ class AppFormatter extends Formatter
     public function asDateTimeDefault($attr)
     {
         $attr = explode(" ", $attr);
-        $attr[0] = $this->date($attr[0]);
+        $attr[0] = $this->asDateDefault($attr[0]);
         return implode(" ", $attr);
     }
 
