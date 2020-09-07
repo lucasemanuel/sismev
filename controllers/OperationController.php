@@ -97,7 +97,21 @@ class OperationController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+        
+        if (!$model->is_deleted) {
+            $product = $model->product;
+            $amount = $model->in_out == 1 ? $model->amount * -1 : $model->amount;
+            $product->amount += $amount;
+
+            if ($product->update())
+                $model->softDelete();
+            else
+                Yii::$app->session->setFlash('warning', $product . ": " . $product->errors['amount'][0]);
+
+        } else {
+            Yii::$app->session->setFlash('info', Yii::t('app', 'The operation was undone earlier.'));
+        }
 
         return $this->redirect(['index']);
     }
