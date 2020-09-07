@@ -24,7 +24,7 @@ use yii\helpers\Html;
     </div> <!-- /.card-body -->
     <div class="card-body">
         <?= $form->field($model, 'product_code') ?>
-        
+
         <?= $form->field($model, 'amount')->widget(NumberControl::class, [
             'maskedInputOptions' => [
                 'allowMinus' => false,
@@ -47,6 +47,11 @@ use yii\helpers\Html;
                 'locale' => ['format' => 'd/m/Y h:i:s']
             ],
             'options' => ['placeholder' => Yii::t('app', 'Select range dates')]
+        ]) ?>
+
+        <?= $form->field($model, 'view_operations')->checkboxList([
+            'valid' => Yii::t('app', 'Valid operations'),
+            'undo' => Yii::t('app', 'Undo operations'),
         ]) ?>
     </div><!-- /.card-body -->
     <div class="card-footer">

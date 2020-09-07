@@ -3,6 +3,8 @@
 namespace app\models;
 
 use Yii;
+use yii2tech\ar\softdelete\SoftDeleteBehavior;
+use yii2tech\ar\softdelete\SoftDeleteQueryBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
 
@@ -14,6 +16,8 @@ use yii\db\Expression;
  * @property float $amount
  * @property string $reason
  * @property string $created_at
+ * @property string|null $deleted_at
+ * @property int|null $is_deleted
  * @property int $product_id
  * @property int $employee_id
  *
@@ -40,8 +44,16 @@ class Operation extends \yii\db\ActiveRecord
                 'value' => new Expression('NOW()'),
                 'attributes' => [
                     self::EVENT_BEFORE_INSERT => ['created_at'],
+                    SoftDeleteBehavior::EVENT_BEFORE_SOFT_DELETE => ['deleted_at']
                 ]
             ],
+            'softDeleteBehavior' => [
+                'class' => SoftDeleteBehavior::class,
+                'softDeleteAttributeValues' => [
+                    'is_deleted' => true
+                ],
+            ],
+
         ];
     }
 
@@ -52,11 +64,11 @@ class Operation extends \yii\db\ActiveRecord
     {
         return [
             [['in_out', 'amount', 'reason', 'product_id', 'employee_id'], 'required'],
-            [['in_out', 'product_id', 'employee_id'], 'integer'],
+            [['in_out', 'product_id', 'employee_id', 'is_deleted'], 'integer'],
             [['in_out'], 'default', 'value' => 1],
             [['amount'], 'number', 'min' => '00.01', 'max' => self::MAX_AMOUNT],
             [['amount'], 'validateAmount'],
-            [['created_at'], 'safe'],
+            [['created_at', 'deleted_at'], 'safe'],
             [['reason'], 'string', 'max' => 64],
             [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::class, 'targetAttribute' => ['product_id' => 'id']],
             [['employee_id'], 'exist', 'skipOnError' => true, 'targetClass' => Employee::class, 'targetAttribute' => ['employee_id' => 'id']],
@@ -93,9 +105,18 @@ class Operation extends \yii\db\ActiveRecord
             'amount' => Yii::t('app', 'Amount'),
             'reason' => Yii::t('app', 'Reason'),
             'created_at' => Yii::t('app', 'Created At'),
+            'deleted_at' => Yii::t('app', 'Deleted At'),
+            'is_deleted' => Yii::t('app', 'Is Deleted'),
             'product_id' => Yii::t('app', 'Product ID'),
             'employee_id' => Yii::t('app', 'Employee ID'),
         ];
+    }
+
+    public static function find()
+    {
+        $query = parent::find();
+        $query->attachBehavior('softDelete', SoftDeleteQueryBehavior::class);
+        return $query;
     }
 
     /**

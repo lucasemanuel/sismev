@@ -16,6 +16,7 @@ class OperationSearch extends Operation
     public $setting_amount = 0;
     public $product_code;
     public $range_date;
+    public $view_operations = ['valid'];
 
     /**
      * {@inheritdoc}
@@ -25,7 +26,7 @@ class OperationSearch extends Operation
         return [
             [['id', 'in_out', 'product_id', 'product_code', 'employee_id', 'setting_amount'], 'integer'],
             [['amount'], 'number'],
-            [['reason', 'range_date'], 'safe'],
+            [['reason', 'range_date', 'view_operations'], 'safe'],
         ];
     }
 
@@ -74,6 +75,7 @@ class OperationSearch extends Operation
         }
 
         // grid filtering conditions
+        $this->filterOperationsUndo($query);
         $this->amountSearch($query);
         $this->dateSearch($query);
         $query->andFilterWhere([
@@ -110,6 +112,16 @@ class OperationSearch extends Operation
             $end = Yii::$app->formatter->asDateTimeDefault($dates[1]);
 
             $query->andFilterWhere(['between', 'operation.created_at', $start, $end]);
+        }
+    }
+
+    public function filterOperationsUndo(ActiveQuery &$query)
+    {
+        if (!empty($this->view_operations) && is_array($this->view_operations)) {
+            if (in_array('undo', $this->view_operations) && !in_array('valid', $this->view_operations))
+                $query->deleted();
+            else if (in_array('valid', $this->view_operations) && !in_array('undo', $this->view_operations))
+                $query->notDeleted();
         }
     }
 }
