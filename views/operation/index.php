@@ -46,8 +46,22 @@ $gridColumns = [
         'format' => 'datetime',
     ],
     [
+        'visible' => is_array($searchModel->view_operations) && in_array('undo', $searchModel->view_operations),
+        'attribute' => 'deleted_at',
+        'format' => 'datetime',
+    ],
+    [
         'class' => 'kartik\grid\ActionColumn',
         'template' => '{view} {delete}',
+        'deleteOptions' => [
+            'label' => '<i class="fas fa-undo-alt"></i>',
+            'data-confirm' => Yii::t('app', 'Are you sure you want to undo this operation?')
+        ],
+        'visibleButtons' => [
+            'delete' => function ($model) { 
+                return !$model->is_deleted;
+            }
+        ],
         'width' => '100px',
     ],
 ];
