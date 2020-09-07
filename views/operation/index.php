@@ -1,7 +1,8 @@
 <?php
 
+use kartik\grid\GridView;
 use yii\helpers\Html;
-use yii\grid\GridView;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\OperationSearch */
@@ -9,34 +10,94 @@ use yii\grid\GridView;
 
 $this->title = Yii::t('app', 'Operations');
 $this->params['breadcrumbs'][] = $this->title;
+
+$gridColumns = [
+    ['class' => 'kartik\grid\SerialColumn'],
+    [
+        'attribute' => 'in_out',
+        'format' => 'inputOrOutput',
+        'filter' => [
+            0 => Yii::t('app', 'Output'),
+            1 => Yii::t('app', 'Input')
+        ],
+        'filterType' => GridView::FILTER_SELECT2,
+        'filterWidgetOptions' => [
+            'options' => ['prompt' => ''],
+            'pluginOptions' => [
+                'allowClear' => true,
+            ],
+        ],
+        'width'=> '20%'
+    ],
+    [
+        'attribute' => 'product_id',
+        'value' => function ($model) {
+            return $model->product;
+        }
+    ],
+    'reason',
+    [
+        'attribute' => 'amount',
+        'format' => 'amount',
+        'filter' => false
+    ],
+    [
+        'attribute' => 'created_at',
+        'format' => 'datetime',
+    ],
+    [
+        'visible' => is_array($searchModel->view_operations) && in_array('undo', $searchModel->view_operations),
+        'attribute' => 'deleted_at',
+        'format' => 'datetime',
+    ],
+    [
+        'class' => 'kartik\grid\ActionColumn',
+        'template' => '{view} {delete}',
+        'deleteOptions' => [
+            'label' => '<i class="fas fa-undo-alt"></i>',
+            'data-confirm' => Yii::t('app', 'Are you sure you want to undo this operation?')
+        ],
+        'visibleButtons' => [
+            'delete' => function ($model) { 
+                return !$model->is_deleted;
+            }
+        ],
+        'width' => '100px',
+    ],
+];
+
 ?>
 <div class="operation-index">
+    <div class="row">
+        <div class="col">            
+            <?php echo $this->render('_search', ['model' => $searchModel]); ?>
 
-    <h1><?= Html::encode($this->title) ?></h1>
-
-    <p>
-        <?= Html::a(Yii::t('app', 'Create Operation'), ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
-
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
-            'id',
-            'in_out',
-            'amount',
-            'reason',
-            'created_at',
-            //'updated_at',
-            //'product_id',
-
-            ['class' => 'yii\grid\ActionColumn'],
-        ],
-    ]); ?>
-
-
+            <?= GridView::widget([
+                'dataProvider' => $dataProvider,
+                'filterModel' => $searchModel,
+                'columns' => $gridColumns,
+                'responsive' => true,
+                'responsiveWrap' => false,
+                'hover' => true,
+                'toolbar' =>  [
+                    [
+                        'content' =>
+                            Html::a('<i class="fas fa-plus"></i>', Url::to(['create']),[
+                                'class' => 'btn btn-success',
+                                'title' => Yii::t('app', 'Add Operation'),
+                            ]),
+                        'options' => ['class' => 'btn-group mr-2']
+                    ],
+                    '{toggleData}',
+                ],
+                'panel' => [
+                    'type' => GridView::TYPE_DEFAULT,
+                    'heading' => Html::encode($this->title),
+                    // 'headingOptions' => ['class' => ''],
+                    // 'footer' => false,
+                    'afterOptions' => ['class' => ''],
+                ],
+            ]); ?>
+        </div>
+    </div>
 </div>

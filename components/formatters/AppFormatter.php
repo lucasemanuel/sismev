@@ -3,6 +3,7 @@
 namespace app\components\formatters;
 
 use NumberFormatter;
+use Yii;
 use yii\i18n\Formatter;
 
 class AppFormatter extends Formatter
@@ -10,7 +11,7 @@ class AppFormatter extends Formatter
     public function asDateTimeDefault($attr)
     {
         $attr = explode(" ", $attr);
-        $attr[0] = $this->date($attr[0]);
+        $attr[0] = $this->asDateDefault($attr[0]);
         return implode(" ", $attr);
     }
 
@@ -18,6 +19,14 @@ class AppFormatter extends Formatter
     {
         return implode("-",array_reverse(explode("/", $attr)));
     }
+
+    public function asInputOrOutput($value)
+    {
+        return $value == 0 
+            ? Yii::t('app', 'Output') 
+            : Yii::t('app', 'Input');
+    }
+
     public function asAmount($value)
     {
         return number_format($value, 2, ',', '.');

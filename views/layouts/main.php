@@ -132,6 +132,12 @@ AdminLteAsset::register($this);
 								<p><?= Yii::t('app', 'Product') ?></p>
 							</a>
 						</li>
+						<li class="nav-item">
+							<a href="<?= Url::to(['/operation']) ?>" class="nav-link">
+								<i class="nav-icon fas fa-exchange-alt"></i>
+								<p><?= Yii::t('app', 'Operations') ?></p>
+							</a>
+						</li>
 					</ul>
 				</nav>
 				<!-- /.sidebar-menu -->
