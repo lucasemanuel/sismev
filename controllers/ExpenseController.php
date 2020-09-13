@@ -76,8 +76,11 @@ class ExpenseController extends Controller
     public function actionCreate()
     {
         $model = new Expense();
+        $model->company_id = Yii::$app->user->identity->company_id;
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post())) {
+            $model->payday = Yii::$app->formatter->asDateDefault($model->payday);
+            $model->save();
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -97,10 +100,19 @@ class ExpenseController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post())) {
+            $model->payday = Yii::$app->formatter->asDateDefault($model->payday);
+            if ($model->paid_at)
+                $model->paid_at = Yii::$app->formatter->asDateDefault($model->payday);
+
+            $model->save();
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
+        $model->payday = Yii::$app->formatter->asDate($model->payday);
+        if ($model->paid_at)
+            $model->paid_at = Yii::$app->formatter->asDate($model->payday);
+            
         return $this->render('update', [
             'model' => $model,
         ]);
