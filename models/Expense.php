@@ -2,7 +2,11 @@
 
 namespace app\models;
 
+use app\components\traits\FilterTrait;
 use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
+use yii\db\Expression;
 
 /**
  * This is the model class for table "expense".
@@ -19,8 +23,17 @@ use Yii;
  *
  * @property Company $company
  */
-class Expense extends \yii\db\ActiveRecord
+class Expense extends ActiveRecord
 {
+    use FilterTrait;
+
+    const JOINS = [
+        [
+            'table' => 'company',
+            'on' => 'expense.company_id = company.id'
+        ]
+    ];
+
     /**
      * {@inheritdoc}
      */
@@ -29,13 +42,23 @@ class Expense extends \yii\db\ActiveRecord
         return 'expense';
     }
 
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::class,
+                'value' => new Expression('NOW()'),
+            ],
+        ];
+    }
+
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['name', 'value', 'payday', 'created_at', 'company_id'], 'required'],
+            [['name', 'value', 'payday', 'company_id'], 'required'],
             [['description'], 'string'],
             [['value'], 'number'],
             [['payday', 'paid_at', 'created_at', 'updated_at'], 'safe'],
