@@ -39,6 +39,10 @@ $this->registerCssFile('@web/css/detailView.css');
                             ],
                             'amount',
                             'reason',
+                            [
+                                'label' => Yii::t('app', 'Employee'),
+                                'attribute' => 'employee.full_name',
+                            ]
                         ],
                     ]) ?>
                 </div><!-- /.card-body -->
