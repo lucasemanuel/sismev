@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\components\traits\FilterTrait;
 use Yii;
 use yii2tech\ar\softdelete\SoftDeleteBehavior;
 use yii2tech\ar\softdelete\SoftDeleteQueryBehavior;
@@ -26,6 +27,18 @@ use yii\db\Expression;
  */
 class Operation extends \yii\db\ActiveRecord
 {
+    use FilterTrait;
+
+    const JOINS = [
+        [
+            'table' => 'employee',
+            'on' => 'operation.employee_id = employee.id'
+        ],
+        [
+            'table' => 'company',
+            'on' => 'employee.company_id = company.id'
+        ]
+    ];
     const MAX_AMOUNT = 99999999.99;
 
     /**
