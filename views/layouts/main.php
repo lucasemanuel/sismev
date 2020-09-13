@@ -5,8 +5,8 @@
 
 use app\assets\AdminLteAsset;
 use app\widgets\Alert;
-use yii\helpers\Html;
 use yii\bootstrap4\Breadcrumbs;
+use yii\helpers\Html;
 use yii\helpers\Url;
 
 AdminLteAsset::register($this);
@@ -25,7 +25,7 @@ AdminLteAsset::register($this);
 	<?php $this->head() ?>
 </head>
 
-<body class="hold-transition sidebar-mini layout-navbar-fixed">
+<body class="hold-transition sidebar-mini layout-navbar-fixed layout-fixed">
 	<?php $this->beginBody() ?>
 
 	<!-- Wrapper -->
