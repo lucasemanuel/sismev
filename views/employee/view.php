@@ -9,7 +9,7 @@ use yii\widgets\DetailView;
 
 $this->title = $model->full_name;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Employees'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = $model->usual_name;
 
 $this->registerCssFile('@web/css/detailView.css');
 
@@ -93,16 +93,20 @@ $this->registerCssFile('@web/css/detailView.css');
     <div class="row">
         <div class="col-12 d-flex justify-content-end">
             <p>
-                <?= Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-                <?= Html::a(Yii::t('app', 'Update Address'), ['update-address', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+                <?php if (Yii::$app->user->identity->is_manager) : ?>
+                    <?= Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+                    <?= Html::a(Yii::t('app', 'Update Address'), ['update-address', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+                <?php endif; ?>
                 <?= Html::a(Yii::t('app', 'Change Password'), ['change-password', 'id' => $model->id], ['class' => 'btn btn-secondary']) ?>
-                <?= Html::a(Yii::t('app', 'Delete'), ['delete', 'id' => $model->id], [
-                    'class' => 'btn btn-danger',
-                    'data' => [
-                        'confirm' => Yii::t('app', 'Are you sure you want to delete this employee?'),
-                        'method' => 'post',
-                    ],
-                ]) ?>
+                <?php if (Yii::$app->user->identity->is_manager) : ?>
+                    <?= Html::a(Yii::t('app', 'Delete'), ['delete', 'id' => $model->id], [
+                        'class' => 'btn btn-danger',
+                        'data' => [
+                            'confirm' => Yii::t('app', 'Are you sure you want to delete this employee?'),
+                            'method' => 'post',
+                        ],
+                    ]) ?>
+                <?php endif; ?>
             </p>
         </div>
     </div>

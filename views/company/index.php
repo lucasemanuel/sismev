@@ -104,19 +104,21 @@ $this->registerCss(
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-12 d-flex justify-content-end">
-            <p>
-                <?= Html::a(Yii::t('app', 'Update'), ['update'], ['class' => 'btn btn-primary']) ?>
-                <?= Html::a(Yii::t('app', 'Update Address'), ['update-address'], ['class' => 'btn btn-primary']) ?>
-                <?= Html::a(Yii::t('app', 'Delete'), ['delete'], [
-                    'class' => 'btn btn-danger',
-                    'data' => [
-                        'confirm' => Yii::t('app', 'Are you sure you want to delete this item?'),
-                        'method' => 'post',
-                    ],
-                ]) ?>
-            </p>
+    <?php if (Yii::$app->user->identity->is_manager) : ?>
+        <div class="row">
+            <div class="col-12 d-flex justify-content-end">
+                <p>
+                    <?= Html::a(Yii::t('app', 'Update'), ['update'], ['class' => 'btn btn-primary']) ?>
+                    <?= Html::a(Yii::t('app', 'Update Address'), ['update-address'], ['class' => 'btn btn-primary']) ?>
+                    <?= Html::a(Yii::t('app', 'Delete'), ['delete'], [
+                        'class' => 'btn btn-danger',
+                        'data' => [
+                            'confirm' => Yii::t('app', 'Are you sure you want to delete this item?'),
+                            'method' => 'post',
+                        ],
+                    ]) ?>
+                </p>
+            </div>
         </div>
-    </div>
+    <?php endif; ?>
 </div>
