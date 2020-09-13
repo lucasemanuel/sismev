@@ -6,6 +6,7 @@ use app\models\Operation;
 use app\models\OperationSearch;
 use app\models\Product;
 use Yii;
+use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 use yii\web\Controller;
@@ -22,6 +23,16 @@ class OperationController extends Controller
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'actions' => ['index', 'view', 'create', 'delete'],
+                        'allow' => true,
+                        'roles' => ['admin']
+                    ]
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
