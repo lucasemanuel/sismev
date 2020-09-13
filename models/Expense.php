@@ -60,8 +60,9 @@ class Expense extends ActiveRecord
         return [
             [['name', 'value', 'payday', 'company_id'], 'required'],
             [['description'], 'string'],
-            [['value'], 'number'],
+            [['value'], 'number', 'max' => 99999999.99, 'min' => 00.01],
             [['payday', 'paid_at', 'created_at', 'updated_at'], 'safe'],
+            [['payday'], 'default', 'value' => null],
             [['company_id'], 'integer'],
             [['name'], 'string', 'max' => 64],
             [['company_id'], 'exist', 'skipOnError' => true, 'targetClass' => Company::class, 'targetAttribute' => ['company_id' => 'id']],
