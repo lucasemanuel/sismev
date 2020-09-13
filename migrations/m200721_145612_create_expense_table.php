@@ -18,7 +18,7 @@ class m200721_145612_create_expense_table extends Migration
             'description' => $this->text(),
             'value' => $this->decimal(10,2)->notNull(),
             'payday' => $this->date()->notNull(),
-            'paid_at' => $this->dateTime(),
+            'paid_at' => $this->date(),
             'created_at' => $this->dateTime()->notNull(),
             'updated_at' => $this->dateTime(),
             'company_id' => $this->integer()->unsigned()->notNull(),
