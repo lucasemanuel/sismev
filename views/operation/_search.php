@@ -1,8 +1,11 @@
 <?php
 
+use app\models\Employee;
 use kartik\daterange\DateRangePicker;
 use kartik\form\ActiveForm;
 use kartik\number\NumberControl;
+use kartik\select2\Select2;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
@@ -23,7 +26,27 @@ use yii\helpers\Html;
         </div>
     </div> <!-- /.card-body -->
     <div class="card-body">
-        <?= $form->field($model, 'product_code') ?>
+        <?= $form->field($model, 'in_out')->widget(Select2::class, [
+            'options' => [
+                'placeholder' => Yii::t('app', 'All'),
+            ],
+            'pluginOptions' => [
+                'allowClear' => true,
+            ],
+            'data' => [
+                1 => Yii::t('app', 'Input'),
+                0 => Yii::t('app', 'Output'),
+            ]
+        ]) ?>
+
+        <?= $form->field($model, 'product_id')->textInput(['maxlength' => 256]) ?>
+
+        <?= $form->field($model, 'setting_product')->radioList([
+            0 => Yii::t('app', 'Product Name'),
+            1 => Yii::t('app', 'Product Code'),
+        ]) ?>
+
+        <?= $form->field($model, 'reason')->textInput(['maxlength' => 64]) ?>
 
         <?= $form->field($model, 'amount')->widget(NumberControl::class, [
             'maskedInputOptions' => [
@@ -52,6 +75,16 @@ use yii\helpers\Html;
         <?= $form->field($model, 'view_operations')->checkboxList([
             'valid' => Yii::t('app', 'Valid operations'),
             'undo' => Yii::t('app', 'Undo operations'),
+        ]) ?>
+
+        <?= $form->field($model, 'employee_id')->widget(Select2::class, [
+            'data' => ArrayHelper::map(Employee::find()->orderBy('full_name')->asArray()->all(), 'id', 'full_name'),
+            'options' => [
+                'placeholder' => Yii::t('app', 'All'),
+            ],
+            'pluginOptions' => [
+                'allowClear' => true,
+            ],
         ]) ?>
     </div><!-- /.card-body -->
     <div class="card-footer">

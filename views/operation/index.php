@@ -1,6 +1,9 @@
 <?php
 
+use app\models\Employee;
 use kartik\grid\GridView;
+use kartik\select2\Select2;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
@@ -10,7 +13,8 @@ use yii\helpers\Url;
 
 $this->title = Yii::t('app', 'Operations');
 $this->params['breadcrumbs'][] = $this->title;
-
+// var_dump(ArrayHelper::map(Employee::find()->orderBy('full_name')->asArray()->all(), 'id', 'full_name'));
+// die;
 $gridColumns = [
     ['class' => 'kartik\grid\SerialColumn'],
     [
@@ -22,12 +26,13 @@ $gridColumns = [
         ],
         'filterType' => GridView::FILTER_SELECT2,
         'filterWidgetOptions' => [
-            'options' => ['prompt' => ''],
+            'options' => [
+                'placeholder' => Yii::t('app', 'All'),
+            ],
             'pluginOptions' => [
                 'allowClear' => true,
             ],
         ],
-        'width'=> '20%'
     ],
     [
         'attribute' => 'product_id',
@@ -49,6 +54,22 @@ $gridColumns = [
         'visible' => is_array($searchModel->view_operations) && in_array('undo', $searchModel->view_operations),
         'attribute' => 'deleted_at',
         'format' => 'datetime',
+    ],
+    [
+        'attribute' => 'employee_id',
+        'value' => function ($model) {
+            return $model->employee->full_name;
+        },
+        'filter' => ArrayHelper::map(Employee::find()->orderBy('full_name')->asArray()->all(), 'id', 'full_name'),
+        'filterType' => GridView::FILTER_SELECT2,
+        'filterWidgetOptions' => [
+            'options' => [
+                'placeholder' => Yii::t('app', 'All'),
+            ],
+            'pluginOptions' => [
+                'allowClear' => true,
+            ],
+        ],
     ],
     [
         'class' => 'kartik\grid\ActionColumn',

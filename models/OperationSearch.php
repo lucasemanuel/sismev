@@ -14,6 +14,7 @@ use yii\db\ActiveQuery;
 class OperationSearch extends Operation
 {
     public $setting_amount = 0;
+    public $setting_product = 0;
     public $product_code;
     public $range_date;
     public $view_operations = ['valid'];
@@ -24,18 +25,20 @@ class OperationSearch extends Operation
     public function rules()
     {
         return [
-            [['id', 'in_out', 'product_id', 'product_code', 'employee_id', 'setting_amount'], 'integer'],
+            [['id', 'in_out', 'employee_id', 'setting_amount', 'setting_product'], 'integer'],
             [['amount'], 'number'],
-            [['reason', 'range_date', 'view_operations'], 'safe'],
+            [['reason', 'range_date', 'view_operations', 'product_id'], 'safe'],
         ];
     }
 
     public function attributeLabels()
     {
         return [
+            'product_id' => Yii::t('app', 'Product'),
             'product_code' => Yii::t('app', 'Product code'),
             'range_date' => Yii::t('app', 'Range Date'),
-            'setting_amount' => Yii::t('app', 'Setting amount'),
+            'setting_amount' => Yii::t('app', 'Amount search setting'),
+            'setting_product' => Yii::t('app', 'Product search setting'),
         ];
     }
 
@@ -61,9 +64,21 @@ class OperationSearch extends Operation
 
         // add conditions that should always apply here
         $query->innerJoin('product', 'product.id = operation.product_id');
+        $query->innerJoin('employee', 'employee.id = operation.employee_id');
         
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+        ]);
+
+        $dataProvider->sort->attributes = array_merge($dataProvider->sort->attributes, [
+            'employee_id' => [
+                'asc' => ['employee.full_name' => SORT_ASC],
+                'desc' => ['employee.full_name' => SORT_DESC],
+            ],
+            'product_id' => [
+                'asc' => ['product.name' => SORT_ASC],
+                'desc' => ['product.name' => SORT_DESC],
+            ],
         ]);
 
         $this->load($params);
@@ -76,13 +91,12 @@ class OperationSearch extends Operation
 
         // grid filtering conditions
         $this->filterOperationsUndo($query);
-        $this->amountSearch($query);
-        $this->dateSearch($query);
+        $this->filterAmount($query);
+        $this->filterDate($query);
+        $this->filterProduct($query);
         $query->andFilterWhere([
             'id' => $this->id,
             'in_out' => $this->in_out,
-            'product_id' => $this->product_id,
-            'product.code' => $this->product_code,
             'employee_id' => $this->employee_id,
         ]);
 
@@ -91,7 +105,7 @@ class OperationSearch extends Operation
         return $dataProvider;
     }
 
-    public function amountSearch(ActiveQuery &$query)
+    public function filterAmount(ActiveQuery &$query)
     {
         $operator = '=';
         if (isset($this->amount)) {
@@ -104,7 +118,7 @@ class OperationSearch extends Operation
         $query->andFilterWhere([$operator, 'operation.amount', $this->amount]);
     }
 
-    public function dateSearch(ActiveQuery &$query)
+    public function filterDate(ActiveQuery &$query)
     {
         if (!empty($this->range_date)) {
             $dates = explode(" - ", $this->range_date);
@@ -123,5 +137,25 @@ class OperationSearch extends Operation
             else if (in_array('valid', $this->view_operations) && !in_array('undo', $this->view_operations))
                 $query->notDeleted();
         }
+    }
+
+    public function filterProduct(ActiveQuery &$query)
+    {
+        if (!$this->setting_product)
+            $this->filterProductByName($query);
+        else
+            $this->filterProductByCode($query);
+    }
+
+    public function filterProductByName(ActiveQuery $query)
+    {
+
+    }
+    
+    public function filterProductByCode(ActiveQuery $query)
+    {
+        $query->andFilterWhere([
+            'product.code' => $this->product_id,
+        ]);
     }
 }
