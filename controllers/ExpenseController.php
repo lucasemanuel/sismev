@@ -25,7 +25,7 @@ class ExpenseController extends Controller
                 'class' => AccessControl::class,
                 'rules' => [
                     [
-                        'actions' => ['index', 'view', 'create', 'update', 'delete'],
+                        'actions' => ['index', 'view', 'create', 'update', 'delete', 'pay'],
                         'allow' => true,
                         'roles' => ['admin']
                     ],
@@ -130,6 +130,25 @@ class ExpenseController extends Controller
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
+    }
+
+    public function actionPay($id)
+    {
+        $model = $this->findModel($id);
+        $model->scenario = Expense::SCENARIO_PAID;
+        $model->is_paid = 1;
+
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->paid_at)
+                $model->paid_at = Yii::$app->formatter->asDateDefault($model->paid_at);
+            if ($model->save())
+                return $this->redirect(['view', 'id' => $id]);
+        } else if (!Yii::$app->request->isAjax)
+            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+
+        return $this->renderAjax('pay', [
+            'model' => $model,
+        ]);
     }
 
     /**
