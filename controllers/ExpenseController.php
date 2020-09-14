@@ -5,9 +5,10 @@ namespace app\controllers;
 use Yii;
 use app\models\Expense;
 use app\models\ExpenseSearch;
+use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * ExpenseController implements the CRUD actions for Expense model.
@@ -20,6 +21,16 @@ class ExpenseController extends Controller
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'actions' => ['index', 'view', 'create', 'update', 'delete', 'pay'],
+                        'allow' => true,
+                        'roles' => ['admin']
+                    ],
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
@@ -65,8 +76,11 @@ class ExpenseController extends Controller
     public function actionCreate()
     {
         $model = new Expense();
+        $model->company_id = Yii::$app->user->identity->company_id;
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post())) {
+            $model->payday = Yii::$app->formatter->asDateDefault($model->payday);
+            $model->save();
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -86,10 +100,19 @@ class ExpenseController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post())) {
+            $model->payday = Yii::$app->formatter->asDateDefault($model->payday);
+            if ($model->paid_at)
+                $model->paid_at = Yii::$app->formatter->asDateDefault($model->payday);
+
+            $model->save();
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
+        $model->payday = Yii::$app->formatter->asDate($model->payday);
+        if ($model->paid_at)
+            $model->paid_at = Yii::$app->formatter->asDate($model->payday);
+            
         return $this->render('update', [
             'model' => $model,
         ]);
@@ -107,6 +130,25 @@ class ExpenseController extends Controller
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
+    }
+
+    public function actionPay($id)
+    {
+        $model = $this->findModel($id);
+        $model->scenario = Expense::SCENARIO_PAID;
+        $model->is_paid = 1;
+
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->paid_at)
+                $model->paid_at = Yii::$app->formatter->asDateDefault($model->paid_at);
+            if ($model->save())
+                return $this->redirect(['view', 'id' => $id]);
+        } else if (!Yii::$app->request->isAjax)
+            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+
+        return $this->renderAjax('pay', [
+            'model' => $model,
+        ]);
     }
 
     /**

@@ -138,6 +138,13 @@ AdminLteAsset::register($this);
 								<p><?= Yii::t('app', 'Operations') ?></p>
 							</a>
 						</li>
+						<li class="nav-header"><?= strtoupper(Yii::t('app', 'Finances')) ?></li>
+						<li class="nav-item">
+							<a href="<?= Url::to(['/expense']) ?>" class="nav-link">
+								<i class="nav-icon fas fa-file-invoice-dollar"></i>
+								<p><?= Yii::t('app', 'Expenses') ?></p>
+							</a>
+						</li>
 					</ul>
 				</nav>
 				<!-- /.sidebar-menu -->
