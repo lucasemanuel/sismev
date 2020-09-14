@@ -34,6 +34,7 @@ class Expense extends ActiveRecord
             'on' => 'expense.company_id = company.id'
         ]
     ];
+    const SCENARIO_PAID = 'paid';
 
     /**
      * {@inheritdoc}
@@ -60,6 +61,7 @@ class Expense extends ActiveRecord
     {
         return [
             [['name', 'value', 'payday', 'company_id'], 'required'],
+            [['paid_at', 'is_paid'], 'required', 'on' => self::SCENARIO_PAID],
             [['description'], 'string'],
             [['value'], 'number', 'max' => 99999999.99, 'min' => 00.01],
             [['payday', 'paid_at', 'created_at', 'updated_at'], 'safe'],
@@ -70,6 +72,14 @@ class Expense extends ActiveRecord
             [['name'], 'string', 'max' => 64],
             [['company_id'], 'exist', 'skipOnError' => true, 'targetClass' => Company::class, 'targetAttribute' => ['company_id' => 'id']],
         ];
+    }
+
+    public function scenarios()
+    {
+        $scenarios = parent::scenarios();
+        $scenarios[self::SCENARIO_PAID] = ['paid_at', 'is_paid'];
+
+        return $scenarios;
     }
 
     /**
