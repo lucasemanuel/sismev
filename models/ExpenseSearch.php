@@ -5,6 +5,7 @@ namespace app\models;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\models\Expense;
+use Yii;
 
 /**
  * ExpenseSearch represents the model behind the search form of `app\models\Expense`.
@@ -18,6 +19,7 @@ class ExpenseSearch extends Expense
     {
         return [
             [['id', 'company_id'], 'integer'],
+            [['is_paid'], 'boolean'],
             [['name', 'description', 'payday', 'paid_at', 'created_at', 'updated_at'], 'safe'],
             [['value'], 'number'],
         ];
@@ -61,16 +63,31 @@ class ExpenseSearch extends Expense
         $query->andFilterWhere([
             'id' => $this->id,
             'value' => $this->value,
-            'payday' => $this->payday,
-            'paid_at' => $this->paid_at,
+            'payday' => $this->getPayday(),
+            'is_paid' => $this->is_paid,
+            'paid_at' => $this->getPaidAt(),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'company_id' => $this->company_id,
         ]);
 
-        $query->andFilterWhere(['like', 'name', $this->name])
+        $query->andFilterWhere(['like', 'expense.name', $this->name])
             ->andFilterWhere(['like', 'description', $this->description]);
 
         return $dataProvider;
+    }
+
+    public function getPaidAt()
+    {
+        return isset($this->paid_at)
+            ? Yii::$app->formatter->asDateDefault($this->paid_at)
+            : null;
+    }
+
+    public function getPayday()
+    {
+        return isset($this->payday)
+            ? Yii::$app->formatter->asDateDefault($this->payday)
+            : null;
     }
 }
