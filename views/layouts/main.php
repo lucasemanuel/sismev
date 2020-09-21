@@ -145,6 +145,12 @@ AdminLteAsset::register($this);
 								<p><?= Yii::t('app', 'Expenses') ?></p>
 							</a>
 						</li>
+						<li class="nav-item">
+							<a href="<?= Url::to(['/payment-method']) ?>" class="nav-link">
+								<i class="nav-icon far fa-credit-card"></i>
+								<p><?= Yii::t('app', 'Payment Methods') ?></p>
+							</a>
+						</li>
 					</ul>
 				</nav>
 				<!-- /.sidebar-menu -->
