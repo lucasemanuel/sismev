@@ -34,3 +34,5 @@ tests/_support/_generated
 
 /rbac/items.php
 /rbac/rules.php
+
+.vscode
