@@ -4,19 +4,19 @@ namespace app\components\factories;
 
 use app\models\Company;
 use app\models\Employee;
-use yii\db\Exception;
 use Yii;
+use yii\db\Exception;
 
 class AccountFactory
 {
     public static function create($company, $employee)
     {
         $trasaction = Yii::$app->getDb()->beginTransaction();
-        
+
         try {
             $company = self::createCompany($company);
-            $employee['company_id'] = $company->id;
-            self::createEmployee($employee);
+            self::createEmployee($employee, $company->id);
+            PaymentMethodsDefaultFactory::create($company->id);
 
             $trasaction->commit();
         } catch (Exception $e) {
@@ -29,24 +29,24 @@ class AccountFactory
     {
         $company = new Company();
         $company->setAttributes($attributes);
-        
-        if (!$company->save()){
-            foreach($company->firstErrors as $erro) break;
-            throw new Exception(Yii::t('app', 'Failed to register company.').' '.$erro);
+
+        if (!$company->save()) {
+            foreach ($company->firstErrors as $erro) break;
+            throw new Exception(Yii::t('app', 'Failed to register company.') . ' ' . $erro);
         }
 
         return $company;
     }
 
-    private static function createEmployee($attributes)
+    private static function createEmployee($attributes, $company_id)
     {
         $employee = new Employee();
-        $employee->setAttributes($attributes); 
+        $employee->setAttributes(array_merge($attributes, ['company_id' => $company_id]));
         $employee->password_repeat = $employee->password;
 
-        if (!$employee->save()){
-            foreach($employee->firstErrors as $erro) break;
-            throw new Exception(Yii::t('app', 'Failed to register your account.').' '.$erro);
+        if (!$employee->save()) {
+            foreach ($employee->firstErrors as $erro) break;
+            throw new Exception(Yii::t('app', 'Failed to register your account.') . ' ' . $erro);
         }
 
         return $employee;
