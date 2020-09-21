@@ -65,7 +65,7 @@ $this->registerCssFile('@web/css/detailView.css');
                             [
                                 'visible' => $model->is_deleted,
                                 'attribute' => 'deleted_at',
-                                'value' => 'deleted_at',
+                                'value' => $model->deleted_at,
                                 'format' => 'datetime',
                             ],
                         ],
@@ -79,6 +79,23 @@ $this->registerCssFile('@web/css/detailView.css');
         <div class="col-12 d-flex justify-content-end">
             <p>
                 <?= Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+                <?php if (!$model->is_deleted): ?>
+                    <?= Html::a(Yii::t('app', 'Disable'), ['soft-delete', 'id' => $model->id], [
+                        'class' => 'btn btn-warning',
+                        'data' => [
+                            'confirm' => Yii::t('app', 'Are you sure you want to disable this payment method?'),
+                            'method' => 'post',
+                        ],
+                    ]) ?>
+                <?php else: ?>
+                    <?= Html::a(Yii::t('app', 'Enable'), ['restore', 'id' => $model->id], [
+                        'class' => 'btn btn-warning',
+                        'data' => [
+                            'confirm' => Yii::t('app', 'Are you sure you want to enable this payment method?'),
+                            'method' => 'post',
+                        ],
+                    ]) ?>
+                <?php endif;?>
                 <?= Html::a(Yii::t('app', 'Delete'), ['delete', 'id' => $model->id], [
                     'class' => 'btn btn-danger',
                     'data' => [

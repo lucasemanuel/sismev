@@ -25,7 +25,7 @@ class PaymentMethodController extends Controller
                 'class' => AccessControl::class,
                 'rules' => [
                     [
-                        'actions' => ['index', 'view', 'create', 'update', 'delete'],
+                        'actions' => ['index', 'view', 'create', 'update', 'delete', 'soft-delete', 'restore'],
                         'allow' => true,
                         'roles' => ['admin']
                     ]
@@ -35,6 +35,8 @@ class PaymentMethodController extends Controller
                 'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['POST'],
+                    'restore' => ['POST'],
+                    'soft-delete' => ['POST'],
                 ],
             ],
         ];
@@ -125,6 +127,20 @@ class PaymentMethodController extends Controller
             Yii::$app->session->setFlash('warning', Yii::t('app', "It is not possible to delete the payment method, there are orders paid with this method."));
         else
             $model->delete();
+
+        return $this->redirect(['index']);
+    }
+
+    public function actionSoftDelete($id)
+    {
+        $this->findModel($id)->softDelete();
+
+        return $this->redirect(['index']);
+    }
+
+    public function actionRestore($id)
+    {
+        $this->findModel($id)->restore();
 
         return $this->redirect(['index']);
     }
