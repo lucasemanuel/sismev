@@ -17,7 +17,8 @@ class PaymentMethodSearch extends PaymentMethod
     public function rules()
     {
         return [
-            [['id', 'installment_limit', 'is_deleted', 'company_id'], 'integer'],
+            [['id', 'installment_limit', 'company_id'], 'integer'],
+            [['is_deleted'], 'boolean'],
             [['name', 'created_at', 'updated_at', 'deleted_at'], 'safe'],
         ];
     }

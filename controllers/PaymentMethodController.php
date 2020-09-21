@@ -2,12 +2,13 @@
 
 namespace app\controllers;
 
-use Yii;
 use app\models\PaymentMethod;
 use app\models\PaymentMethodSearch;
+use Yii;
+use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * PaymentMethodController implements the CRUD actions for PaymentMethod model.
@@ -20,10 +21,22 @@ class PaymentMethodController extends Controller
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'actions' => ['index', 'view', 'create', 'update', 'delete', 'soft-delete', 'restore'],
+                        'allow' => true,
+                        'roles' => ['admin']
+                    ]
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['POST'],
+                    'restore' => ['POST'],
+                    'soft-delete' => ['POST'],
                 ],
             ],
         ];
@@ -65,6 +78,10 @@ class PaymentMethodController extends Controller
     public function actionCreate()
     {
         $model = new PaymentMethod();
+        $model->attributes = [
+            'company_id' => Yii::$app->user->identity->company_id,
+            'installment_limit' => 1
+        ];
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -104,7 +121,26 @@ class PaymentMethodController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+        
+        if ($model->getPays()->exists())
+            Yii::$app->session->setFlash('warning', Yii::t('app', "It is not possible to delete the payment method, there are orders paid with this method."));
+        else
+            $model->delete();
+
+        return $this->redirect(['index']);
+    }
+
+    public function actionSoftDelete($id)
+    {
+        $this->findModel($id)->softDelete();
+
+        return $this->redirect(['index']);
+    }
+
+    public function actionRestore($id)
+    {
+        $this->findModel($id)->restore();
 
         return $this->redirect(['index']);
     }
