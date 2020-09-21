@@ -2,7 +2,6 @@
 
 use app\models\Employee;
 use kartik\grid\GridView;
-use kartik\select2\Select2;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -13,8 +12,7 @@ use yii\helpers\Url;
 
 $this->title = Yii::t('app', 'Operations');
 $this->params['breadcrumbs'][] = $this->title;
-// var_dump(ArrayHelper::map(Employee::find()->orderBy('full_name')->asArray()->all(), 'id', 'full_name'));
-// die;
+
 $gridColumns = [
     ['class' => 'kartik\grid\SerialColumn'],
     [
