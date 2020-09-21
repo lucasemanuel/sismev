@@ -60,6 +60,8 @@ class PaymentMethod extends ActiveRecord
         return [
             [['name', 'installment_limit', 'company_id'], 'required'],
             [['installment_limit', 'is_deleted', 'company_id'], 'integer'],
+            [['installment_limit'], 'integer', 'min' => 1],
+            [['name'], 'unique'],
             [['is_deleted'], 'boolean'],
             [['created_at', 'updated_at', 'deleted_at'], 'safe'],
             [['name'], 'string', 'max' => 64],
