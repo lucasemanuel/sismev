@@ -116,7 +116,7 @@ class SignupController extends Controller
             return true;
         } catch (Exception $e) {
             $transaction->rollBack();
-            throw $e;
+            Yii::$app->session->setFlash('warning', $e->message);
         }
     }
 }
