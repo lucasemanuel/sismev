@@ -2,12 +2,13 @@
 
 namespace app\controllers;
 
-use Yii;
 use app\models\PaymentMethod;
 use app\models\PaymentMethodSearch;
+use Yii;
+use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * PaymentMethodController implements the CRUD actions for PaymentMethod model.
@@ -20,6 +21,16 @@ class PaymentMethodController extends Controller
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'actions' => ['index', 'view', 'create', 'update', 'delete'],
+                        'allow' => true,
+                        'roles' => ['admin']
+                    ]
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
