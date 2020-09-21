@@ -119,7 +119,12 @@ class PaymentMethodController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+        
+        if ($model->getPays()->exists())
+            Yii::$app->session->setFlash('warning', Yii::t('app', "It is not possible to delete the payment method, there are orders paid with this method."));
+        else
+            $model->delete();
 
         return $this->redirect(['index']);
     }
