@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\components\traits\FilterTrait;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
@@ -24,6 +25,15 @@ use yii\db\Expression;
  */
 class PaymentMethod extends ActiveRecord
 {
+    use FilterTrait;
+
+    const JOINS = [
+        [
+            'table' => 'company',
+            'on' => 'payment_method.company_id = company.id'
+        ]
+    ];
+
     /**
      * {@inheritdoc}
      */
