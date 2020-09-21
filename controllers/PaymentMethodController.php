@@ -76,6 +76,10 @@ class PaymentMethodController extends Controller
     public function actionCreate()
     {
         $model = new PaymentMethod();
+        $model->attributes = [
+            'company_id' => Yii::$app->user->identity->company_id,
+            'installment_limit' => 1
+        ];
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
