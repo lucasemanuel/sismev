@@ -89,7 +89,7 @@ $this->registerCssFile('@web/css/detailView.css');
                     ]) ?>
                 <?php else: ?>
                     <?= Html::a(Yii::t('app', 'Enable'), ['restore', 'id' => $model->id], [
-                        'class' => 'btn btn-warning',
+                        'class' => 'btn btn-success',
                         'data' => [
                             'confirm' => Yii::t('app', 'Are you sure you want to enable this payment method?'),
                             'method' => 'post',
