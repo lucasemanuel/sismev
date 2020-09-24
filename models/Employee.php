@@ -5,6 +5,7 @@ namespace app\models;
 use app\components\behaviors\FormatterDateBehavior;
 use app\components\traits\FilterTrait;
 use Yii;
+use yii2tech\ar\softdelete\SoftDeleteBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\db\Expression;
@@ -63,12 +64,23 @@ class Employee extends ActiveRecord implements IdentityInterface
             [
                 'class' => TimestampBehavior::class,
                 'value' => new Expression('NOW()'),
+                'attributes' => [
+                    self::EVENT_BEFORE_INSERT => ['created_at'],
+                    self::EVENT_BEFORE_UPDATE => ['updated_at'],
+                    SoftDeleteBehavior::EVENT_BEFORE_SOFT_DELETE => ['deleted_at']
+                ]
             ],
             'formatterDateBehavior' => [
                 'class' => FormatterDateBehavior::class,
                 'attributes' => [
                     'birthday' => FormatterDateBehavior::FORMAT_DATE
                 ]
+            ],
+            'softDeleteBehavior' => [
+                'class' => SoftDeleteBehavior::class,
+                'softDeleteAttributeValues' => [
+                    'is_deleted' => true
+                ],
             ],
         ];
     }

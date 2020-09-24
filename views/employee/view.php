@@ -1,11 +1,14 @@
 <?php
 
 use app\widgets\Alert;
+use kartik\dialog\Dialog;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Employee */
+
+echo Dialog::widget();
 
 $this->title = $model->full_name;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Employees'), 'url' => ['index']];
@@ -80,7 +83,6 @@ $this->registerCssFile('@web/css/detailView.css');
                             [
                                 'visible' => $model->is_deleted,
                                 'attribute' => 'deleted_at',
-                                'value' => 'deleted_at',
                                 'format' => 'datetime',
                             ],
                         ],
@@ -96,9 +98,26 @@ $this->registerCssFile('@web/css/detailView.css');
                 <?php if (Yii::$app->user->identity->is_manager) : ?>
                     <?= Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
                     <?= Html::a(Yii::t('app', 'Update Address'), ['update-address', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-                <?php endif; ?>
+                    <?php if (!$model->is_deleted && $model->id != Yii::$app->user->id): ?>
+                        <?= Html::a(Yii::t('app', 'Disable'), ['soft-delete', 'id' => $model->id], [
+                            'class' => 'btn btn-warning',
+                            'data' => [
+                                'confirm' => Yii::t('app', 'Are you sure you want to disable this employee?'),
+                                'method' => 'post',
+                            ],
+                        ]) ?>
+                    <?php elseif ($model->id != Yii::$app->user->id): ?>
+                        <?= Html::a(Yii::t('app', 'Enable'), ['restore', 'id' => $model->id], [
+                            'class' => 'btn btn-success',
+                            'data' => [
+                                'confirm' => Yii::t('app', 'Are you sure you want to enable this employee?'),
+                                'method' => 'post',
+                            ],
+                        ]) ?>
+                    <?php endif;?>
+                <?php endif;?>
                 <?= Html::a(Yii::t('app', 'Change Password'), ['change-password', 'id' => $model->id], ['class' => 'btn btn-secondary']) ?>
-                <?php if (Yii::$app->user->identity->is_manager) : ?>
+                <?php if (Yii::$app->user->identity->is_manager && $model->id != Yii::$app->user->id) : ?>
                     <?= Html::a(Yii::t('app', 'Delete'), ['delete', 'id' => $model->id], [
                         'class' => 'btn btn-danger',
                         'data' => [

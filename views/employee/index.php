@@ -47,6 +47,16 @@ $gridColumns = [
         'falseLabel' => Yii::t('app', 'No')
     ],
     [
+        'attribute' => 'is_deleted',
+        'label' => Yii::t('app', 'Active'),
+        'class' => '\kartik\grid\BooleanColumn',
+        'trueLabel' => Yii::t('app', 'No'),
+        'falseLabel' => Yii::t('app', 'Yes'),
+        'value' => function ($model) {
+            return !$model->is_deleted;
+        }
+    ],
+    [
         'class' => 'kartik\grid\ActionColumn',
         'width' => '100px',
     ],
