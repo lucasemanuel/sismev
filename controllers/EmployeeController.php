@@ -30,12 +30,12 @@ class EmployeeController extends Controller
                 'class' => AccessControl::class,
                 'rules' => [
                     [
-                        'actions' => ['profile', 'change-password'],
+                        'actions' => ['profile', 'change-password', 'validate-password'],
                         'allow' => true,
                         'roles' => ['cashier']
                     ],
                     [
-                        'actions' => ['index', 'view', 'create', 'update', 'update-address', 'delete'],
+                        'actions' => ['index', 'view', 'create', 'update', 'update-address', 'delete', 'soft-delete', 'restore'],
                         'allow' => true,
                         'roles' => ['admin']
                     ]
@@ -46,6 +46,8 @@ class EmployeeController extends Controller
                 'actions' => [
                     'delete' => ['POST'],
                     'validate-password' => ['POST'],
+                    'restore' => ['POST'],
+                    'soft-delete' => ['POST']
                 ],
             ],
         ];
@@ -210,6 +212,20 @@ class EmployeeController extends Controller
             $transaction->rollBack();
             throw $e;
         }
+    }
+
+    public function actionSoftDelete($id)
+    {
+        $this->findModel($id)->softDelete();
+
+        return $this->redirect(['view', 'id' => $id]);
+    }
+
+    public function actionRestore($id)
+    {
+        $this->findModel($id)->restore();
+
+        return $this->redirect(['view', 'id' => $id]);
     }
 
     /**
