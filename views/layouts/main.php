@@ -75,7 +75,7 @@ AdminLteAsset::register($this);
 		<aside class="main-sidebar sidebar-dark-primary elevation-4">
 			<!-- Brand Logo -->
 			<a href=<?= Url::to(['/site/index']) ?> class="brand-link">
-				<p class="brand-text font-weight-bold text-center" style="margin: auto;">SISMEC</p>
+				<p class="brand-text font-weight-bold text-center" style="margin: auto;"><?= Yii::$app->name ?></p>
 			</a>
 
 			<!-- Sidebar -->
