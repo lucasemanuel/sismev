@@ -30,7 +30,8 @@
         "kartik-v/yii2-widget-select2": "2.1.7",
         "kartik-v/yii2-widget-datetimepicker": "^1.4",
         "kartik-v/yii2-date-range": "^1.7",
-        "yii2tech/ar-softdelete": "^1.0"
+        "yii2tech/ar-softdelete": "^1.0",
+        "npm-asset/vue": "^2.6"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",
