@@ -3,6 +3,10 @@
 namespace app\models;
 
 use Yii;
+use yii\behaviors\AttributeBehavior;
+use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
+use yii\db\Expression;
 
 /**
  * This is the model class for table "order".
@@ -21,7 +25,7 @@ use Yii;
  * @property Product[] $products
  * @property Sale[] $sales
  */
-class Order extends \yii\db\ActiveRecord
+class Order extends ActiveRecord
 {
     /**
      * {@inheritdoc}
@@ -31,13 +35,30 @@ class Order extends \yii\db\ActiveRecord
         return 'order';
     }
 
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::class,
+                'value' => new Expression('NOW()'),
+            ],
+            'SetCode' => [
+                'class' => AttributeBehavior::class,
+                'attributes' => [
+                    self::EVENT_BEFORE_INSERT => 'code',
+                ],
+                'value' => self::generateCode()
+            ],
+        ];
+    }
+
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['code', 'created_at', 'company_id'], 'required'],
+            [['company_id'], 'required'],
             [['total_value'], 'number'],
             [['note'], 'string'],
             [['is_quotation', 'company_id'], 'integer'],
@@ -102,5 +123,22 @@ class Order extends \yii\db\ActiveRecord
     public function getSales()
     {
         return $this->hasMany(Sale::class, ['order_id' => 'id']);
+    }
+
+    private function generateCode()
+    {
+        $code = date('YmdHis').substr(microtime(), 2, 6);
+        $exists = self::find()->andWhere(['code' => $code])->one();
+
+        return $exists ? self::generateCode() : $code;
+    }
+
+    public static function findByCode($code)
+    {
+        $order = self::find()
+            ->andWhere(['code' => $code])
+            ->one();
+
+        return $order;        
     }
 }
