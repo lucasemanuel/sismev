@@ -194,4 +194,14 @@ class Product extends ActiveRecord
             $this->variations[$variation_set->id] = is_null($variation) ? null : $variation->id;
         }
     }
+
+    public function fields()
+    {
+        $fields = parent::fields();
+        $fields['name'] = function() {
+            return $this->__toString();
+        };
+
+        return $fields;
+    }
 }
