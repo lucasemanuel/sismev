@@ -8,8 +8,6 @@ use yii\bootstrap4\Html;
 use yii\helpers\Url;
 use yii\web\JsExpression;
 
-$this->registerJsFile('@web/js/pos/main.js');
-
 ?>
 <div class="pos-form card card-primary card-outline">
 
@@ -17,13 +15,17 @@ $this->registerJsFile('@web/js/pos/main.js');
         <h3 class="card-title"><?= Yii::t('app', 'Add order item') ?></h3>
     </div>
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin([
+        'enableAjaxValidation' => true,
+        'enableClientValidation' => false,
+        'validationUrl' => ['/api/order-item/validation'],
+    ]); ?>
 
     <div class="card-body">
         <div class="row">
             <?= $form->field($model, 'product_id', ['options' => ['class' => 'col']])->widget(Select2::class, [
                 'options' => [
-                    'placeholder' => Yii::t('app', 'Search for a Product...')
+                    'placeholder' => Yii::t('app', 'Search for a Product...'),
                 ],
                 'pluginOptions' => [
                     'allowClear' => true,
@@ -45,7 +47,10 @@ $this->registerJsFile('@web/js/pos/main.js');
                     'templateSelection' => new JsExpression('product => { return product.name; }'),
                 ],
                 'pluginEvents' => [
-                    'select2:select' => new JsExpression('product => { setPrice(product.params.data.unit_price); }'),
+                    'select2:select' => new JsExpression('product => { 
+                        const { unit_price } = product.params.data;
+                        setPrice(unit_price);
+                    }'),
                 ],
             ])->label(Yii::t('app', 'Product unit defautl value')) ?>
         </div>
@@ -59,7 +64,7 @@ $this->registerJsFile('@web/js/pos/main.js');
                     ]
                 ],
                 'options' => [
-                    'class' => 'col-4'
+                    'class' => 'col-4',
                 ]
             ])->widget(NumberControl::class, [
                 'disabled' => true,
@@ -102,10 +107,12 @@ $this->registerJsFile('@web/js/pos/main.js');
                     'rightAlign' => false,
                 ],
             ]) ?>
+
+            <?= $form->field($model, 'order_id')->hiddenInput()->label(false);?>
         </div>
     </div>
     <div class="card-footer">
-        <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success', 'v-on:click' => 'pushItem']) ?>
     </div>
 
     <?php $form = ActiveForm::end(); ?>
