@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\components\traits\UpdateCountersTrait;
 use Yii;
 use yii\behaviors\AttributeBehavior;
 use yii\behaviors\TimestampBehavior;
@@ -27,6 +28,8 @@ use yii\db\Expression;
  */
 class Order extends ActiveRecord
 {
+    use UpdateCountersTrait;
+
     /**
      * {@inheritdoc}
      */
@@ -125,7 +128,7 @@ class Order extends ActiveRecord
         return $this->hasMany(Sale::class, ['order_id' => 'id']);
     }
 
-    private function generateCode()
+    private static function generateCode()
     {
         $code = date('YmdHis').substr(microtime(), 2, 6);
         $exists = self::find()->andWhere(['code' => $code])->one();
