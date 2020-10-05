@@ -19,7 +19,7 @@ use yii\db\ActiveRecord;
  */
 class OrderItem extends ActiveRecord
 {
-    private $total;
+    private $_total;
 
     /**
      * {@inheritdoc}
@@ -38,7 +38,6 @@ class OrderItem extends ActiveRecord
             [['amount', 'unit_price', 'order_id', 'product_id'], 'required'],
             [['amount', 'unit_price'], 'number'],
             [['order_id', 'product_id'], 'integer'],
-            [['order_id', 'product_id'], 'unique', 'targetAttribute' => ['order_id', 'product_id']],
             [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Order::class, 'targetAttribute' => ['order_id' => 'id']],
             [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::class, 'targetAttribute' => ['product_id' => 'id']],
         ];
@@ -94,12 +93,18 @@ class OrderItem extends ActiveRecord
     {
         return [
             'id',
-            'name' => function ($model) {
-                return $this->product->name;
+            'name' => function () {
+                return $this->product->__toString();
             },
-            'unit_price',
-            'amount',
-            'total'
+            'unit_price' => function () {
+                return Yii::$app->formatter->asCurrency($this->unit_price);
+            },
+            'amount' => function () {
+                return Yii::$app->formatter->asAmount($this->amount);
+            },
+            'total' => function () {
+                return Yii::$app->formatter->asCurrency($this->total);
+            },
         ];
     }
 }

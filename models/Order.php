@@ -66,6 +66,7 @@ class Order extends ActiveRecord
             [['is_quotation', 'company_id'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
             [['code'], 'string', 'max' => 20],
+            [['total_value'], 'default', 'value' => 0],
             [['company_id'], 'exist', 'skipOnError' => true, 'targetClass' => Company::class, 'targetAttribute' => ['company_id' => 'id']],
         ];
     }
@@ -132,5 +133,16 @@ class Order extends ActiveRecord
             ->one();
 
         return $order;        
+    }
+
+    public function fields()
+    {
+        return [
+            'code',
+            'total_value' => function () {
+                return Yii::$app->formatter->asCurrency($this->total_value);
+            },
+            'orderItems'
+        ];
     }
 }
