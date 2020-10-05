@@ -8,6 +8,8 @@ use yii\bootstrap4\Html;
 use yii\helpers\Url;
 use yii\web\JsExpression;
 
+$this->registerJsFile('@web/js/pos/main.js');
+
 ?>
 <div class="pos-form card card-primary card-outline">
 
@@ -19,35 +21,33 @@ use yii\web\JsExpression;
 
     <div class="card-body">
         <div class="row">
-            <?= $form->field($model, 'product_id', ['options' => ['class' => 'col']])
-                ->widget(Select2::class, [
-                    'options' => [
-                        'placeholder' => Yii::t('app', 'Search for a Product...')
-                    ],
-                    'pluginOptions' => [
-                        'allowClear' => true,
-                        'minimumInputLength' => 1,
-                        'language' => [
-                            'errorLoading' => new JsExpression(
-                                "() => { return '".Yii::t('app', 'Waiting for results...')."'; }"
-                            ),
+            <?= $form->field($model, 'product_id', ['options' => ['class' => 'col']])->widget(Select2::class, [
+                'options' => [
+                    'placeholder' => Yii::t('app', 'Search for a Product...')
+                ],
+                'pluginOptions' => [
+                    'allowClear' => true,
+                    'minimumInputLength' => 1,
+                    'language' => [
+                        'errorLoading' => new JsExpression(
+                            "() => { return '" . Yii::t('app', 'Waiting for results...') . "'; }"
+                        ),
                     ],
                     'ajax' => [
                         'url' => Url::to(['/api/product/query']),
                         'dataType' => 'json',
                         'delay' => 100,
-                        'data' => new JsExpression('params => { return {q:params.term}; }'),
+                        'data' => new JsExpression('params => { return { q:params.term }; }'),
                         'cache' => true
                     ],
                     'escapeMarkup' => new JsExpression('markup => { return markup; }'),
                     'templateResult' => new JsExpression('product => { return product.name; }'),
                     'templateSelection' => new JsExpression('product => { return product.name; }'),
-                    ],
-                    'pluginEvents' => [
-                        'select2:select' => 'product => { setForm(product.params.data.price); }',
-                    ],
-                ]
-            )->label(Yii::t('app', 'Product unit defautl value')) ?>
+                ],
+                'pluginEvents' => [
+                    'select2:select' => new JsExpression('product => { setPrice(product.params.data.unit_price); }'),
+                ],
+            ])->label(Yii::t('app', 'Product unit defautl value')) ?>
         </div>
 
         <div class="row">
