@@ -4,7 +4,7 @@ namespace app\controllers;
 
 use app\components\factories\OrderFactory;
 use app\models\Order;
-use app\models\OrderProduct;
+use app\models\OrderItem;
 use yii\web\Controller;
 
 class PosController extends Controller
@@ -22,7 +22,7 @@ class PosController extends Controller
 
         $order = Order::findByCode($code);
 
-        $item = new OrderProduct();
+        $item = new OrderItem();
         $item->order_id = Order::findByCode($code)->id;
 
         return $this->render('index', [
