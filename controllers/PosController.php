@@ -27,6 +27,7 @@ class PosController extends Controller
 
         return $this->render('index', [
             'item' => $item,
+            'code' => $code,
         ]);    
     }
 
