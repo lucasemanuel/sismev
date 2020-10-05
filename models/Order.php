@@ -22,8 +22,7 @@ use yii\db\Expression;
  * @property int $company_id
  *
  * @property Company $company
- * @property OrderProduct[] $orderProducts
- * @property Product[] $products
+ * @property OrderItem[] $orderItems
  * @property Sale[] $sales
  */
 class Order extends ActiveRecord
@@ -99,23 +98,13 @@ class Order extends ActiveRecord
     }
 
     /**
-     * Gets query for [[OrderProducts]].
+     * Gets query for [[OrderItems]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getOrderProducts()
+    public function getOrderItems()
     {
-        return $this->hasMany(OrderProduct::class, ['order_id' => 'id']);
-    }
-
-    /**
-     * Gets query for [[Products]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getProducts()
-    {
-        return $this->hasMany(Product::class, ['id' => 'product_id'])->viaTable('order_product', ['order_id' => 'id']);
+        return $this->hasMany(OrderItem::class, ['order_id' => 'id']);
     }
 
     /**

@@ -17,8 +17,8 @@ use yii\db\Expression;
  * @property string $name
  * @property float $unit_price
  * @property float $amount
- * @property float $max_amount
- * @property float $min_amount
+ * @property float|null $max_amount
+ * @property float|null $min_amount
  * @property int|null $is_deleted
  * @property string $created_at
  * @property string|null $updated_at
@@ -26,8 +26,7 @@ use yii\db\Expression;
  * @property int $category_id
  *
  * @property Operation[] $operations
- * @property OrderProduct[] $orderProducts
- * @property Order[] $orders
+ * @property OrderItem[] $orderItems
  * @property Category $category
  * @property ProductVariationAttribute[] $productVariationAttributes
  * @property VariationAttribute[] $variationAttributes
@@ -121,13 +120,13 @@ class Product extends ActiveRecord
     }
 
     /**
-     * Gets query for [[OrderProducts]].
+     * Gets query for [[OrderItems]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getOrderProducts()
+    public function getOrderItems()
     {
-        return $this->hasMany(OrderProduct::class, ['product_id' => 'id']);
+        return $this->hasMany(OrderItem::class, ['product_id' => 'id']);
     }
 
     /**

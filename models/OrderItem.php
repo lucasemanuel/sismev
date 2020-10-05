@@ -3,26 +3,30 @@
 namespace app\models;
 
 use Yii;
+use yii\db\ActiveRecord;
 
 /**
- * This is the model class for table "order_product".
+ * This is the model class for table "order_item".
  *
- * @property int $order_id
- * @property int $product_id
+ * @property int $id
  * @property float $amount
  * @property float $unit_price
+ * @property int $order_id
+ * @property int $product_id
  *
  * @property Order $order
  * @property Product $product
  */
-class OrderProduct extends \yii\db\ActiveRecord
+class OrderItem extends ActiveRecord
 {
+    private $total;
+
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'order_product';
+        return 'order_item';
     }
 
     /**
@@ -31,9 +35,9 @@ class OrderProduct extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['order_id', 'product_id', 'amount', 'unit_price'], 'required'],
-            [['order_id', 'product_id'], 'integer'],
+            [['amount', 'unit_price', 'order_id', 'product_id'], 'required'],
             [['amount', 'unit_price'], 'number'],
+            [['order_id', 'product_id'], 'integer'],
             [['order_id', 'product_id'], 'unique', 'targetAttribute' => ['order_id', 'product_id']],
             [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Order::class, 'targetAttribute' => ['order_id' => 'id']],
             [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::class, 'targetAttribute' => ['product_id' => 'id']],
@@ -46,10 +50,11 @@ class OrderProduct extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'order_id' => Yii::t('app', 'Order ID'),
-            'product_id' => Yii::t('app', 'Product ID'),
+            'id' => Yii::t('app', 'ID'),
             'amount' => Yii::t('app', 'Amount'),
             'unit_price' => Yii::t('app', 'Unit Price'),
+            'order_id' => Yii::t('app', 'Order ID'),
+            'product_id' => Yii::t('app', 'Product ID'),
         ];
     }
 
@@ -71,5 +76,30 @@ class OrderProduct extends \yii\db\ActiveRecord
     public function getProduct()
     {
         return $this->hasOne(Product::class, ['id' => 'product_id']);
+    }
+
+    public function afterSave($insert, $changedAttributes)
+    {
+        parent::afterSave($insert, $changedAttributes);
+        $order = $this->order;
+        $order->updateCounters(['total_value' => $this->total]);
+    }
+
+    public function getTotal()
+    {
+        return $this->amount * $this->unit_price;
+    }
+
+    public function fields()
+    {
+        return [
+            'id',
+            'name' => function ($model) {
+                return $this->product->name;
+            },
+            'unit_price',
+            'amount',
+            'total'
+        ];
     }
 }
