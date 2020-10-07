@@ -23,12 +23,23 @@ const app = new Vue({
                     const { name, message } = response.data;
                     showToast(name, message);
                 });
-            return false;
+        },
+        popItem(index) {
+            const id = this.items[index].id;
+            console.log(index);
+            axios.delete('/api/order-item/delete', { params: { id } })
+                .then(({ data }) => {
+                    this.total = data.total;
+                    this.items.splice(index, 1);
+                })
+                .catch(({ response }) => {
+                    const { name, message } = response.data;
+                    showToast(name, message);
+                });
         },
         load() {
             axios.get('/api/order/index', { params: { id: this.orderId } })
                 .then(({ data }) => {
-                    console.log(data);
                     this.items = data.orderItems;
                     this.total = data.total_value;
                 })
@@ -37,9 +48,6 @@ const app = new Vue({
                     showToast(name, message);
                 });
         },
-        popItem() {
-
-        }
     }
 });
 
@@ -53,7 +61,7 @@ Vue.component('order_items', {
         <td>{{ amount }}</td>\
         <td>{{ total }}</td>\
         <td>\
-            <a href="#" class="text-muted">\
+            <a href="#" class="text-muted" v-on:click="app.popItem(index)">\
                 <i class="fas fa-trash"></i>\
             </a>\
         </td>\
