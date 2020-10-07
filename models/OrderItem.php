@@ -80,8 +80,17 @@ class OrderItem extends ActiveRecord
     public function afterSave($insert, $changedAttributes)
     {
         parent::afterSave($insert, $changedAttributes);
+
         $order = $this->order;
         $order->updateCounters(['total_value' => $this->total]);
+    }
+
+    public function afterDelete()
+    {
+        parent::afterDelete();
+
+        $order = $this->order;
+        $order->updateCounters(['total_value' => $this->total * (-1)]);
     }
 
     public function getTotal()
