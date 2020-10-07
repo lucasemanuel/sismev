@@ -17,7 +17,8 @@ const app = new Vue({
                 .then(({ data }) => {
                     this.items.push(data.orderItem);
                     this.total = data.total;
-                    $('form').trigger('reset');
+                    const $form = $('form');
+                    $form.get(0).reset();
                 })
                 .catch(({ response }) => {
                     const { name, message } = response.data;
@@ -26,7 +27,6 @@ const app = new Vue({
         },
         popItem(index) {
             const id = this.items[index].id;
-            console.log(index);
             axios.delete('/api/order-item/delete', { params: { id } })
                 .then(({ data }) => {
                     this.total = data.total;
@@ -85,4 +85,4 @@ function setPrice(value) {
     $('#orderItem-unit_price-disp').focus();
 }
 
-$('form').on('submit', e => e.preventDefault());
+$('form').on('submit', e => false);

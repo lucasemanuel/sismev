@@ -19,6 +19,7 @@ use yii\web\JsExpression;
         'enableAjaxValidation' => true,
         'enableClientValidation' => false,
         'validationUrl' => ['/api/order-item/validation'],
+        'validateOnSubmit' => false,
     ]); ?>
 
     <div class="card-body">
