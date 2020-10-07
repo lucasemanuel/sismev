@@ -2,6 +2,7 @@
 
 namespace app\modules\api\controllers;
 
+use app\models\Order;
 use app\models\OrderItem;
 use Yii;
 use yii\filters\ContentNegotiator;
@@ -42,7 +43,7 @@ class OrderItemController extends Controller
 
         return parent::beforeAction($action);
     }
-    
+
     public function actionCreate()
     {
         $model = new OrderItem();
@@ -50,7 +51,7 @@ class OrderItemController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return [
                 'orderItem' => $model, 
-                'totalOrder' => $model->order->total_value
+                'total' => $model->order->toArray()['total_value']
             ];
         }
 
@@ -61,8 +62,13 @@ class OrderItemController extends Controller
     public function actionDelete($id)
     {
         $model = $this->findModel($id);
+        $orderId = $model->order_id;
 
         $model->delete($id);
+
+        return [ 
+            'total' => Order::findOne($orderId)->total_value
+        ];
     }
 
     public function actionValidation()
