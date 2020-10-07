@@ -35,6 +35,14 @@ class OrderItem extends ActiveRecord
     public function rules()
     {
         return [
+            [
+                ['product_id'],
+                'unique',
+                'targetAttribute' => [
+                    'order_id', 'product_id'
+                ],
+                'message' => Yii::t('app', 'This product has already been placed in the order')
+            ],
             [['amount', 'unit_price', 'order_id', 'product_id'], 'required'],
             [['amount', 'unit_price'], 'number'],
             [['order_id', 'product_id'], 'integer'],
