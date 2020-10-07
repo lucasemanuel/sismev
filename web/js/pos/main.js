@@ -81,8 +81,8 @@ function showToast(title, message = '') {
 
 function setPrice(value) {
     $('#product-unit_price-disp').inputmask("setvalue", value);
-    $('#orderItem-unit_price-disp').inputmask("setvalue", value);
-    $('#orderItem-unit_price-disp').focus();
+    $('#orderitem-unit_price-disp').inputmask("setvalue", value);
+    $('#orderitem-unit_price-disp').focus();
 }
 
 $('form').on('submit', e => false);
