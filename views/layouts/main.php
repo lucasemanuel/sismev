@@ -151,6 +151,13 @@ AdminLteAsset::register($this);
 								<p><?= Yii::t('app', 'Payment Methods') ?></p>
 							</a>
 						</li>
+						<li class="nav-header"><?= strtoupper(Yii::t('app', 'Sell')) ?></li>
+						<li class="nav-item">
+							<a href="<?= Url::to(['/pos']) ?>" class="nav-link">
+								<i class="nav-icon fas fa-shopping-cart"></i>
+								<p><?= Yii::t('app', 'Point of Sale') ?></p>
+							</a>
+						</li>
 					</ul>
 				</nav>
 				<!-- /.sidebar-menu -->
