@@ -37,10 +37,13 @@ class PosController extends Controller
     public function actionCheckout($code)
     {
         $order = $this->findOrder($code);
-
-        $sale = SaleFactory::create([
-            'order_id' => $order->id
-        ]);
+        
+        $sale = $order->sale;
+        if ($sale === null) {
+            $sale = SaleFactory::create([
+                'order_id' => $order->id
+            ]);
+        }
         
         $payment = new Pay();
         $payment->sale_id = $sale->id;
