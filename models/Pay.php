@@ -37,6 +37,11 @@ class Pay extends ActiveRecord
             [['value'], 'number'],
             [['installments', 'payment_method_id', 'sale_id'], 'integer'],
             [['installments'], 'default', 'value' => 1],
+            [['installments'], function ($attribute, $params, $validator) {
+                if ($this->paymentMethod !== null && $this->$attribute > $this->paymentMethod->installment_limit) {
+                    $this->addError($attribute, Yii::t('app', 'Installment above the limit defined in payment method.'));
+                }
+            }],
             [['payment_method_id'], 'exist', 'skipOnError' => true, 'targetClass' => PaymentMethod::class, 'targetAttribute' => ['payment_method_id' => 'id']],
             [['sale_id'], 'exist', 'skipOnError' => true, 'targetClass' => Sale::class, 'targetAttribute' => ['sale_id' => 'id']],
         ];
