@@ -1,5 +1,5 @@
 const app = new Vue({
-    el: '.pos-index',
+    el: '.checkout-index',
     data: {
         items: [],
         total: 0,
