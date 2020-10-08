@@ -7,6 +7,7 @@ use app\components\factories\SaleFactory;
 use app\models\Order;
 use app\models\OrderItem;
 use app\models\Pay;
+use app\models\Sale;
 use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -48,6 +49,14 @@ class PosController extends Controller
             'pay' => $payment,
             'code' => $code
         ]);
+    }
+
+    public function actionComplete($code)
+    {
+        $sale = $this->findOrder($code)->sale;
+
+        $this->trigger(Sale::EVENT_COMPLETE_SALE);
+        return;
     }
 
     protected function findOrder($code)
