@@ -6,7 +6,7 @@ const app = new Vue({
         saleId: '',
     },
     mounted() {
-        this.orderId = document.querySelector('#pay-sale_id').value;
+        this.saleId = document.querySelector('#pay-sale_id').value;
         this.load();
     },
     methods: {
@@ -28,6 +28,15 @@ const app = new Vue({
         popItem(index) {
         },
         load() {
+            axios.get('/api/sale/', { params: { id: this.saleId } })
+                .then(({ data }) => {
+                    this.items = data.pays;
+                    this.total = data.total;
+                })
+                .catch(({ response }) => {
+                    const { name, message } = response.data;
+                    showToast(name, message);
+                });
         },
     }
 });
