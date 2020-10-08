@@ -90,4 +90,11 @@ class Sale extends ActiveRecord
     {
         return $this->hasOne(Order::class, ['id' => 'order_id']);
     }
+
+    public function fields()
+    {
+        return [
+            'total' => Yii::$app->formatter->asCurrency($this->total)
+        ];
+    }
 }
