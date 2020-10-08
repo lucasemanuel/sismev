@@ -2,7 +2,9 @@
 
 namespace app\models;
 
+use app\components\Seller;
 use Yii;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "sale".
@@ -10,6 +12,7 @@ use Yii;
  * @property int $id
  * @property float|null $amount_paid
  * @property float|null $discount
+ * @property int|null $is_canceled
  * @property string|null $sale_at
  * @property string|null $canceled_at
  * @property string|null $updated_at
@@ -18,14 +21,23 @@ use Yii;
  * @property Pay[] $pays
  * @property Order $order
  */
-class Sale extends \yii\db\ActiveRecord
+class Sale extends ActiveRecord
 {
+    const EVENT_COMPLETE_SALE = 'complete_sale';
+    
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
         return 'sale';
+    }
+
+    public function init()
+    {
+        $this->on(self::EVENT_COMPLETE_SALE, [Seller::class, 'complete']);
+
+        parent::init();
     }
 
     /**
@@ -35,9 +47,9 @@ class Sale extends \yii\db\ActiveRecord
     {
         return [
             [['amount_paid', 'discount'], 'number'],
+            [['is_canceled', 'order_id'], 'integer'],
             [['sale_at', 'canceled_at', 'updated_at'], 'safe'],
             [['order_id'], 'required'],
-            [['order_id'], 'integer'],
             [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Order::class, 'targetAttribute' => ['order_id' => 'id']],
         ];
     }
@@ -51,6 +63,7 @@ class Sale extends \yii\db\ActiveRecord
             'id' => Yii::t('app', 'ID'),
             'amount_paid' => Yii::t('app', 'Amount Paid'),
             'discount' => Yii::t('app', 'Discount'),
+            'is_canceled' => Yii::t('app', 'Is Canceled'),
             'sale_at' => Yii::t('app', 'Sale At'),
             'canceled_at' => Yii::t('app', 'Canceled At'),
             'updated_at' => Yii::t('app', 'Updated At'),
