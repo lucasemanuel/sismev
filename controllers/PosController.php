@@ -45,7 +45,7 @@ class PosController extends Controller
         $payment = new Pay();
         $payment->sale_id = $sale->id;
 
-        return $this->render('checkout', [
+        return $this->render('/checkout/index', [
             'pay' => $payment,
             'code' => $code
         ]);
