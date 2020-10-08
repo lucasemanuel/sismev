@@ -23,7 +23,7 @@ use yii\db\Expression;
  *
  * @property Company $company
  * @property OrderItem[] $orderItems
- * @property Sale[] $sales
+ * @property Sale $sale
  */
 class Order extends ActiveRecord
 {
@@ -109,13 +109,13 @@ class Order extends ActiveRecord
     }
 
     /**
-     * Gets query for [[Sales]].
+     * Gets query for [[Sale]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getSales()
+    public function getSale()
     {
-        return $this->hasMany(Sale::class, ['order_id' => 'id']);
+        return $this->hasOne(Sale::class, ['order_id' => 'id']);
     }
 
     private static function generateCode()
