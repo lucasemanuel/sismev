@@ -6,11 +6,24 @@ const app = new Vue({
         saleId: '',
     },
     mounted() {
-        this.orderId = document.querySelector('#pay-order_id').value;
+        this.orderId = document.querySelector('#pay-sale_id').value;
         this.load();
     },
     methods: {
-        pushItem() {
+        pushPay() {
+            const form = document.querySelector('form');
+            const formData = new FormData(form);
+            axios.post('/api/pay/create', formData)
+                .then(({ data }) => {
+                    this.items.push(data.pay);
+                    this.total = data.total;
+                    const $form = $('form');
+                    $form.get(0).reset();
+                })
+                .catch(({ response }) => {
+                    const { name, message } = response.data;
+                    showToast(name, message);
+                });
         },
         popItem(index) {
         },
@@ -25,8 +38,8 @@ Vue.component('payment_items', {
     <tr>\
         <td>{{ index+1 }}</td>\
         <td>{{ name }}</td>\
-        <td>{{ unit_price }}</td>\
-        <td>{{ amount }}</td>\
+        <td>{{ installments }}</td>\
+        <td>{{ value }}</td>\
         <td>\
             <a href="#" class="text-muted">\
                 <i class="fas fa-trash"></i>\
