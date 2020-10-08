@@ -47,6 +47,7 @@ class Sale extends ActiveRecord
     {
         return [
             [['amount_paid', 'discount'], 'number'],
+            [['amount_paid', 'discount'], 'default', 'value' => 0],
             [['is_canceled', 'order_id'], 'integer'],
             [['sale_at', 'canceled_at', 'updated_at'], 'safe'],
             [['order_id'], 'required'],
@@ -94,7 +95,11 @@ class Sale extends ActiveRecord
     public function fields()
     {
         return [
-            'total' => Yii::$app->formatter->asCurrency($this->amount_paid)
+            'total' => function () {
+                $this->amount_paid = isset($this->amount_paid) ? $this->amount_paid : 0;
+                return Yii::$app->formatter->asCurrency($this->amount_paid);
+            },
+            'pays'
         ];
     }
 }

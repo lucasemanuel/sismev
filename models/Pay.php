@@ -88,4 +88,20 @@ class Pay extends ActiveRecord
         $sale = $this->sale;
         $sale->updateCounters(['amount_paid' => $this->value]);
     }
+
+    public function fields()
+    {
+        return [
+            'id',
+            'name' => function () {
+                return $this->paymentMethod->name;
+            },
+            'installments' => function () {
+                return "x$this->installments";
+            },
+            'value' => function () {
+                Yii::$app->formatter->asCurrency($this->value);
+            }
+        ];
+    }
 }
