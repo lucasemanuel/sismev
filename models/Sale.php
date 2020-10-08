@@ -94,7 +94,7 @@ class Sale extends ActiveRecord
     public function fields()
     {
         return [
-            'total' => Yii::$app->formatter->asCurrency($this->total)
+            'total' => Yii::$app->formatter->asCurrency($this->amount_paid)
         ];
     }
 }
