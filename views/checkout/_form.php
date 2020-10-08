@@ -46,6 +46,13 @@ use yii\web\JsExpression;
                     'templateResult' => new JsExpression('payment => { return payment.name; }'),
                     'templateSelection' => new JsExpression('payment => { return payment.name; }'),
                 ],
+                'pluginEvents' => [
+                    'select2:select' => new JsExpression('payment => { 
+                        const { installment_limit } = payment.params.data;
+                        $("#pay-installments").prop("max", installment_limit);
+                        $("#pay-installments").val(1);
+                    }'),
+                ],
             ]) ?>
 
             <?= $form->field($model, 'installments', ['options' => ['class' => 'col-4']])
