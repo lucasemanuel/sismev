@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "pay".
@@ -16,7 +17,7 @@ use Yii;
  * @property PaymentMethod $paymentMethod
  * @property Sale $sale
  */
-class Pay extends \yii\db\ActiveRecord
+class Pay extends ActiveRecord
 {
     /**
      * {@inheritdoc}
@@ -35,6 +36,7 @@ class Pay extends \yii\db\ActiveRecord
             [['value', 'payment_method_id', 'sale_id'], 'required'],
             [['value'], 'number'],
             [['installments', 'payment_method_id', 'sale_id'], 'integer'],
+            [['installments'], 'default', 'value' => 1],
             [['payment_method_id'], 'exist', 'skipOnError' => true, 'targetClass' => PaymentMethod::class, 'targetAttribute' => ['payment_method_id' => 'id']],
             [['sale_id'], 'exist', 'skipOnError' => true, 'targetClass' => Sale::class, 'targetAttribute' => ['sale_id' => 'id']],
         ];
@@ -72,5 +74,13 @@ class Pay extends \yii\db\ActiveRecord
     public function getSale()
     {
         return $this->hasOne(Sale::class, ['id' => 'sale_id']);
+    }
+
+    public function afterSave($insert, $changedAttributes)
+    {
+        parent::afterSave($insert, $changedAttributes);
+
+        $sale = $this->sale;
+        $sale->updateCounters(['amount_paid' => $this->value]);
     }
 }
