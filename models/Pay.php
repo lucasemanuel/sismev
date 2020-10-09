@@ -100,7 +100,7 @@ class Pay extends ActiveRecord
                 return "x$this->installments";
             },
             'value' => function () {
-                Yii::$app->formatter->asCurrency($this->value);
+                return Yii::$app->formatter->asCurrency($this->value);
             }
         ];
     }
