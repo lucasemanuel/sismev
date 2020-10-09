@@ -4,17 +4,31 @@ namespace app\controllers;
 
 use app\components\factories\OrderFactory;
 use app\components\factories\SaleFactory;
+use app\components\Seller;
 use app\models\Order;
 use app\models\OrderItem;
 use app\models\Pay;
-use app\models\Sale;
 use Yii;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
 class PosController extends Controller
 {
     public $layout = 'main_alt';
+
+    public function behaviors()
+    {
+        return [
+            'verbs' => [
+                'class' => VerbFilter::class,
+                'actions' => [
+                    'complete' => ['POST'],
+                ],
+            ],
+        ];
+    }
+
 
     public function actionIndex($code = null)
     {
@@ -63,7 +77,7 @@ class PosController extends Controller
     {
         $sale = $this->findOrder($code)->sale;
 
-        $this->trigger(Sale::EVENT_COMPLETE_SALE);
+        $sale->trigger(Seller::EVENT_COMPLETE_SALE);
         return;
     }
 

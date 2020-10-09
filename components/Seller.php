@@ -11,6 +11,8 @@ use yii\web\BadRequestHttpException;
 
 class Seller extends Component
 {
+    const EVENT_COMPLETE_SALE = 'complete_sale';
+
     public static function complete($event)
     {
         $sale = $event->sender;
@@ -19,7 +21,7 @@ class Seller extends Component
             $sale->sale_at = new Expression('NOW()');
             $sale->update();
 
-            $items = $sale->order->OrderItems;
+            $items = $sale->order->orderItems;
             self::descraseItemsStock($items);
         });
     }
@@ -33,6 +35,7 @@ class Seller extends Component
                 'amount' => $item->amount,
                 'reason' => Yii::t('app', 'Product sale.'),
                 'product_id' => $item->product_id,
+                'employee_id' => Yii::$app->user->id,
             ];
 
             if (!$operation->save()) {
