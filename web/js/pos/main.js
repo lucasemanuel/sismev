@@ -51,24 +51,6 @@ const app = new Vue({
     }
 });
 
-Vue.component('order_items', {
-    props: ['id', 'index', 'name', 'amount', 'unit_price', 'total'],
-    template: '\
-    <tr>\
-        <td>{{ index+1 }}</td>\
-        <td>{{ name }}</td>\
-        <td>{{ unit_price }}</td>\
-        <td>{{ amount }}</td>\
-        <td>{{ total }}</td>\
-        <td>\
-            <a href="#" class="text-muted" v-on:click="app.popItem(index)">\
-                <i class="fas fa-trash"></i>\
-            </a>\
-        </td>\
-    </tr>\
-    ',
-})
-
 function showToast(title, message = '') {
     $(document).Toasts('create', {
         title: title,
@@ -80,7 +62,7 @@ function showToast(title, message = '') {
 }
 
 function setPrice(value) {
-    $('#product-unit_price-disp').inputmask("setvalue", value);
+    $('#orderitem-default_price-disp').inputmask("setvalue", value);
     $('#orderitem-unit_price-disp').inputmask("setvalue", value);
     $('#orderitem-unit_price-disp').focus();
 }
