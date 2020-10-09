@@ -11,8 +11,11 @@ const app = new Vue({
     },
     methods: {
         pushPay() {
+            $('form').yiiActiveForm('validate', true);
+            
             const form = document.querySelector('form');
             const formData = new FormData(form);
+
             axios.post('/api/pay/create', formData)
                 .then(({ data }) => {
                     this.items.push(data.pay);

@@ -11,8 +11,11 @@ const app = new Vue({
     },
     methods: {
         pushItem() {
+            $('form').yiiActiveForm('validate', true);
+
             const form = document.querySelector('form');
             const formData = new FormData(form);
+            
             axios.post('/api/order-item/create', formData)
                 .then(({ data }) => {
                     this.items.push(data.orderItem);
