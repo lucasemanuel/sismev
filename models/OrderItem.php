@@ -20,6 +20,7 @@ use yii\db\ActiveRecord;
 class OrderItem extends ActiveRecord
 {
     private $_total;
+    private $_default_price;
 
     /**
      * {@inheritdoc}
@@ -60,8 +61,9 @@ class OrderItem extends ActiveRecord
             'id' => Yii::t('app', 'ID'),
             'amount' => Yii::t('app', 'Amount'),
             'unit_price' => Yii::t('app', 'Unit Price'),
+            'default_price' => Yii::t('app', 'Defautl Price'),
             'order_id' => Yii::t('app', 'Order ID'),
-            'product_id' => Yii::t('app', 'Product ID'),
+            'product_id' => Yii::t('app', 'Product'),
         ];
     }
 
@@ -104,6 +106,11 @@ class OrderItem extends ActiveRecord
     public function getTotal()
     {
         return $this->amount * $this->unit_price;
+    }
+
+    public function getDefault_price()
+    {
+        return;
     }
 
     public function fields()
