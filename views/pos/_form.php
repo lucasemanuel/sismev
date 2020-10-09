@@ -55,7 +55,7 @@ use yii\web\JsExpression;
             ]) ?>
         </div>
 
-        <div class="row" style="margin-top: 1.25rem">
+        <div class="row">
             <?= $form->field($model, 'default_price', [
                 'addon' => [
                     'prepend' => [
@@ -64,7 +64,7 @@ use yii\web\JsExpression;
                     ]
                 ],
                 'options' => [
-                    'class' => 'col-4',
+                    'class' => 'col-sm',
                 ]
             ])->widget(NumberControl::class, [
                 'disabled' => true,
@@ -85,7 +85,7 @@ use yii\web\JsExpression;
                     ]
                 ],
                 'options' => [
-                    'class' => 'col-4'
+                    'class' => 'col-sm'
                 ]
             ])->widget(NumberControl::class, [
                 'maskedInputOptions' => [
@@ -99,7 +99,7 @@ use yii\web\JsExpression;
 
             <?= $form->field($model, 'amount', [
                 'options' => [
-                    'class' => 'col-4'
+                    'class' => 'col-sm'
                 ]
             ])->widget(NumberControl::class, [
                 'maskedInputOptions' => [

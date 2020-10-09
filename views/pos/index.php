@@ -14,6 +14,12 @@ $this->registerCSS(
     a {
         cursor: pointer;
     }
+    div .col-sm {
+        margin-top: 1.25rem;
+    }
+    th:last-child, td:last-child {
+        text-align: center;
+    }
     CSS
 )
 
@@ -32,10 +38,10 @@ $this->registerCSS(
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Product</th>
-                            <th>Price Un</th>
-                            <th>Amount</th>
-                            <th>Total price</th>
+                            <th style="min-width: 100px"><?= Yii::t('app', 'Product') ?></th>
+                            <th><?= Yii::t('app', 'Un. Price') ?></th>
+                            <th><?= Yii::t('app', 'Amount') ?></th>
+                            <th><?= Yii::t('app', 'Total') ?></th>
                             <th><?= Yii::t('app', 'Actions') ?></th>
                         </tr>
                     </thead>
@@ -45,10 +51,10 @@ $this->registerCSS(
                 </table>
             </div>
         </div>
-        <a class="small-box bg-info" href=<?= Url::to(['checkout', 'code' => $code])?>>
+        <a class="small-box bg-info" href=<?= Url::to(['checkout', 'code' => $code]) ?>>
             <div class="inner text-center">
                 <h3><?= Yii::t('app', 'Checkout') ?></h3>
-                <p>Total: {{ total }}</p>
+                <h5><?= Yii::t('app', 'Total:')?> {{ total }}</h5>
             </div>
             <div class="icon">
                 <i class="fas fa-shopping-cart"></i>
