@@ -1,6 +1,5 @@
 <?php
 
-use app\models\Product;
 use kartik\form\ActiveForm;
 use kartik\number\NumberControl;
 use kartik\select2\Select2;
@@ -53,11 +52,11 @@ use yii\web\JsExpression;
                         setPrice(unit_price);
                     }'),
                 ],
-            ])->label(Yii::t('app', 'Product unit defautl value')) ?>
+            ]) ?>
         </div>
 
-        <div class="row">
-            <?= $form->field(new Product(), 'unit_price', [
+        <div class="row" style="margin-top: 1.25rem">
+            <?= $form->field($model, 'default_price', [
                 'addon' => [
                     'prepend' => [
                         'content' => Yii::$app->formatter->getCurrencySymbol(),
@@ -76,7 +75,7 @@ use yii\web\JsExpression;
                 'displayOptions' => [
                     'class' => 'form-control rounded-right'
                 ]
-            ])->label(Yii::t('app', 'Product unit defautl value')) ?>
+            ]) ?>
 
             <?= $form->field($model, 'unit_price', [
                 'addon' => [
@@ -109,11 +108,13 @@ use yii\web\JsExpression;
                 ],
             ]) ?>
 
-            <?= $form->field($model, 'order_id')->hiddenInput()->label(false);?>
+            <?= $form->field($model, 'order_id')->hiddenInput()->label(false); ?>
         </div>
     </div>
     <div class="card-footer">
-        <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success', 'v-on:click' => 'pushItem']) ?>
+        <div class="d-flex justify-content-end">
+            <?= Html::submitButton(Yii::t('app', 'Add Item'), ['class' => 'btn btn-success', 'v-on:click' => 'pushItem']) ?>
+        </div>
     </div>
 
     <?php $form = ActiveForm::end(); ?>
