@@ -38,6 +38,11 @@ class PosController extends Controller
     {
         $order = $this->findOrder($code);
         
+        if (!$order->orderItems) {
+            Yii::$app->session->setFlash('info', Yii::t('app', "You cannot go to checkout without at least one item in the order."));
+            return $this->redirect(['index', 'code' => $order->code]);
+        }
+
         $sale = $order->sale;
         if ($sale === null) {
             $sale = SaleFactory::create([
