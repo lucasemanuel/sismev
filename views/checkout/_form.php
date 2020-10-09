@@ -82,7 +82,9 @@ use yii\web\JsExpression;
         </div>
     </div>
     <div class="card-footer">
-        <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success', 'v-on:click' => 'pushPay']) ?>
+        <div class="d-flex justify-content-end">
+            <?= Html::submitButton(Yii::t('app', 'Add Payment'), ['class' => 'btn btn-success', 'v-on:click' => 'pushPay']) ?>
+        </div>
     </div>
 
     <?php $form = ActiveForm::end(); ?>
