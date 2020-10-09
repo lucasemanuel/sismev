@@ -1,19 +1,13 @@
 <?php
 /* @var $this yii\web\View */
 
-use app\assets\AppAsset;
-use app\assets\AxiosAsset;
-use app\assets\VueAsset;
+use app\assets\PosAsset;
 use yii\helpers\Url;
 
 $this->title = Yii::t('app', 'Point of Sale');
 $this->params['breadcrumbs'][] = $this->title;
 
-AxiosAsset::register($this);
-$this->registerJsFile(
-    '@web/js/pos/main.js',
-    ['depends' => [AppAsset::class, VueAsset::class]]
-);
+PosAsset::register($this);
 
 $this->registerCSS(
     <<< CSS
