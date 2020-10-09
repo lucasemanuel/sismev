@@ -34,7 +34,7 @@ AdminLteAsset::register($this);
 	<div class="wrapper">
 
 		<nav class="main-header navbar navbar-expand-md navbar-light navbar-white ">
-			<div class="container">
+			<div class="container-xl">
 				<a href=<?= Url::to(['/site/index']) ?> class="navbar-brand">
 					<span class="brand-text font-weight-bold"><?= Yii::$app->name ?></span>
 				</a>
@@ -88,7 +88,7 @@ AdminLteAsset::register($this);
 		<div class="content-wrapper">
 			<!-- Content Header (Page header) -->
 			<div class="content-header">
-				<div class="container">
+				<div class="container-xl">
 					<div class="row mb-2">
 						<div class="col-sm-6">
 							<h1 class="m-0 text-dark"><?= $this->title ?></h1>
@@ -108,7 +108,7 @@ AdminLteAsset::register($this);
 
 			<!-- Main content -->
 			<section class="content">
-				<div class="container">
+				<div class="container-xl">
 					<?= Alert::widget() ?>
 					<?= $content ?>
 				</div><!-- /.container-fluid -->
