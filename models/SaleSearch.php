@@ -17,7 +17,7 @@ class SaleSearch extends Sale
     public function rules()
     {
         return [
-            [['id', 'order_id'], 'integer'],
+            [['id', 'is_sold', 'is_canceled', 'order_id'], 'integer'],
             [['amount_paid', 'discount'], 'number'],
             [['sale_at', 'canceled_at', 'updated_at'], 'safe'],
         ];
@@ -62,6 +62,8 @@ class SaleSearch extends Sale
             'id' => $this->id,
             'amount_paid' => $this->amount_paid,
             'discount' => $this->discount,
+            'is_sold' => $this->is_sold,
+            'is_canceled' => $this->is_canceled,
             'sale_at' => $this->sale_at,
             'canceled_at' => $this->canceled_at,
             'updated_at' => $this->updated_at,
