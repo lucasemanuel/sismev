@@ -4,6 +4,8 @@
 use app\assets\AppAsset;
 use app\assets\AxiosAsset;
 use app\assets\VueAsset;
+use kartik\dialog\Dialog;
+use yii\helpers\Url;
 
 $this->title = Yii::t('app', 'Checkout');
 $this->params['breadcrumbs'][] = $this->title;
@@ -20,8 +22,9 @@ $this->registerCSS(
         cursor: pointer;
     }
     CSS
-)
+);
 
+Dialog::widget();
 ?>
 <div class="checkout-index row">
     <div class="col">
@@ -49,10 +52,10 @@ $this->registerCSS(
                 </table>
             </div>
         </div>
-        <a class="small-box bg-info" href="#">
+        <a class="small-box bg-info" href=<?= Url::to(['/pos/complete', 'code' => $code]); ?> data-confirm="<?= Yii::t('app', 'Do you want to confirm the sale?') ?>" data-method="post">
             <div class="inner text-center">
                 <h3><?= Yii::t('app', 'Complete Sale') ?></h3>
-                <p>Total: {{ total }}</p>
+                <p><?= Yii::t('app', 'Total paid') ?>: {{ total }}</p>
             </div>
             <div class="icon">
                 <i class="fas fa-shopping-cart"></i>
