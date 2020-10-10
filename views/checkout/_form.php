@@ -23,7 +23,7 @@ use yii\web\JsExpression;
 
     <div class="card-body">
         <div class="row">
-            <?= $form->field($model, 'payment_method_id', ['options' => ['class' => 'col-4']])->widget(Select2::class, [
+            <?= $form->field($model, 'payment_method_id', ['options' => ['class' => 'col-12']])->widget(Select2::class, [
                 'options' => [
                     'placeholder' => Yii::t('app', 'Select payment method'),
                 ],
@@ -55,7 +55,7 @@ use yii\web\JsExpression;
                 ],
             ]) ?>
 
-            <?= $form->field($model, 'installments', ['options' => ['class' => 'col-4']])
+            <?= $form->field($model, 'installments', ['options' => ['class' => 'col-12']])
                 ->textInput(['type' => 'number', 'value' => 1, 'min' => 1, 'max' => 1]) ?>
 
             <?= $form->field($model, 'value', [
@@ -66,7 +66,7 @@ use yii\web\JsExpression;
                     ]
                 ],
                 'options' => [
-                    'class' => 'col-4',
+                    'class' => 'col-12',
                 ]
             ])->widget(NumberControl::class, [
                 'maskedInputOptions' => [
