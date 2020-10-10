@@ -24,7 +24,6 @@ use yii\db\ActiveRecord;
  */
 class Sale extends ActiveRecord
 {
-    
     /**
      * {@inheritdoc}
      */
@@ -100,7 +99,8 @@ class Sale extends ActiveRecord
                 $this->amount_paid = isset($this->amount_paid) ? $this->amount_paid : 0;
                 return Yii::$app->formatter->asCurrency($this->amount_paid);
             },
-            'pays'
+            'pays',
+            'order'
         ];
     }
 }
