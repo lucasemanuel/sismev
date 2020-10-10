@@ -89,6 +89,14 @@ class Pay extends ActiveRecord
         $sale->updateCounters(['amount_paid' => $this->value]);
     }
 
+    public function afterDelete()
+    {
+        parent::afterDelete();
+
+        $sale = $this->sale;
+        $sale->updateCounters(['amount_paid' => $this->value * (-1)]);
+    }
+
     public function fields()
     {
         return [
