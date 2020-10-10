@@ -2,8 +2,10 @@ const app = new Vue({
     el: '.checkout-index',
     data: {
         items: [],
-        total: 0,
+        totalPaid: 0,
         saleId: '',
+        products: [],
+        totalOrder: 0
     },
     mounted() {
         this.saleId = document.querySelector('#pay-sale_id').value;
@@ -34,7 +36,9 @@ const app = new Vue({
             axios.get('/api/sale/', { params: { id: this.saleId } })
                 .then(({ data }) => {
                     this.items = data.pays;
-                    this.total = data.total;
+                    this.totalPaid = data.total;
+                    this.products = data.order.orderItems;
+                    this.totalOrder = data.order.total_value;
                 })
                 .catch(({ response }) => {
                     const { name, message } = response.data;
