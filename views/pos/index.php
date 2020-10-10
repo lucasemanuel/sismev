@@ -21,7 +21,7 @@ $this->registerCSS(
         text-align: center;
     }
     CSS
-)
+);
 
 ?>
 <div class="pos-index row">
@@ -47,6 +47,9 @@ $this->registerCSS(
                     </thead>
                     <tbody>
                         <tr v-for="(item, index) in items" is="order_items" :key="item.id" :index="index" :name="item.name" :amount="item.amount" :unit_price="item.unit_price" :total="item.total"></tr>
+                        <tr>
+                            <td colspan="6" class="font-weight-bold text-right"><?= Yii::t('app', 'Total:') ?> {{total}}</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -54,7 +57,7 @@ $this->registerCSS(
         <a class="small-box bg-info" href=<?= Url::to(['checkout', 'code' => $code]) ?>>
             <div class="inner text-center">
                 <h3><?= Yii::t('app', 'Checkout') ?></h3>
-                <h5><?= Yii::t('app', 'Total:')?> {{ total }}</h5>
+                <p><?= Yii::t('app', 'Choose payment methods') ?></p>
             </div>
             <div class="icon">
                 <i class="fas fa-shopping-cart"></i>
