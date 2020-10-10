@@ -4,6 +4,7 @@ namespace app\modules\api\controllers;
 
 use app\models\Pay;
 use app\models\PaymentMethod;
+use app\models\Sale;
 use Yii;
 use yii\db\conditions\LikeCondition;
 use yii\filters\ContentNegotiator;
@@ -58,6 +59,18 @@ class PayController extends Controller
 
         foreach($model->firstErrors as $erro) break;
         throw new BadRequestHttpException($erro);
+    }
+
+    public function actionDelete($id)
+    {
+        $model = $this->findModel($id);
+        $saleId = $model->sale_id;
+
+        $model->delete($id);
+
+        return [ 
+            'total' => Sale::findOne($saleId)->amount_paid
+        ];
     }
 
     public function actionValidation()

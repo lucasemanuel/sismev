@@ -14,14 +14,14 @@ const app = new Vue({
     methods: {
         pushPay() {
             $('form').yiiActiveForm('validate', true);
-            
+
             const form = document.querySelector('form');
             const formData = new FormData(form);
 
             axios.post('/api/pay/create', formData)
                 .then(({ data }) => {
                     this.items.push(data.pay);
-                    this.total = data.total;
+                    this.totalPaid = data.total;
                     const $form = $('form');
                     $form.get(0).reset();
                 })
@@ -31,6 +31,16 @@ const app = new Vue({
                 });
         },
         popItem(index) {
+            const id = this.items[index].id;
+            axios.delete('/api/pay/delete', { params: { id } })
+                .then(({ data }) => {
+                    this.totalPaid = data.total;
+                    this.items.splice(index, 1);
+                })
+                .catch(({ response }) => {
+                    const { name, message } = response.data;
+                    showToast(name, message);
+                });
         },
         load() {
             axios.get('/api/sale/', { params: { id: this.saleId } })
@@ -57,7 +67,7 @@ Vue.component('payment_items', {
         <td>{{ installments }}</td>\
         <td>{{ value }}</td>\
         <td>\
-            <a href="#" class="text-muted">\
+            <a href="#" class="text-muted" v-on:click="app.popItem(index)">\
                 <i class="fas fa-trash"></i>\
             </a>\
         </td>\
