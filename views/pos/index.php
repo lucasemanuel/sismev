@@ -2,12 +2,15 @@
 /* @var $this yii\web\View */
 
 use app\assets\PosAsset;
+use kartik\dialog\Dialog;
+use yii\bootstrap4\Html;
 use yii\helpers\Url;
 
 $this->title = Yii::t('app', 'Point of Sale');
 $this->params['breadcrumbs'][] = $this->title;
 
 PosAsset::register($this);
+Dialog::widget();
 
 $this->registerCSS(
     <<< CSS
@@ -52,6 +55,17 @@ $this->registerCSS(
                         </tr>
                     </tbody>
                 </table>
+            </div>
+        </div>
+        <div class="row" style="margin-bottom: 1rem;">
+            <div class="col d-flex justify-content-end">
+                <?= Html::a(Yii::t('app', 'Cancel Sale'), ['/order/delete', 'id' => $item->order_id], [
+                    'class' => 'btn btn-outline-danger',
+                    'data' => [
+                        'confirm' => Yii::t('app', 'Are you sure you want to delete this order?'),
+                        'method' => 'post',
+                    ],
+                ]) ?>
             </div>
         </div>
         <a class="small-box bg-info" href=<?= Url::to(['checkout', 'code' => $code]) ?>>
