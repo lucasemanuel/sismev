@@ -72,7 +72,9 @@ $this->registerCss(
                                 </tr>
                             <?php endforeach; ?>
                             <tr>
-                                <td colspan="6" class="font-weight-bold text-center"><?= Yii::t('app', 'Total:') . ' ' . $model->order->total_value ?></td>
+                                <td colspan="6" class="font-weight-bold text-center">
+                                    <?= Yii::t('app', 'Total:') . ' ' . $model->order->toArray()['total_value'] ?>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -94,7 +96,9 @@ $this->registerCss(
                                     </tr>
                                 <?php endforeach; ?>
                                 <tr>
-                                    <td colspan="6" class="font-weight-bold text-center"><?= Yii::t('app', 'Total Paid:') . ' ' . $model->order->total_value ?></td>
+                                    <td colspan="6" class="font-weight-bold text-center">
+                                        <?= Yii::t('app', 'Total Paid:') . ' ' . $model->toArray()['total'] ?>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
