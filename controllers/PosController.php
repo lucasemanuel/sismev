@@ -10,6 +10,7 @@ use app\models\OrderItem;
 use app\models\Pay;
 use Yii;
 use yii\filters\VerbFilter;
+use yii\web\ConflictHttpException;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
@@ -40,7 +41,7 @@ class PosController extends Controller
         }
 
         $item = new OrderItem();
-        $item->order_id = Order::findByCode($code)->id;
+        $item->order_id = $this->findOrderUnsold($code)->id;
 
         return $this->render('index', [
             'item' => $item,
@@ -50,7 +51,7 @@ class PosController extends Controller
 
     public function actionCheckout($code)
     {
-        $order = $this->findOrder($code);
+        $order = $this->findOrderUnsold($code);
         
         if (!$order->orderItems) {
             Yii::$app->session->setFlash('info', Yii::t('app', "You cannot go to checkout without at least one item in the order."));
@@ -75,18 +76,22 @@ class PosController extends Controller
 
     public function actionComplete($code)
     {
-        $sale = $this->findOrder($code)->sale;
+        $sale = $this->findOrderUnsold($code)->sale;
         $sale->trigger(Seller::EVENT_COMPLETE_SALE);
 
         return $this->redirect(['sale/view', 'id' => $sale->id]);
     }
 
-    protected function findOrder($code)
+    protected function findOrderUnsold($code)
     {
-        if (($model = Order::findByCode($code)) !== null) {
-            return $model;
+        $model = Order::findByCode($code);
+
+        if ($model === null) {
+            throw new NotFoundHttpException(Yii::t('app', 'The requested order does not exist.'));
+        } else if ($model->sale !== null && $model->sale->is_sold) {
+            throw new ConflictHttpException(Yii::t('app', 'The order has already been sold.'));
         }
 
-        throw new NotFoundHttpException(Yii::t('app', 'The requested order does not exist.'));
+        return $model;
     }
 }
