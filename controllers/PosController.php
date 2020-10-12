@@ -76,9 +76,9 @@ class PosController extends Controller
     public function actionComplete($code)
     {
         $sale = $this->findOrder($code)->sale;
-
         $sale->trigger(Seller::EVENT_COMPLETE_SALE);
-        return;
+
+        return $this->redirect(['sale/view', 'id' => $sale->id]);
     }
 
     protected function findOrder($code)
