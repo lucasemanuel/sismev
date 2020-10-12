@@ -29,7 +29,7 @@ class ProductController extends Controller
                 'class' => AccessControl::class,
                 'rules' => [
                     [
-                        'actions' => ['index', 'view', 'category', 'create', 'update', 'delete'],
+                        'actions' => ['index', 'view', 'category', 'create', 'update', 'delete', 'soft-delete', 'restore'],
                         'allow' => true,
                         'roles' => ['admin']
                     ],
@@ -39,6 +39,8 @@ class ProductController extends Controller
                 'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['POST'],
+                    'soft-delete' => ['POST'],
+                    'restore' => ['POST'],
                 ],
             ],
         ];
@@ -160,9 +162,23 @@ class ProductController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->softdelete();
+        $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
+    }
+
+    public function actionSoftDelete($id)
+    {
+        $this->findModel($id)->softDelete();
+
+        return $this->redirect(['view', 'id' => $id]);
+    }
+
+    public function actionRestore($id)
+    {
+        $this->findModel($id)->restore();
+
+        return $this->redirect(['view', 'id' => $id]);
     }
 
     /**
