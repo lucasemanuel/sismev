@@ -87,7 +87,9 @@ class ProductSearch extends Product
 
     public static function findInNameWithVariation(string $term)
     {
-        $query = self::find()->all();
+        $query = self::find()
+            ->andWhere(['is_deleted' => 0])
+            ->all();
         $terms = explode(' ', $term);
         return array_filter($query, function($product) use ($terms){
             foreach ($terms as $term) {

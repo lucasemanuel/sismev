@@ -160,7 +160,7 @@ class ProductController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $this->findModel($id)->softdelete();
 
         return $this->redirect(['index']);
     }
