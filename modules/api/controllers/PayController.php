@@ -83,7 +83,7 @@ class PayController extends Controller
         }
     }
 
-    public function actionMethods($q = null, $id = null)
+    public function actionQuery($q = null, $id = null)
     {
         $out = ['results' => ['id' => '', 'name' => '', 'max_installments' => '']];
 

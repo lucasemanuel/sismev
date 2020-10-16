@@ -36,7 +36,7 @@ use yii\web\JsExpression;
                         ),
                     ],
                     'ajax' => [
-                        'url' => Url::to(['/api/pay/methods']),
+                        'url' => Url::to(['/api/pay/query']),
                         'dataType' => 'json',
                         'delay' => 100,
                         'data' => new JsExpression('params => { return { q:params.term }; }'),
