@@ -90,6 +90,7 @@ class PayController extends Controller
         if (!is_null($q)) {
             $data = PaymentMethod::find()
                 ->andWhere(new LikeCondition('payment_method.name', 'LIKE', $q))
+                ->andWhere(['is_deleted' => 0])
                 ->asArray()
                 ->all();
             
