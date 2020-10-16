@@ -44,6 +44,7 @@ $this->registerCss(
                     <b><?= Yii::t('app', 'Order #{code}', ['code' => $model->order->code]) ?></b><br>
                     <b><?= Yii::t('app', 'Sold in:') ?></b> <?= Yii::$app->formatter->asDateTime($model->sale_at) ?><br>
                     <b><?= Yii::t('app', 'Amount Paid:') ?></b> <?= Yii::$app->formatter->asCurrency($model->amount_paid) ?><br>
+                    <b><?= Yii::t('app', 'Cashier:') ?></b> <?= $model->employee->full_name ?><br>
                 </div>
             </div>
 
