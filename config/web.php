@@ -88,6 +88,9 @@ $config = [
         'gridview' => [
             'class' => 'kartik\grid\Module'
         ],
+        'api' => [
+            'class' => 'app\modules\api\Module'
+        ]
     ],  
     'params' => $params,
 ];

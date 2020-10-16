@@ -4,12 +4,12 @@ namespace app\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\OrderProduct;
+use app\models\OrderItem;
 
 /**
- * OrderProductSearch represents the model behind the search form of `app\models\OrderProduct`.
+ * OrderItemSearch represents the model behind the search form of `app\models\OrderItem`.
  */
-class OrderProductSearch extends OrderProduct
+class OrderItemSearch extends OrderItem
 {
     /**
      * {@inheritdoc}
@@ -17,7 +17,7 @@ class OrderProductSearch extends OrderProduct
     public function rules()
     {
         return [
-            [['order_id', 'product_id'], 'integer'],
+            [['id', 'order_id', 'product_id'], 'integer'],
             [['amount', 'unit_price'], 'number'],
         ];
     }
@@ -40,7 +40,7 @@ class OrderProductSearch extends OrderProduct
      */
     public function search($params)
     {
-        $query = OrderProduct::find();
+        $query = OrderItem::find();
 
         // add conditions that should always apply here
 
@@ -58,10 +58,11 @@ class OrderProductSearch extends OrderProduct
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'order_id' => $this->order_id,
-            'product_id' => $this->product_id,
+            'id' => $this->id,
             'amount' => $this->amount,
             'unit_price' => $this->unit_price,
+            'order_id' => $this->order_id,
+            'product_id' => $this->product_id,
         ]);
 
         return $dataProvider;

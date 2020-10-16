@@ -25,6 +25,7 @@ class AppAsset extends AssetBundle
 
     public $css = [
         'css/site.css',
+        'css/fix-toast.css'
     ];
 
     public $js = [

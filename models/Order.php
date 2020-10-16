@@ -2,7 +2,14 @@
 
 namespace app\models;
 
+use app\components\traits\FilterTrait;
+use app\components\traits\UpdateCountersTrait;
+use app\components\validators\DecimalValidator;
 use Yii;
+use yii\behaviors\AttributeBehavior;
+use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
+use yii\db\Expression;
 
 /**
  * This is the model class for table "order".
@@ -17,12 +24,21 @@ use Yii;
  * @property int $company_id
  *
  * @property Company $company
- * @property OrderProduct[] $orderProducts
- * @property Product[] $products
- * @property Sale[] $sales
+ * @property OrderItem[] $orderItems
+ * @property Sale $sale
  */
-class Order extends \yii\db\ActiveRecord
+class Order extends ActiveRecord
 {
+    use UpdateCountersTrait;
+    use FilterTrait;
+
+    const JOINS = [
+        [
+            'table' => 'company',
+            'on' => 'order.company_id = company.id'
+        ],
+    ];
+
     /**
      * {@inheritdoc}
      */
@@ -31,18 +47,36 @@ class Order extends \yii\db\ActiveRecord
         return 'order';
     }
 
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::class,
+                'value' => new Expression('NOW()'),
+            ],
+            'SetCode' => [
+                'class' => AttributeBehavior::class,
+                'attributes' => [
+                    self::EVENT_BEFORE_INSERT => 'code',
+                ],
+                'value' => self::generateCode()
+            ],
+        ];
+    }
+
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['code', 'created_at', 'company_id'], 'required'],
-            [['total_value'], 'number'],
+            [['company_id'], 'required'],
+            [['total_value'], DecimalValidator::class],
             [['note'], 'string'],
             [['is_quotation', 'company_id'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
             [['code'], 'string', 'max' => 20],
+            [['total_value'], 'default', 'value' => 0],
             [['company_id'], 'exist', 'skipOnError' => true, 'targetClass' => Company::class, 'targetAttribute' => ['company_id' => 'id']],
         ];
     }
@@ -75,32 +109,50 @@ class Order extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[OrderProducts]].
+     * Gets query for [[OrderItems]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getOrderProducts()
+    public function getOrderItems()
     {
-        return $this->hasMany(OrderProduct::class, ['order_id' => 'id']);
+        return $this->hasMany(OrderItem::class, ['order_id' => 'id']);
     }
 
     /**
-     * Gets query for [[Products]].
+     * Gets query for [[Sale]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getProducts()
+    public function getSale()
     {
-        return $this->hasMany(Product::class, ['id' => 'product_id'])->viaTable('order_product', ['order_id' => 'id']);
+        return $this->hasOne(Sale::class, ['order_id' => 'id']);
     }
 
-    /**
-     * Gets query for [[Sales]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getSales()
+    private static function generateCode()
     {
-        return $this->hasMany(Sale::class, ['order_id' => 'id']);
+        $code = date('YmdHis').substr(microtime(), 2, 6);
+        $exists = self::find()->andWhere(['code' => $code])->one();
+
+        return $exists ? self::generateCode() : $code;
+    }
+
+    public static function findByCode($code)
+    {
+        $order = self::find()
+            ->andWhere(['code' => $code])
+            ->one();
+
+        return $order;        
+    }
+
+    public function fields()
+    {
+        return [
+            'code',
+            'total_value' => function () {
+                return Yii::$app->formatter->asCurrency($this->total_value);
+            },
+            'orderItems'
+        ];
     }
 }

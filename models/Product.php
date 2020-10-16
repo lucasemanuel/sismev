@@ -5,6 +5,7 @@ namespace app\models;
 use app\components\traits\FilterTrait;
 use app\components\traits\UpdateCountersTrait;
 use Yii;
+use yii2tech\ar\softdelete\SoftDeleteBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\db\Expression;
@@ -17,8 +18,8 @@ use yii\db\Expression;
  * @property string $name
  * @property float $unit_price
  * @property float $amount
- * @property float $max_amount
- * @property float $min_amount
+ * @property float|null $max_amount
+ * @property float|null $min_amount
  * @property int|null $is_deleted
  * @property string $created_at
  * @property string|null $updated_at
@@ -26,8 +27,7 @@ use yii\db\Expression;
  * @property int $category_id
  *
  * @property Operation[] $operations
- * @property OrderProduct[] $orderProducts
- * @property Order[] $orders
+ * @property OrderItem[] $orderItems
  * @property Category $category
  * @property ProductVariationAttribute[] $productVariationAttributes
  * @property VariationAttribute[] $variationAttributes
@@ -64,6 +64,17 @@ class Product extends ActiveRecord
             [
                 'class' => TimestampBehavior::class,
                 'value' => new Expression('NOW()'),
+                'attributes' => [
+                    self::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    self::EVENT_BEFORE_UPDATE => ['updated_at'],
+                    SoftDeleteBehavior::EVENT_BEFORE_SOFT_DELETE => ['deleted_at']
+                ]
+            ],
+            'softDeleteBehavior' => [
+                'class' => SoftDeleteBehavior::class,
+                'softDeleteAttributeValues' => [
+                    'is_deleted' => true
+                ],
             ],
         ];
     }
@@ -83,7 +94,7 @@ class Product extends ActiveRecord
             [['name'], 'string', 'max' => 64],
             [['code'], 'trim'],
             [['code'], 'unique'],
-            [['min_amount'], 'compare', 'compareAttribute' => 'max_amount', 'operator' => '<'],
+            [['min_amount'], 'compare', 'compareAttribute' => 'max_amount', 'operator' => '<='],
             [['amount'], 'default', 'value' => 0],
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::class, 'targetAttribute' => ['category_id' => 'id']],
         ];
@@ -121,13 +132,13 @@ class Product extends ActiveRecord
     }
 
     /**
-     * Gets query for [[OrderProducts]].
+     * Gets query for [[OrderItems]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getOrderProducts()
+    public function getOrderItems()
     {
-        return $this->hasMany(OrderProduct::class, ['product_id' => 'id']);
+        return $this->hasMany(OrderItem::class, ['product_id' => 'id']);
     }
 
     /**
@@ -193,5 +204,15 @@ class Product extends ActiveRecord
             
             $this->variations[$variation_set->id] = is_null($variation) ? null : $variation->id;
         }
+    }
+
+    public function fields()
+    {
+        $fields = parent::fields();
+        $fields['name'] = function() {
+            return $this->__toString();
+        };
+
+        return $fields;
     }
 }

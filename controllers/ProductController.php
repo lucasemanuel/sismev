@@ -29,7 +29,7 @@ class ProductController extends Controller
                 'class' => AccessControl::class,
                 'rules' => [
                     [
-                        'actions' => ['index', 'view', 'category', 'create', 'update', 'delete'],
+                        'actions' => ['index', 'view', 'category', 'create', 'update', 'delete', 'soft-delete', 'restore'],
                         'allow' => true,
                         'roles' => ['admin']
                     ],
@@ -39,6 +39,8 @@ class ProductController extends Controller
                 'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['POST'],
+                    'soft-delete' => ['POST'],
+                    'restore' => ['POST'],
                 ],
             ],
         ];
@@ -76,7 +78,7 @@ class ProductController extends Controller
     {
         $model = new Product();
         $list = ArrayHelper::map(Category::find()->all(), 'id', 'name');
-        
+
         if ($model->load(Yii::$app->request->post()))
             return $this->redirect(['create', 'category' => $model->category_id]);
         else if (!Yii::$app->request->isAjax)
@@ -100,16 +102,17 @@ class ProductController extends Controller
 
         $model = new Product();
         $model->category_id = $category;
-        
-        if ($model->load(Yii::$app->request->post())) {
-            $model->variations = array_filter($model->variations);
 
-            if ($this->modelExists($model))
-                throw new ConflictHttpException(Yii::t('app', 'Could not save because the product already exists.'));
+        if ($model->load(Yii::$app->request->post())) {  
+            if ($model->variations) {
+                $model->variations = array_filter($model->variations);
+                if ($this->modelExists($model))
+                    throw new ConflictHttpException(Yii::t('app', 'Could not save because the product already exists.'));
+            }
 
             $model->save();
-            foreach ($model->variations as $var_id)
-                (VariationAttribute::findOne($var_id))->link('products', $model);
+            if ($model->variations) 
+                foreach ($model->variations as $var_id) (VariationAttribute::findOne($var_id))->link('products', $model);
 
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -136,12 +139,11 @@ class ProductController extends Controller
 
             if ($this->modelExists($model))
                 throw new ConflictHttpException(Yii::t('app', 'Could not save because the product already exists.'));
-                
+
             $model->save();
             $model->unlinkAll('variationAttributes', true);
 
-            foreach ($model->variations as $var_id)
-                (VariationAttribute::findOne($var_id))->link('products', $model);
+            foreach ($model->variations as $var_id) (VariationAttribute::findOne($var_id))->link('products', $model);
 
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -160,9 +162,29 @@ class ProductController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+
+        if (is_null($model->operations) && is_null($model->orderItems)) {
+            $model->delete();
+        } else {
+            Yii::$app->session->setFlash('warning', Yii::t('app', 'It is not possible to delete the product permanently, as the product is linked to input/output operations or is present in some order'));
+        }
 
         return $this->redirect(['index']);
+    }
+
+    public function actionSoftDelete($id)
+    {
+        $this->findModel($id)->softDelete();
+
+        return $this->redirect(['view', 'id' => $id]);
+    }
+
+    public function actionRestore($id)
+    {
+        $this->findModel($id)->restore();
+
+        return $this->redirect(['view', 'id' => $id]);
     }
 
     /**

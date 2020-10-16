@@ -75,7 +75,7 @@ AdminLteAsset::register($this);
 		<aside class="main-sidebar sidebar-dark-primary elevation-4">
 			<!-- Brand Logo -->
 			<a href=<?= Url::to(['/site/index']) ?> class="brand-link">
-				<p class="brand-text font-weight-bold text-center" style="margin: auto;">SISMEC</p>
+				<p class="brand-text font-weight-bold text-center" style="margin: auto;"><?= Yii::$app->name ?></p>
 			</a>
 
 			<!-- Sidebar -->
@@ -149,6 +149,13 @@ AdminLteAsset::register($this);
 							<a href="<?= Url::to(['/payment-method']) ?>" class="nav-link">
 								<i class="nav-icon far fa-credit-card"></i>
 								<p><?= Yii::t('app', 'Payment Methods') ?></p>
+							</a>
+						</li>
+						<li class="nav-header"><?= strtoupper(Yii::t('app', 'Sell')) ?></li>
+						<li class="nav-item">
+							<a href="<?= Url::to(['/pos']) ?>" class="nav-link">
+								<i class="nav-icon fas fa-shopping-cart"></i>
+								<p><?= Yii::t('app', 'Point of Sale') ?></p>
 							</a>
 						</li>
 					</ul>

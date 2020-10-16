@@ -19,6 +19,7 @@ use yii\web\IdentityInterface;
  * @property string $usual_name
  * @property string $ssn
  * @property string $birthday
+ * @property string $phone_number 
  * @property string $email
  * @property string $password
  * @property int|null $is_manager
@@ -26,11 +27,13 @@ use yii\web\IdentityInterface;
  * @property string $created_at
  * @property string|null $updated_at
  * @property string|null $deleted_at
- * @property int $address_id
+ * @property int|null $address_id
  * @property int $company_id
  *
  * @property Address $address
  * @property Company $company
+ * @property Operation[] $operations 
+ * @property Sale[] $sales 
  */
 class Employee extends ActiveRecord implements IdentityInterface
 {
@@ -217,7 +220,7 @@ class Employee extends ActiveRecord implements IdentityInterface
         $user = self::findOne(['email' => $email]);
 
         if ($user) return new static($user);
-        
+
         return null;
     }
 
@@ -229,12 +232,12 @@ class Employee extends ActiveRecord implements IdentityInterface
     public function beforeSave($insert)
     {
         $this->encryptingPassword();
-        return parent::beforeSave($insert);    
+        return parent::beforeSave($insert);
     }
 
     private function encryptingPassword()
     {
-        
+
         if ($this->isNewPassword()) {
             $hash = Yii::$app->getSecurity()->generatePasswordHash($this->password);
             $this->password = $hash;
@@ -264,5 +267,24 @@ class Employee extends ActiveRecord implements IdentityInterface
     public function getCompany()
     {
         return $this->hasOne(Company::class, ['id' => 'company_id']);
+    }
+
+    /**
+     * Gets query for [[Operations]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOperations()
+    {
+        return $this->hasMany(Operation::class, ['employee_id' => 'id']);
+    }
+    /**
+     * Gets query for [[Sales]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSales()
+    {
+        return $this->hasMany(Sale::class, ['employee_id' => 'id']);
     }
 }
