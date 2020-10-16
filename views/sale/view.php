@@ -34,8 +34,12 @@ $this->registerCss(
                 <div class="col-sm-6 invoice-col">
                     <address>
                         <strong><?= $company->trade_name ?></strong><br>
-                        <?= $company->address->street . ', ' . $company->address->number . ', ' . $company->address->neighborhood ?><br>
-                        <?= $company->address->city . ', ' . $company->address->federated_unit . ' - ' . $company->address->zip_code ?><br>
+                        <?php if ($company->address): ?>
+                            <?= $company->address->street . ', ' . $company->address->number . ', ' . $company->address->neighborhood ?><br>
+                            <?= $company->address->city . ', ' . $company->address->federated_unit . ' - ' . $company->address->zip_code ?><br>
+                        <?php else : ?>
+                            <?= Yii::t('app', 'Company address not defined') ?><br>
+                        <?php endif; ?>
                         <?= Yii::t('app', 'Phone') . ': ' . $company->phone_number ?><br>
                         <?= Yii::t('app', 'E-mail') . ': ' . $company->email ?><br>
                     </address>
