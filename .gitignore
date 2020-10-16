@@ -32,7 +32,4 @@ tests/_support/_generated
 #vagrant folder
 /.vagrant
 
-/rbac/items.php
-/rbac/rules.php
-
 .vscode
