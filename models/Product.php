@@ -94,7 +94,7 @@ class Product extends ActiveRecord
             [['name'], 'string', 'max' => 64],
             [['code'], 'trim'],
             [['code'], 'unique'],
-            [['min_amount'], 'compare', 'compareAttribute' => 'max_amount', 'operator' => '<'],
+            [['min_amount'], 'compare', 'compareAttribute' => 'max_amount', 'operator' => '<='],
             [['amount'], 'default', 'value' => 0],
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::class, 'targetAttribute' => ['category_id' => 'id']],
         ];
