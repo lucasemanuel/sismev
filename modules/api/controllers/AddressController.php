@@ -1,18 +1,40 @@
 <?php
 
-namespace app\controllers;
+namespace app\modules\api\controllers;
 
 use Yii;
+use yii\filters\AccessControl;
+use yii\filters\ContentNegotiator;
 use yii\web\Controller;
 use yii\web\BadRequestHttpException;
 use yii\web\Response;
 
 class AddressController extends Controller
 {
-    public function actionZipcode($code)
+    public function behaviors()
     {
-        Yii::$app->response->format = Response::FORMAT_JSON;
+        return [
+            [
+                'class' => ContentNegotiator::class,
+                'formats' => [
+                    'application/json' => Response::FORMAT_JSON,
+                ],
+            ],
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'actions' => ['index'],
+                        'allow' => true,
+                        'roles' => ['cashier']
+                    ],
+                ],
+            ],
+        ];
+    }
 
+    public function actionIndex($code)
+    {
         if (preg_match('/\d{8}/', $code)) {
             $url = 'http://viacep.com.br/ws/' . $code . '/json';
             $response = json_decode(file_get_contents($url));

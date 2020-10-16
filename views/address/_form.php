@@ -13,7 +13,7 @@ AxiosAsset::register($this);
 $this->registerJs(
     <<< 'JS'
         function getZipcode(code) {
-            axios.get('/address/zipcode',{
+            axios.get('/api/address',{
                 params: { code: code }
             }).then(function (response) {
                 const data = response.data;
@@ -28,7 +28,7 @@ $this->registerJs(
                     body: data.message,
                     autohide: true,
                     delay: 5000,
-                    class: 'bg-warning'
+                    class: 'bg-warning fix-toast'
                 })
             });
         }
@@ -52,9 +52,10 @@ $this->registerJs(
 
         $("#address-zip_code").keyup(function(event) {
             const zipcode = event.target.value;
-            if (zipcode.length == 8) {
+            if (zipcode.length == 8)
                 getZipcode(zipcode);
-            }
+            else
+                setForm({ federated_unit: '', city: '', neighborhood: '', street: ''});
         });
     JS,
     $this::POS_END
