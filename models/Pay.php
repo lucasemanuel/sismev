@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\components\traits\FilterTrait;
 use app\components\validators\DecimalValidator;
 use Yii;
 use yii\db\ActiveRecord;
@@ -20,6 +21,19 @@ use yii\db\ActiveRecord;
  */
 class Pay extends ActiveRecord
 {
+    use FilterTrait;
+
+    const JOINS = [
+        [
+            'table' => 'payment_method',
+            'on' => 'pay.payment_method_id = payment_method.id'
+        ],
+        [
+            'table' => 'company',
+            'on' => 'payment_method.company_id = company.id'
+        ]
+    ];
+
     /**
      * {@inheritdoc}
      */

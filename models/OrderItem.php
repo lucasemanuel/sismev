@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\components\traits\FilterTrait;
 use app\components\validators\DecimalValidator;
 use Yii;
 use yii\db\ActiveRecord;
@@ -20,6 +21,19 @@ use yii\db\ActiveRecord;
  */
 class OrderItem extends ActiveRecord
 {
+    use FilterTrait;
+
+    const JOINS = [
+        [
+            'table' => 'order',
+            'on' => 'order_item.order_id = order.id'
+        ],
+        [
+            'table' => 'company',
+            'on' => 'order.company_id = company.id'
+        ],
+    ];
+
     private $_total;
     private $_default_price;
 

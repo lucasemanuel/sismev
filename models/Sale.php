@@ -3,6 +3,7 @@
 namespace app\models;
 
 use app\components\Seller;
+use app\components\traits\FilterTrait;
 use app\components\validators\DecimalValidator;
 use Yii;
 use yii\db\ActiveRecord;
@@ -27,6 +28,19 @@ use yii\db\ActiveRecord;
  */
 class Sale extends ActiveRecord
 {
+    use FilterTrait;
+
+    const JOINS = [
+        [
+            'table' => 'order',
+            'on' => 'sale.order_id = order.id'
+        ],
+        [
+            'table' => 'company',
+            'on' => 'order.company_id = company.id'
+        ],
+    ];
+
     /**
      * {@inheritdoc}
      */

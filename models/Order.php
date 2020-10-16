@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\components\traits\FilterTrait;
 use app\components\traits\UpdateCountersTrait;
 use app\components\validators\DecimalValidator;
 use Yii;
@@ -29,6 +30,14 @@ use yii\db\Expression;
 class Order extends ActiveRecord
 {
     use UpdateCountersTrait;
+    use FilterTrait;
+
+    const JOINS = [
+        [
+            'table' => 'company',
+            'on' => 'order.company_id = company.id'
+        ],
+    ];
 
     /**
      * {@inheritdoc}
