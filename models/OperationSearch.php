@@ -64,7 +64,6 @@ class OperationSearch extends Operation
 
         // add conditions that should always apply here
         $query->innerJoin('product', 'product.id = operation.product_id');
-        $query->innerJoin('employee', 'employee.id = operation.employee_id');
         
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -133,9 +132,9 @@ class OperationSearch extends Operation
     {
         if (!empty($this->view_operations) && is_array($this->view_operations)) {
             if (in_array('undo', $this->view_operations) && !in_array('valid', $this->view_operations))
-                $query->deleted();
+                $query->andWhere(['operation.is_deleted' => 1]);
             else if (in_array('valid', $this->view_operations) && !in_array('undo', $this->view_operations))
-                $query->notDeleted();
+                $query->andWhere(['operation.is_deleted' => 0]);
         }
     }
 

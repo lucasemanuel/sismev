@@ -125,13 +125,6 @@ class Operation extends \yii\db\ActiveRecord
         ];
     }
 
-    public static function find()
-    {
-        $query = parent::find();
-        $query->attachBehavior('softDelete', SoftDeleteQueryBehavior::class);
-        return $query;
-    }
-
     /**
      * Gets query for [[Employee]].
      *
