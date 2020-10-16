@@ -20,7 +20,10 @@ class Seller extends Component
         Sale::getDb()->transaction(function ($db) use ($sale) {
             $sale->sale_at = new Expression('NOW()');
             $sale->is_sold = 1;
-            $sale->update();
+            if (!$sale->update()) {
+                foreach($sale->firstErrors as $erro) break;
+                throw new BadRequestHttpException($erro);        
+            }
 
             $items = $sale->order->orderItems;
             self::descraseItemsStock($items);
