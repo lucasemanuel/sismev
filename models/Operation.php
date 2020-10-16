@@ -3,6 +3,7 @@
 namespace app\models;
 
 use app\components\traits\FilterTrait;
+use app\components\validators\DecimalValidator;
 use Yii;
 use yii2tech\ar\softdelete\SoftDeleteBehavior;
 use yii2tech\ar\softdelete\SoftDeleteQueryBehavior;
@@ -39,7 +40,6 @@ class Operation extends \yii\db\ActiveRecord
             'on' => 'employee.company_id = company.id'
         ]
     ];
-    const MAX_AMOUNT = 99999999.99;
 
     /**
      * {@inheritdoc}
@@ -79,7 +79,7 @@ class Operation extends \yii\db\ActiveRecord
             [['in_out', 'amount', 'reason', 'product_id', 'employee_id'], 'required'],
             [['in_out', 'product_id', 'employee_id', 'is_deleted'], 'integer'],
             [['in_out'], 'default', 'value' => 1],
-            [['amount'], 'number', 'min' => '00.01', 'max' => self::MAX_AMOUNT],
+            [['amount'], DecimalValidator::class],
             [['amount'], 'validateAmount'],
             [['created_at', 'deleted_at'], 'safe'],
             [['reason'], 'string', 'max' => 64],
@@ -99,9 +99,9 @@ class Operation extends \yii\db\ActiveRecord
                 ]));
             }
         } else {
-            if (($this->$attribute + $amount) > self::MAX_AMOUNT) {
+            if (($this->$attribute + $amount) > DecimalValidator::MAX) {
                 $this->addError($attribute, Yii::t('app', 'The total quantity of the product may not exceed {max_amount}.', [
-                    'max_amount' => self::MAX_AMOUNT
+                    'max_amount' => DecimalValidator::MAX
                 ]));
             }
         }

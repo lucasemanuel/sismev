@@ -3,6 +3,7 @@
 namespace app\models;
 
 use app\components\traits\FilterTrait;
+use app\components\validators\DecimalValidator;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
@@ -63,7 +64,7 @@ class Expense extends ActiveRecord
             [['name', 'value', 'payday', 'company_id'], 'required'],
             [['paid_at', 'is_paid'], 'required', 'on' => self::SCENARIO_PAID],
             [['description'], 'string'],
-            [['value'], 'number', 'max' => 99999999.99, 'min' => 00.01],
+            [['value'], DecimalValidator::class],
             [['payday', 'paid_at', 'created_at', 'updated_at'], 'safe'],
             [['payday'], 'default', 'value' => null],
             [['company_id'], 'integer'],

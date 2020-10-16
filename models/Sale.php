@@ -3,6 +3,7 @@
 namespace app\models;
 
 use app\components\Seller;
+use app\components\validators\DecimalValidator;
 use Yii;
 use yii\db\ActiveRecord;
 
@@ -45,7 +46,7 @@ class Sale extends ActiveRecord
     public function rules()
     {
         return [
-            [['amount_paid', 'discount'], 'number'],
+            [['amount_paid', 'discount'], DecimalValidator::class],
             [['amount_paid', 'discount', 'is_canceled', 'is_sold'], 'default', 'value' => 0],
             [['is_sold', 'is_canceled', 'order_id'], 'integer'],
             [['sale_at', 'canceled_at', 'updated_at'], 'safe'],

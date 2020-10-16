@@ -3,6 +3,7 @@
 namespace app\models;
 
 use app\components\traits\UpdateCountersTrait;
+use app\components\validators\DecimalValidator;
 use Yii;
 use yii\behaviors\AttributeBehavior;
 use yii\behaviors\TimestampBehavior;
@@ -61,7 +62,7 @@ class Order extends ActiveRecord
     {
         return [
             [['company_id'], 'required'],
-            [['total_value'], 'number'],
+            [['total_value'], DecimalValidator::class],
             [['note'], 'string'],
             [['is_quotation', 'company_id'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],

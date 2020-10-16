@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\components\validators\DecimalValidator;
 use Yii;
 use yii\db\ActiveRecord;
 
@@ -34,7 +35,7 @@ class Pay extends ActiveRecord
     {
         return [
             [['value', 'payment_method_id', 'sale_id'], 'required'],
-            [['value'], 'number'],
+            [['value'], DecimalValidator::class],
             [['installments', 'payment_method_id', 'sale_id'], 'integer'],
             [['installments'], 'default', 'value' => 1],
             [['installments'], function ($attribute, $params, $validator) {

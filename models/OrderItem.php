@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\components\validators\DecimalValidator;
 use Yii;
 use yii\db\ActiveRecord;
 
@@ -45,7 +46,7 @@ class OrderItem extends ActiveRecord
                 'message' => Yii::t('app', 'This product has already been placed in the order')
             ],
             [['amount', 'unit_price', 'order_id', 'product_id'], 'required'],
-            [['amount', 'unit_price'], 'number'],
+            [['amount', 'unit_price', 'total'], DecimalValidator::class],
             [['order_id', 'product_id'], 'integer'],
             [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Order::class, 'targetAttribute' => ['order_id' => 'id']],
             [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::class, 'targetAttribute' => ['product_id' => 'id']],
@@ -61,7 +62,7 @@ class OrderItem extends ActiveRecord
             'id' => Yii::t('app', 'ID'),
             'amount' => Yii::t('app', 'Amount'),
             'unit_price' => Yii::t('app', 'Unit Price'),
-            'default_price' => Yii::t('app', 'Defautl Price'),
+            'default_price' => Yii::t('app', 'Default Price'),
             'order_id' => Yii::t('app', 'Order ID'),
             'product_id' => Yii::t('app', 'Product'),
         ];
@@ -105,7 +106,10 @@ class OrderItem extends ActiveRecord
 
     public function getTotal()
     {
-        return $this->amount * $this->unit_price;
+        if ($this->amount && $this->unit_price)
+            return $this->amount * $this->unit_price;
+        
+        return 0;
     }
 
     public function getDefault_price()
