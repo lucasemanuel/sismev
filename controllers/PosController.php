@@ -12,6 +12,7 @@ use Yii;
 use yii\filters\VerbFilter;
 use yii\web\ConflictHttpException;
 use yii\web\Controller;
+use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 
 class PosController extends Controller
@@ -46,13 +47,13 @@ class PosController extends Controller
         return $this->render('index', [
             'item' => $item,
             'code' => $code,
-        ]);    
+        ]);
     }
 
     public function actionCheckout($code)
     {
         $order = $this->findOrderUnsold($code);
-        
+
         if (!$order->orderItems) {
             Yii::$app->session->setFlash('info', Yii::t('app', "You cannot go to checkout without at least one item in the order."));
             return $this->redirect(['index', 'code' => $order->code]);
@@ -61,10 +62,11 @@ class PosController extends Controller
         $sale = $order->sale;
         if ($sale === null) {
             $sale = SaleFactory::create([
-                'order_id' => $order->id
+                'order_id' => $order->id,
+                'employee_id' => Yii::$app->user->id,
             ]);
         }
-        
+
         $payment = new Pay();
         $payment->sale_id = $sale->id;
 
@@ -76,10 +78,19 @@ class PosController extends Controller
 
     public function actionComplete($code)
     {
-        $sale = $this->findOrderUnsold($code)->sale;
-        $sale->trigger(Seller::EVENT_COMPLETE_SALE);
+        try {
+            $sale = $this->findOrderUnsold($code)->sale;
+            $sale->trigger(Seller::EVENT_COMPLETE_SALE);
 
-        return $this->redirect(['sale/view', 'id' => $sale->id]);
+            return $this->redirect(['sale/view', 'id' => $sale->id]);
+        } catch (HttpException $e) {
+            Yii::$app->session->setFlash('warning', $e->getMessage());
+
+            return $this->redirect([
+                'checkout',
+                'code' => $code
+            ]);
+        }
     }
 
     protected function findOrderUnsold($code)
