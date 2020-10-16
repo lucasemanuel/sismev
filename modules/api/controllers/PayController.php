@@ -7,6 +7,7 @@ use app\models\PaymentMethod;
 use app\models\Sale;
 use Yii;
 use yii\db\conditions\LikeCondition;
+use yii\filters\AccessControl;
 use yii\filters\ContentNegotiator;
 use yii\filters\VerbFilter;
 use yii\web\BadRequestHttpException;
@@ -24,6 +25,16 @@ class PayController extends Controller
                 'class' => ContentNegotiator::class,
                 'formats' => [
                     'application/json' => Response::FORMAT_JSON,
+                ],
+            ],
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'actions' => ['create', 'delete', 'validation', 'query'],
+                        'allow' => true,
+                        'roles' => ['cashier']
+                    ],
                 ],
             ],
             'verbs' => [

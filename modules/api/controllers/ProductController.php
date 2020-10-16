@@ -3,6 +3,7 @@
 namespace app\modules\api\controllers;
 
 use app\models\ProductSearch;
+use yii\filters\AccessControl;
 use yii\filters\ContentNegotiator;
 use yii\web\Controller;
 use yii\web\Response;
@@ -16,6 +17,16 @@ class ProductController extends Controller
                 'class' => ContentNegotiator::class,
                 'formats' => [
                     'application/json' => Response::FORMAT_JSON,
+                ],
+            ],
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'actions' => ['query'],
+                        'allow' => true,
+                        'roles' => ['cashier']
+                    ],
                 ],
             ],
         ];

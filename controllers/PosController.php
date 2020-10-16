@@ -9,6 +9,7 @@ use app\models\Order;
 use app\models\OrderItem;
 use app\models\Pay;
 use Yii;
+use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\ConflictHttpException;
 use yii\web\Controller;
@@ -22,6 +23,16 @@ class PosController extends Controller
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'actions' => ['index', 'checkout', 'complete'],
+                        'allow' => true,
+                        'roles' => ['cashier']
+                    ],
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
@@ -30,7 +41,6 @@ class PosController extends Controller
             ],
         ];
     }
-
 
     public function actionIndex($code = null)
     {

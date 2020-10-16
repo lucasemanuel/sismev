@@ -5,6 +5,7 @@ namespace app\modules\api\controllers;
 use app\models\Order;
 use app\models\OrderItem;
 use Yii;
+use yii\filters\AccessControl;
 use yii\filters\ContentNegotiator;
 use yii\filters\VerbFilter;
 use yii\web\BadRequestHttpException;
@@ -22,6 +23,16 @@ class OrderItemController extends Controller
                 'class' => ContentNegotiator::class,
                 'formats' => [
                     'application/json' => Response::FORMAT_JSON,
+                ],
+            ],
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'actions' => ['create', 'delete', 'validation'],
+                        'allow' => true,
+                        'roles' => ['cashier']
+                    ],
                 ],
             ],
             'verbs' => [

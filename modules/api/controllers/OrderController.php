@@ -4,6 +4,7 @@ namespace app\modules\api\controllers;
 
 use app\models\Order;
 use Yii;
+use yii\filters\AccessControl;
 use yii\filters\ContentNegotiator;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
@@ -19,6 +20,16 @@ class OrderController extends Controller
                 'class' => ContentNegotiator::class,
                 'formats' => [
                     'application/json' => Response::FORMAT_JSON,
+                ],
+            ],
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'actions' => ['index'],
+                        'allow' => true,
+                        'roles' => ['cashier']
+                    ],
                 ],
             ],
             'verbs' => [
