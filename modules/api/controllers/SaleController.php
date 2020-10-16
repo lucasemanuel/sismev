@@ -39,7 +39,7 @@ class SaleController extends Controller
     protected function findModel($id)
     {
         $model = Sale::find()
-            ->andWhere(['id' => $id])
+            ->andWhere(['sale.id' => $id])
             ->one();
 
         if ($model !== null)
