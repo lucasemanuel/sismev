@@ -18,8 +18,10 @@ use yii\db\ActiveRecord;
  * @property string|null $sale_at
  * @property string|null $canceled_at
  * @property string|null $updated_at
+ * @property int $employee_id 
  * @property int $order_id
  *
+ * @property Employee $employee 
  * @property Pay[] $pays
  * @property Order $order
  */
@@ -46,11 +48,13 @@ class Sale extends ActiveRecord
     public function rules()
     {
         return [
-            [['amount_paid', 'discount'], DecimalValidator::class],
+            [['amount_paid'], DecimalValidator::class],
+            [['discount'], 'number', 'max' => DecimalValidator::MAX],
             [['amount_paid', 'discount', 'is_canceled', 'is_sold'], 'default', 'value' => 0],
-            [['is_sold', 'is_canceled', 'order_id'], 'integer'],
+            [['is_sold', 'is_canceled', 'order_id', 'employee_id'], 'integer'],
             [['sale_at', 'canceled_at', 'updated_at'], 'safe'],
-            [['order_id'], 'required'],
+            [['employee_id', 'order_id'], 'required'],
+            [['employee_id'], 'exist', 'skipOnError' => true, 'targetClass' => Employee::class, 'targetAttribute' => ['employee_id' => 'id']],
             [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Order::class, 'targetAttribute' => ['order_id' => 'id']],
         ];
     }
@@ -69,8 +73,19 @@ class Sale extends ActiveRecord
             'sale_at' => Yii::t('app', 'Sale At'),
             'canceled_at' => Yii::t('app', 'Canceled At'),
             'updated_at' => Yii::t('app', 'Updated At'),
+            'employee_id' => Yii::t('app', 'Employee ID'),
             'order_id' => Yii::t('app', 'Order ID'),
         ];
+    }
+
+    /**
+     * Gets query for [[Employee]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getEmployee()
+    {
+        return $this->hasOne(Employee::class, ['id' => 'employee_id']);
     }
 
     /**
