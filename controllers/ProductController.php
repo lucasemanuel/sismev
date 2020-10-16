@@ -103,14 +103,16 @@ class ProductController extends Controller
         $model = new Product();
         $model->category_id = $category;
 
-        if ($model->load(Yii::$app->request->post())) {
-            $model->variations = array_filter($model->variations);
-
-            if ($this->modelExists($model))
-                throw new ConflictHttpException(Yii::t('app', 'Could not save because the product already exists.'));
+        if ($model->load(Yii::$app->request->post())) {  
+            if ($model->variations) {
+                $model->variations = array_filter($model->variations);
+                if ($this->modelExists($model))
+                    throw new ConflictHttpException(Yii::t('app', 'Could not save because the product already exists.'));
+            }
 
             $model->save();
-            foreach ($model->variations as $var_id) (VariationAttribute::findOne($var_id))->link('products', $model);
+            if ($model->variations) 
+                foreach ($model->variations as $var_id) (VariationAttribute::findOne($var_id))->link('products', $model);
 
             return $this->redirect(['view', 'id' => $model->id]);
         }
