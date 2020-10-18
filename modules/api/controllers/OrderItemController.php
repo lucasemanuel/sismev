@@ -95,7 +95,7 @@ class OrderItemController extends Controller
     protected function findModel($id)
     {
         $model = OrderItem::find()
-            ->andWhere(['id' => $id])
+            ->andWhere(['order_item.id' => $id])
             ->one();
 
         if ($model !== null)
