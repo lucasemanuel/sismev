@@ -278,6 +278,7 @@ class Employee extends ActiveRecord implements IdentityInterface
     {
         return $this->hasMany(Operation::class, ['employee_id' => 'id']);
     }
+
     /**
      * Gets query for [[Sales]].
      *
@@ -286,5 +287,10 @@ class Employee extends ActiveRecord implements IdentityInterface
     public function getSales()
     {
         return $this->hasMany(Sale::class, ['employee_id' => 'id']);
+    }
+
+    public function __toString()
+    {
+        return $this->full_name;
     }
 }
