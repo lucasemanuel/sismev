@@ -23,7 +23,14 @@ $this->registerCss(
 Dialog::widget();
 ?>
 <div class="sale-view row">
-    <div class="col">
+    <div class="col-12">
+        <div class="info-box bg-danger">
+            <div class="info-box-content">
+                <h2 class="font-weight-bold text-uppercase text-center"><?= Yii::t('app', 'Canceled sale') ?></h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-12">
         <div class="invoice p-3 mb-3">
             <div class="row">
                 <div class="col-12">
@@ -33,6 +40,7 @@ Dialog::widget();
                     </h4>
                 </div>
             </div>
+
             <div class="row invoice-info">
                 <div class="col-sm-6 invoice-col">
                     <address>
@@ -52,6 +60,10 @@ Dialog::widget();
                     <b><?= Yii::t('app', 'Sold in:') ?></b> <?= Yii::$app->formatter->asDateTime($model->sale_at) ?><br>
                     <b><?= Yii::t('app', 'Amount Paid:') ?></b> <?= Yii::$app->formatter->asCurrency($model->amount_paid) ?><br>
                     <b><?= Yii::t('app', 'Cashier:') ?></b> <?= $model->employee->full_name ?><br>
+                    <?php if ($model->is_canceled) : ?>
+                        <b><?= Yii::t('app', 'Canceled Sale') ?></b><br>
+                        <b><?= Yii::t('app', 'Canceled in:') ?></b> <?= Yii::$app->formatter->asDateTime($model->canceled_at) ?><br>
+                    <?php endif; ?>
                 </div>
             </div>
 
