@@ -11,6 +11,8 @@ use app\models\Sale;
  */
 class SaleSearch extends Sale
 {
+    public $order_total_value;
+
     /**
      * {@inheritdoc}
      */
@@ -18,7 +20,7 @@ class SaleSearch extends Sale
     {
         return [
             [['id', 'is_sold', 'is_canceled', 'employee_id', 'order_id'], 'integer'],
-            [['amount_paid', 'discount'], 'number'],
+            [['amount_paid', 'discount', 'order_total_value'], 'number'],
             [['sale_at', 'canceled_at', 'updated_at'], 'safe'],
         ];
     }
@@ -45,8 +47,21 @@ class SaleSearch extends Sale
 
         // add conditions that should always apply here
 
+        $this->is_sold = 1;
+
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+        ]);
+
+        $dataProvider->sort->attributes = array_merge($dataProvider->sort->attributes, [
+            'order_id' => [
+                'asc' => ['order.code' => SORT_ASC],
+                'desc' => ['order.code' => SORT_DESC],
+            ],
+            'order_total_value' => [
+                'asc' => ['order.total_value' => SORT_ASC],
+                'desc' => ['order.total_value' => SORT_DESC],
+            ],
         ]);
 
         $this->load($params);
@@ -68,8 +83,10 @@ class SaleSearch extends Sale
             'canceled_at' => $this->canceled_at,
             'updated_at' => $this->updated_at,
             'employee_id' => $this->employee_id,
-            'order_id' => $this->order_id,
+            'order.total_value' => $this->order_total_value 
         ]);
+
+        $query->andFilterWhere(['like', 'order.code', $this->order_id]);
 
         return $dataProvider;
     }
