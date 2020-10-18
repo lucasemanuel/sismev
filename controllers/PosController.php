@@ -92,7 +92,7 @@ class PosController extends Controller
             $sale = $this->findOrderUnsold($code)->sale;
             $sale->trigger(Seller::EVENT_COMPLETE_SALE);
 
-            return $this->redirect(['sale/view', 'id' => $sale->id]);
+            return $this->redirect(['sale/invoice', 'id' => $sale->id]);
         } catch (HttpException $e) {
             Yii::$app->session->setFlash('warning', $e->getMessage());
 
