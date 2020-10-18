@@ -59,8 +59,7 @@ $gridColumns = [
 <div class="sale-index">
     <div class="row">
         <div class="col">
-            <?php //echo $this->render('_search', ['model' => $searchModel]); 
-            ?>
+            <?php echo $this->render('_search', ['model' => $searchModel]); ?>
 
             <?= GridView::widget([
                 'dataProvider' => $dataProvider,
