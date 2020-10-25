@@ -5,6 +5,7 @@ namespace app\controllers;
 use Yii;
 use app\models\Sale;
 use app\models\SaleSearch;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -20,6 +21,16 @@ class SaleController extends Controller
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'actions' => ['index', 'invoice', 'canceled'],
+                        'allow' => true,
+                        'roles' => ['admin']
+                    ],
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
