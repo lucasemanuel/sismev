@@ -1,7 +1,7 @@
 <?php
 
+use kartik\grid\GridView;
 use yii\helpers\Html;
-use yii\grid\GridView;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\OrderSearch */
@@ -9,35 +9,63 @@ use yii\grid\GridView;
 
 $this->title = Yii::t('app', 'Orders');
 $this->params['breadcrumbs'][] = $this->title;
+
+$gridColumns = [
+    ['class' => 'kartik\grid\SerialColumn'],
+    'code',
+    [
+        'attribute' => 'total_value',
+        'format' => 'currency',
+        'pageSummary' => true,
+    ],
+    [
+        'attribute' => 'total_items',
+        'value' => function ($model) {
+            return $model->getTotalItems();
+        },
+        'format' => 'amount',
+        'pageSummary' => true,
+    ],
+    'created_at:datetime',
+    [
+        'label' => Yii::t('app', 'Status'),
+        'attribute' => 'status',
+        'format' => 'html',
+        'value' => function ($model) {
+            if ($model->sale && $model->sale->is_sold)
+                return '<span class="badge bg-success text-uppercase">' . Yii::t('app', 'Sold') . '</span>';
+            return '<span class="badge bg-warning text-uppercase">' . Yii::t('app', 'Open') . '</span>';
+        }
+    ],
+    [
+        'class' => 'kartik\grid\ActionColumn',
+        'template' => '{view} {delete} {update}',
+        'width' => '100px',
+    ],
+];
+
 ?>
 <div class="order-index">
+    <div class="row">
+        <div class="col">
+            <?php //echo $this->render('_search', ['model' => $searchModel]); ?>
 
-    <h1><?= Html::encode($this->title) ?></h1>
-
-    <p>
-        <?= Html::a(Yii::t('app', 'Create Order'), ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
-
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
-            'id',
-            'code',
-            'total_value',
-            'note:ntext',
-            'is_quotation',
-            //'created_at',
-            //'updated_at',
-            //'company_id',
-
-            ['class' => 'yii\grid\ActionColumn'],
-        ],
-    ]); ?>
-
-
+            <?= GridView::widget([
+                'dataProvider' => $dataProvider,
+                'columns' => $gridColumns,
+                'responsive' => true,
+                'responsiveWrap' => false,
+                'hover' => true,
+                'showPageSummary' => true,
+                'toolbar' =>  [
+                    '{toggleData}',
+                ],
+                'panel' => [
+                    'type' => GridView::TYPE_DEFAULT,
+                    'heading' => Html::encode($this->title),
+                    'afterOptions' => ['class' => ''],
+                ],
+            ]); ?>
+        </div>
+    </div>
 </div>
