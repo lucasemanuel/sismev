@@ -128,6 +128,11 @@ class Order extends ActiveRecord
         return $this->hasOne(Sale::class, ['order_id' => 'id']);
     }
 
+    public function getTotalItems()
+    {
+        return $this->getOrderItems()->sum('amount');
+    }
+
     private static function generateCode()
     {
         $code = date('YmdHis').substr(microtime(), 2, 6);
