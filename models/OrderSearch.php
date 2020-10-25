@@ -11,15 +11,18 @@ use app\models\Order;
  */
 class OrderSearch extends Order
 {
+    public $total_items;
+    public $status;
+
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['id', 'is_quotation', 'company_id'], 'integer'],
+            [['id', 'is_quotation', 'company_id', 'status'], 'integer'],
             [['code', 'note', 'created_at', 'updated_at'], 'safe'],
-            [['total_value'], 'number'],
+            [['total_value', 'total_items'], 'number'],
         ];
     }
 
@@ -45,8 +48,24 @@ class OrderSearch extends Order
 
         // add conditions that should always apply here
 
+        $query->select('order.*, sale.is_sold, sum(order_item.amount) as total_items')
+            ->leftJoin('order_item', 'order.id = order_item.order_id')
+            ->leftJoin('sale', 'order.id = sale.order_id')
+            ->groupBy('order.id, sale.id');
+
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+        ]);
+
+        $dataProvider->sort->attributes = array_merge($dataProvider->sort->attributes, [
+            'total_items' => [
+                'asc' => ['total_items' => SORT_ASC],
+                'desc' => ['total_items' => SORT_DESC],
+            ],
+            'status' => [
+                'asc' => ['is_sold' => SORT_ASC],
+                'desc' => ['is_sold' => SORT_DESC],
+            ],
         ]);
 
         $this->load($params);
