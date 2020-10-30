@@ -15,8 +15,8 @@ class OrderSearch extends Order
 {
     public $total_items;
     public $status = [ 'sold', 'open' ];
-    public $setting_search_total_items;
-    public $setting_search_total_value;
+    public $setting_search_total_items = 0;
+    public $setting_search_total_value = 0;
 
     /**
      * {@inheritdoc}
@@ -83,7 +83,6 @@ class OrderSearch extends Order
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'total_value' => $this->total_value,
             'is_quotation' => $this->is_quotation,
             'updated_at' => $this->updated_at,
             'company_id' => $this->company_id,
@@ -94,6 +93,7 @@ class OrderSearch extends Order
             ->andFilterWhere(['like', 'note', $this->note]);
 
         $this->filterDate($query);
+        $this->filterTotalValue($query);
 
         return $dataProvider;
     }
@@ -107,5 +107,18 @@ class OrderSearch extends Order
 
             $query->andFilterWhere(['between', 'order.created_at', $start, $end]);
         }
+    }
+
+    private function filterTotalValue(ActiveQuery &$query)
+    {
+        $operator = '=';
+        if (isset($this->total_value)) {
+            if ($this->setting_search_total_value == 1)
+                $operator = '>=';
+            else if ($this->setting_search_total_value == 2)
+                $operator = '<=';
+        }
+
+        $query->andFilterWhere([$operator, 'total_value', $this->total_value]);
     }
 }
