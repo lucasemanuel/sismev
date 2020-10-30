@@ -14,7 +14,7 @@ use yii\db\ActiveQuery;
 class SaleSearch extends Sale
 {
     public $order_total_value;
-    public $setting_search_order_total_value;
+    public $setting_search_order_total_value = 0;
     public $status = [ 'sold', 'canceled' ];
 
     /**
