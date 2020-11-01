@@ -2,6 +2,7 @@
 
 use kartik\grid\GridView;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\OrderSearch */
@@ -41,6 +42,22 @@ $gridColumns = [
         'class' => 'kartik\grid\ActionColumn',
         'template' => '{view} {delete} {update}',
         'width' => '100px',
+        'urlCreator' => function ($action, $model, $key, $index) {
+            if ($action === 'update')
+                return Url::to(['/pos', 'code' => $model->code]);
+            if ($action === 'delete')
+                return Url::to(['delete', 'id' => $model->id]);
+            if ($action === 'view')
+                return Url::to(['view', 'id' => $model->id]);
+        },
+        'visibleButtons' => [
+            'delete' => function ($model) { 
+                return !($model->sale && $model->sale->is_sold);
+            },
+            'update' => function ($model) { 
+                return !($model->sale && $model->sale->is_sold);
+            }
+        ],
     ],
 ];
 
