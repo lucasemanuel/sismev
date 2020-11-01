@@ -56,8 +56,8 @@ $gridColumns = [
         'deleteOptions' => [
             'label' => '<span class="fas fa-times-circle"></span>',
             'data-confirm' => Yii::t('app', 'Are you sure you want to cancel this sale?') . '<br>' . Yii::t('app', 'All transactions made because of this sale will be reversed.'),
-            'title' => Yii::t('app', 'Invoice'),
-            'aria-label' => Yii::t('app', 'Invoice'),
+            'title' => Yii::t('app', 'Cancel'),
+            'aria-label' => Yii::t('app', 'Cancel'),
         ],
         'viewOptions' => [
             'label' => '<span class="fas fa-file-invoice"></span>',
