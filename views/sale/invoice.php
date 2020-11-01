@@ -23,13 +23,16 @@ $this->registerCss(
 Dialog::widget();
 ?>
 <div class="sale-view row">
-    <div class="col-12">
-        <div class="info-box bg-danger">
-            <div class="info-box-content">
-                <h2 class="font-weight-bold text-uppercase text-center"><?= Yii::t('app', 'Canceled sale') ?></h2>
+    <?php if ($model->is_canceled): ?>
+        <div class="col-12">
+            <div class="info-box bg-danger">
+                <div class="info-box-content">
+                    <h2 class="font-weight-bold text-uppercase text-center"><?= Yii::t('app', 'Canceled sale') ?></h2>
+                </div>
             </div>
         </div>
-    </div>
+    <?php endif; ?>
+    
     <div class="col-12">
         <div class="invoice p-3 mb-3">
             <div class="row">
