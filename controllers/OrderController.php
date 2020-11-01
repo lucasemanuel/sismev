@@ -24,6 +24,7 @@ class OrderController extends Controller
                 'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['POST'],
+                    'clear' => ['POST'],
                 ],
             ],
         ];
@@ -87,6 +88,19 @@ class OrderController extends Controller
         else
             $model->delete();
 
+        return $this->redirect(['index']);
+    }
+
+    public function actionClear()
+    {
+        $models = Order::find()->all();
+
+        foreach ($models as $order) {
+            if (empty($order->orderItems))
+                $order->delete();
+        }
+
+        Yii::$app->session->setFlash('success', Yii::t('app', 'All empty orders have been removed.'));
         return $this->redirect(['index']);
     }
 
