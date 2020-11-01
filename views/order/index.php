@@ -11,6 +11,8 @@ use yii\helpers\Url;
 $this->title = Yii::t('app', 'Orders');
 $this->params['breadcrumbs'][] = $this->title;
 
+$user = Yii::$app->user->identity;
+
 $gridColumns = [
     ['class' => 'kartik\grid\SerialColumn'],
     'code',
@@ -42,6 +44,11 @@ $gridColumns = [
         'class' => 'kartik\grid\ActionColumn',
         'template' => '{view} {delete} {update}',
         'width' => '100px',
+        'updateOptions' => [
+            'label' => '<span class="fas fa-shopping-cart"></span>',
+            'title' => Yii::t('app', 'Open POS'),
+            'aria-label' => Yii::t('app', 'Open POS'),
+        ],
         'urlCreator' => function ($action, $model, $key, $index) {
             if ($action === 'update')
                 return Url::to(['/pos', 'code' => $model->code]);
@@ -51,8 +58,11 @@ $gridColumns = [
                 return Url::to(['view', 'id' => $model->id]);
         },
         'visibleButtons' => [
-            'delete' => function ($model) { 
-                return !($model->sale && $model->sale->is_sold);
+            'delete' => function ($model) use ($user) { 
+                return !($model->sale && $model->sale->is_sold) && $user->is_manager;
+            },
+            'view' => function ($model) use ($user) { 
+                return $user->is_manager;
             },
             'update' => function ($model) { 
                 return !($model->sale && $model->sale->is_sold);
