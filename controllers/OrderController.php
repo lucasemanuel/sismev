@@ -104,7 +104,12 @@ class OrderController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+        
+        if ($model->sale && $model->sale->is_sold)
+            Yii::$app->session->setFlash('error', Yii::t('app', 'You cannot delete an order from a completed sale.'));
+        else
+            $model->delete();
 
         return $this->redirect(['index']);
     }
