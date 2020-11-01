@@ -7,6 +7,7 @@ use yii\data\ActiveDataProvider;
 use app\models\Order;
 use Yii;
 use yii\db\ActiveQuery;
+use yii\db\Expression;
 
 /**
  * OrderSearch represents the model behind the search form of `app\models\Order`.
@@ -95,6 +96,7 @@ class OrderSearch extends Order
         $this->filterDate($query);
         $this->filterTotalValue($query);
         $this->filterTotalItems($query);
+        $this->filterStatus($query);
 
         return $dataProvider;
     }
@@ -134,5 +136,25 @@ class OrderSearch extends Order
         }
         
         $query->andFilterHaving([$operator, 'total_items', $this->total_items]);
+    }
+
+    private function filterStatus(ActiveQuery &$query)
+    {
+        if (!empty($this->status) && count($this->status) < 2) {
+            $value = current($this->status);
+            
+            if ($value == 'sold') {
+                $query->andFilterWhere(['sale.is_sold' => 1]);
+            } else {
+                $subQuery = Order::find()->select('order.id')
+                    ->leftJoin('sale', 'order.id = sale.order_id')
+                    ->andWhere(['sale.is_sold' => 0])
+                    ->orWhere(['is', 'sale.is_sold', new Expression('NULL')]);
+
+                $query->andFilterWhere(['order.id' => $subQuery]);
+            }
+        } else {
+            $this->status = [ 'sold', 'open' ];
+        }
     }
 }
