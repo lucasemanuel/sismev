@@ -8,16 +8,22 @@ use yii\i18n\Formatter;
 
 class AppFormatter extends Formatter
 {
-    public function asDateTimeDefault($attr)
+    public function asDateTimeDefault($value)
     {
-        $attr = explode(" ", $attr);
-        $attr[0] = $this->asDateDefault($attr[0]);
-        return implode(" ", $attr);
+        if ($value === null)     
+            return $this->nullDisplay;
+
+        $value = explode(" ", $value);
+        $value[0] = $this->asDateDefault($value[0]);
+        return implode(" ", $value);
     }
 
-    public function asDateDefault($attr)
+    public function asDateDefault($value)
     {
-        return implode("-",array_reverse(explode("/", $attr)));
+        if ($value === null)     
+            return $this->nullDisplay;
+
+        return implode("-",array_reverse(explode("/", $value)));
     }
 
     public function asInputOrOutput($value)
@@ -29,6 +35,11 @@ class AppFormatter extends Formatter
 
     public function asAmount($value)
     {
+        if ($value === null)     
+            return $this->nullDisplay;
+        else if (empty($value))
+            $value = 0;
+    
         return number_format($value, 2, ',', '.');
     }
 
