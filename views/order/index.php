@@ -21,7 +21,7 @@ $gridColumns = [
     [
         'attribute' => 'total_items',
         'value' => function ($model) {
-            return $model->getTotalItems();
+            return (float) $model->getTotalItems();
         },
         'format' => 'amount',
         'pageSummary' => true,
@@ -48,7 +48,7 @@ $gridColumns = [
 <div class="order-index">
     <div class="row">
         <div class="col">
-            <?php //echo $this->render('_search', ['model' => $searchModel]); ?>
+            <?php echo $this->render('_search', ['model' => $searchModel]); ?>
 
             <?= GridView::widget([
                 'dataProvider' => $dataProvider,
