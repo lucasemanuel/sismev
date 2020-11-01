@@ -9,7 +9,7 @@ use yii\widgets\DetailView;
 
 echo Dialog::widget();
 
-$this->title = $model->id;
+$this->title = "#$model->code";
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Orders'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
