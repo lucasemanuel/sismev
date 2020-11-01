@@ -94,6 +94,7 @@ class OrderSearch extends Order
 
         $this->filterDate($query);
         $this->filterTotalValue($query);
+        $this->filterTotalItems($query);
 
         return $dataProvider;
     }
@@ -120,5 +121,18 @@ class OrderSearch extends Order
         }
 
         $query->andFilterWhere([$operator, 'total_value', $this->total_value]);
+    }
+
+    private function filterTotalItems(ActiveQuery &$query)
+    {
+        $operator = '=';
+        if (isset($this->total_items)) {
+            if ($this->setting_search_total_items == 1)
+                $operator = '>=';
+            else if ($this->setting_search_total_items == 2)
+                $operator = '<=';
+        }
+        
+        $query->andFilterHaving([$operator, 'total_items', $this->total_items]);
     }
 }
