@@ -2,13 +2,17 @@
 
 namespace app\controllers;
 
+use app\models\Operation;
 use Yii;
 use app\models\Sale;
 use app\models\SaleSearch;
+use yii\db\Expression;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\BadRequestHttpException;
+use yii\web\HttpException;
 
 /**
  * SaleController implements the CRUD actions for Sale model.
@@ -64,6 +68,41 @@ class SaleController extends Controller
 
     public function actionCanceled($id)
     {
+        $model = $this->findModel($id);
+
+        if (!$model->is_canceled) {
+            try {
+                $model->attributes = [
+                    'is_canceled' => 1,
+                    'canceled_at' => new Expression('NOW()')
+                ];
+    
+                if (!$model->save()) {
+                    foreach($model->firstErrors as $erro) break;
+                    throw new BadRequestHttpException($erro);
+                }
+
+                foreach ($model->order->orderItems as $item) {
+                    $operation = new Operation();
+                    $operation->attributes = [
+                        'in_out' => 1,
+                        'amount' => $item->amount,
+                        'reason' => Yii::t('app', 'Canceled Sale'),
+                        'product_id' => $item->product_id,
+                        'employee_id' => Yii::$app->user->id,
+                    ];
+    
+                    if (!$operation->save()) {
+                        foreach($operation->firstErrors as $erro) break;
+                        throw new BadRequestHttpException($erro);
+                    }
+                }
+            } catch (HttpException $e) {
+                Yii::$app->session->setFlash('danger', $e->message);
+            }
+        } else
+            Yii::$app->session->setFlash('warning', Yii::t('app', 'The sale has already been canceled.'));
+
         return $this->redirect(['index']);
     }
 
@@ -80,6 +119,6 @@ class SaleController extends Controller
             return $model;
         }
 
-        throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+        throw new NotFoundHttpException(Yii::t('app', 'The requested order does not exist.'));
     }
 }
