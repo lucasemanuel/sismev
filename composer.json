@@ -23,7 +23,6 @@
         "almasaeed2010/adminlte": "~3.0",
         "npm-asset/source-sans-pro" : "^3.012",
         "kartik-v/yii2-widget-datepicker": "^1.4",
-        "kartik-v/yii2-grid": "^3.3",
         "kartik-v/yii2-icons": "^1.4",
         "kartik-v/yii2-number": "@dev",
         "kartik-v/yii2-widget-activeform": "^1.5",
@@ -31,7 +30,8 @@
         "kartik-v/yii2-widget-datetimepicker": "^1.4",
         "kartik-v/yii2-date-range": "^1.7",
         "yii2tech/ar-softdelete": "^1.0",
-        "npm-asset/vue": "^2.6"
+        "npm-asset/vue": "^2.6",
+        "kartik-v/yii2-grid": "@dev"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b870f7c03c6023fa05c15df7bd9f9780",
+    "content-hash": "d354e367588881d4a24fcbb6ac3bb784",
     "packages": [
         {
             "name": "almasaeed2010/adminlte",
@@ -50,7 +50,7 @@
             "version": "3.3.11",
             "source": {
                 "type": "git",
-                "url": "https://github.com/RobinHerbots/Inputmask.git",
+                "url": "git@github.com:RobinHerbots/Inputmask.git",
                 "reference": "5e670ad62f50c738388d4dcec78d2888505ad77b"
             },
             "dist": {
@@ -89,7 +89,7 @@
             "version": "1.12.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/components/jqueryui.git",
+                "url": "git@github.com:components/jqueryui.git",
                 "reference": "44ecf3794cc56b65954cc19737234a3119d036cc"
             },
             "dist": {
@@ -647,16 +647,16 @@
         },
         {
             "name": "kartik-v/yii2-grid",
-            "version": "v3.3.5",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kartik-v/yii2-grid.git",
-                "reference": "e4ba0c68ecb864e1a158f16cc73a5e73a6cdf7c7"
+                "reference": "3199b406f796ab761d6466d62fe132c965b1605a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kartik-v/yii2-grid/zipball/e4ba0c68ecb864e1a158f16cc73a5e73a6cdf7c7",
-                "reference": "e4ba0c68ecb864e1a158f16cc73a5e73a6cdf7c7",
+                "url": "https://api.github.com/repos/kartik-v/yii2-grid/zipball/3199b406f796ab761d6466d62fe132c965b1605a",
+                "reference": "3199b406f796ab761d6466d62fe132c965b1605a",
                 "shasum": ""
             },
             "require": {
@@ -702,7 +702,7 @@
                     "type": "open_collective"
                 }
             ],
-            "time": "2020-03-27T11:31:59+00:00"
+            "time": "2020-07-08T07:12:17+00:00"
         },
         {
             "name": "kartik-v/yii2-icons",
@@ -2933,6 +2933,7 @@
                 "faker",
                 "fixtures"
             ],
+            "abandoned": true,
             "time": "2019-12-12T13:22:17+00:00"
         },
         {
@@ -6001,7 +6002,8 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "kartik-v/yii2-number": 20
+        "kartik-v/yii2-number": 20,
+        "kartik-v/yii2-grid": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
