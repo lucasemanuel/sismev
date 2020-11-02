@@ -44,6 +44,9 @@ $gridColumns = [
         'class' => 'kartik\grid\ActionColumn',
         'template' => '{view} {delete} {update}',
         'width' => '100px',
+        'deleteOptions' => [
+            'data-confirm' => Yii::t('app', 'Are you sure you want to delete this order?'),
+        ],
         'updateOptions' => [
             'label' => '<span class="fas fa-shopping-cart"></span>',
             'title' => Yii::t('app', 'Open POS'),
