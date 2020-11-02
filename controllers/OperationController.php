@@ -83,11 +83,7 @@ class OperationController extends Controller
             'product_id' => $product_id
         ];
 
-        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            $amount = $model->in_out == 0 ? $model->amount * -1 : $model->amount;
-
-            if ($model->save())
-                $model->product->updateCounters(['amount' => $amount]);
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 

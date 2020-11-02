@@ -4,9 +4,9 @@ namespace app\models;
 
 use app\components\traits\FilterTrait;
 use app\components\validators\DecimalValidator;
+use app\components\validators\ProductOutputValidator;
 use Yii;
 use yii2tech\ar\softdelete\SoftDeleteBehavior;
-use yii2tech\ar\softdelete\SoftDeleteQueryBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
 
@@ -66,7 +66,6 @@ class Operation extends \yii\db\ActiveRecord
                     'is_deleted' => true
                 ],
             ],
-
         ];
     }
 
@@ -80,7 +79,12 @@ class Operation extends \yii\db\ActiveRecord
             [['in_out', 'product_id', 'employee_id', 'is_deleted'], 'integer'],
             [['in_out'], 'default', 'value' => 1],
             [['amount'], DecimalValidator::class],
-            [['amount'], 'validateAmount'],
+            [['amount'], 'validateProductAmountMax', 'when' => function ($model) {
+                return $model->in_out == 1 && $model->product_id;
+            }],
+            [['amount'], ProductOutputValidator::class, 'when' => function ($model) {
+                return $model->in_out == 0 && $model->product_id;
+            }],
             [['created_at', 'deleted_at'], 'safe'],
             [['reason'], 'string', 'max' => 64],
             [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::class, 'targetAttribute' => ['product_id' => 'id']],
@@ -88,22 +92,14 @@ class Operation extends \yii\db\ActiveRecord
         ];
     }
 
-    public function validateAmount($attribute, $params, $validator)
+    public function validateProductAmountMax($attribute, $params, $validator)
     {
         $amount = Product::findOne($this->product_id)->amount;
 
-        if ($this->in_out == 0) {
-            if ($this->$attribute > $amount) {
-                $this->addError($attribute, Yii::t('app', '"{attribute}" cannot be greater than the total quantity of the product.', [
-                    'attribute' => $attribute
-                ]));
-            }
-        } else {
-            if (($this->$attribute + $amount) > DecimalValidator::MAX) {
-                $this->addError($attribute, Yii::t('app', 'The total quantity of the product may not exceed {max_amount}.', [
-                    'max_amount' => DecimalValidator::MAX
-                ]));
-            }
+        if (($this->$attribute + $amount) > DecimalValidator::MAX) {
+            $this->addError($attribute, Yii::t('app', 'The total quantity of the product may not exceed {max_amount}.', [
+                'max_amount' => DecimalValidator::MAX
+            ]));
         }
     }
 
@@ -143,5 +139,13 @@ class Operation extends \yii\db\ActiveRecord
     public function getProduct()
     {
         return $this->hasOne(Product::class, ['id' => 'product_id']);
+    }
+
+    public function afterSave($insert, $changedAttributes)
+    {
+        parent::afterSave($insert, $changedAttributes);
+
+        $amount = $this->in_out == 0 ? $this->amount * -1 : $this->amount;
+        $this->product->updateCounters(['amount' => $amount]);
     }
 }

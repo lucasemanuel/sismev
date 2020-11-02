@@ -2,12 +2,17 @@
 
 namespace app\controllers;
 
+use app\models\Operation;
 use Yii;
 use app\models\Sale;
 use app\models\SaleSearch;
+use yii\db\Expression;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\BadRequestHttpException;
+use yii\web\HttpException;
 
 /**
  * SaleController implements the CRUD actions for Sale model.
@@ -20,10 +25,25 @@ class SaleController extends Controller
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'actions' => ['index', 'canceled'],
+                        'allow' => true,
+                        'roles' => ['admin']
+                    ],
+                    [
+                        'actions' => ['invoice'],
+                        'allow' => true,
+                        'roles' => ['cashier']
+                    ],
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
-                    'delete' => ['POST'],
+                    'canceled' => ['POST'],
                 ],
             ],
         ];
@@ -44,67 +64,49 @@ class SaleController extends Controller
         ]);
     }
 
-    /**
-     * Displays a single Sale model.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionView($id)
+    public function actionInvoice($id)
     {
-        return $this->render('view', [
+        return $this->render('invoice', [
             'model' => $this->findModel($id),
         ]);
     }
 
-    /**
-     * Creates a new Sale model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
-    public function actionCreate()
-    {
-        $model = new Sale();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
-
-        return $this->render('create', [
-            'model' => $model,
-        ]);
-    }
-
-    /**
-     * Updates an existing Sale model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionUpdate($id)
+    public function actionCanceled($id)
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
+        if (!$model->is_canceled) {
+            try {
+                $model->attributes = [
+                    'is_canceled' => 1,
+                    'canceled_at' => new Expression('NOW()')
+                ];
+    
+                if (!$model->save()) {
+                    foreach($model->firstErrors as $erro) break;
+                    throw new BadRequestHttpException($erro);
+                }
 
-        return $this->render('update', [
-            'model' => $model,
-        ]);
-    }
-
-    /**
-     * Deletes an existing Sale model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionDelete($id)
-    {
-        $this->findModel($id)->delete();
+                foreach ($model->order->orderItems as $item) {
+                    $operation = new Operation();
+                    $operation->attributes = [
+                        'in_out' => 1,
+                        'amount' => $item->amount,
+                        'reason' => Yii::t('app', 'Canceled Sale'),
+                        'product_id' => $item->product_id,
+                        'employee_id' => Yii::$app->user->id,
+                    ];
+    
+                    if (!$operation->save()) {
+                        foreach($operation->firstErrors as $erro) break;
+                        throw new BadRequestHttpException($erro);
+                    }
+                }
+            } catch (HttpException $e) {
+                Yii::$app->session->setFlash('danger', $e->message);
+            }
+        } else
+            Yii::$app->session->setFlash('warning', Yii::t('app', 'The sale has already been canceled.'));
 
         return $this->redirect(['index']);
     }
@@ -122,6 +124,6 @@ class SaleController extends Controller
             return $model;
         }
 
-        throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+        throw new NotFoundHttpException(Yii::t('app', 'The requested order does not exist.'));
     }
 }

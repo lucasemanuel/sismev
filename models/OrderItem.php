@@ -4,6 +4,7 @@ namespace app\models;
 
 use app\components\traits\FilterTrait;
 use app\components\validators\DecimalValidator;
+use app\components\validators\ProductOutputValidator;
 use Yii;
 use yii\db\ActiveRecord;
 
@@ -61,6 +62,9 @@ class OrderItem extends ActiveRecord
             ],
             [['amount', 'unit_price', 'order_id', 'product_id'], 'required'],
             [['amount', 'unit_price', 'total'], DecimalValidator::class],
+            [['amount'], ProductOutputValidator::class, 'when' => function ($model) {
+                return $model->product_id;
+            }],
             [['order_id', 'product_id'], 'integer'],
             [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Order::class, 'targetAttribute' => ['order_id' => 'id']],
             [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::class, 'targetAttribute' => ['product_id' => 'id']],

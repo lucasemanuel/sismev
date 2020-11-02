@@ -17,8 +17,6 @@ use yii\db\Expression;
  * @property int $id
  * @property string $code
  * @property float|null $total_value
- * @property string|null $note
- * @property int|null $is_quotation
  * @property string $created_at
  * @property string|null $updated_at
  * @property int $company_id
@@ -126,6 +124,11 @@ class Order extends ActiveRecord
     public function getSale()
     {
         return $this->hasOne(Sale::class, ['order_id' => 'id']);
+    }
+
+    public function getTotalItems()
+    {
+        return $this->getOrderItems()->sum('amount');
     }
 
     private static function generateCode()

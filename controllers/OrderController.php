@@ -5,6 +5,7 @@ namespace app\controllers;
 use Yii;
 use app\models\Order;
 use app\models\OrderSearch;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -20,10 +21,26 @@ class OrderController extends Controller
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'actions' => ['view', 'clear', 'delete'],
+                        'allow' => true,
+                        'roles' => ['admin']
+                    ],
+                    [
+                        'actions' => ['index', 'update'],
+                        'allow' => true,
+                        'roles' => ['cashier']
+                    ],
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['POST'],
+                    'clear' => ['POST'],
                 ],
             ],
         ];
@@ -58,24 +75,6 @@ class OrderController extends Controller
     }
 
     /**
-     * Creates a new Order model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
-    public function actionCreate()
-    {
-        $model = new Order();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
-
-        return $this->render('create', [
-            'model' => $model,
-        ]);
-    }
-
-    /**
      * Updates an existing Order model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
@@ -86,13 +85,7 @@ class OrderController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
-
-        return $this->render('update', [
-            'model' => $model,
-        ]);
+        $this->redirect(['/pos', 'code' => $model->id]);
     }
 
     /**
@@ -104,8 +97,26 @@ class OrderController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+        
+        if ($model->sale && $model->sale->is_sold)
+            Yii::$app->session->setFlash('error', Yii::t('app', 'You cannot delete an order from a completed sale.'));
+        else
+            $model->delete();
 
+        return $this->redirect(['index']);
+    }
+
+    public function actionClear()
+    {
+        $models = Order::find()->all();
+
+        foreach ($models as $order) {
+            if (empty($order->orderItems))
+                $order->delete();
+        }
+
+        Yii::$app->session->setFlash('success', Yii::t('app', 'All empty orders have been removed.'));
         return $this->redirect(['index']);
     }
 

@@ -35,7 +35,7 @@ class Seller extends Component
         foreach ($items as $item) {
             $operation = new Operation();
             $operation->attributes = [
-                'in_out' => 1,
+                'in_out' => 0,
                 'amount' => $item->amount,
                 'reason' => Yii::t('app', 'Product sale.'),
                 'product_id' => $item->product_id,
