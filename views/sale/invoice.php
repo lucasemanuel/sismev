@@ -132,7 +132,7 @@ Dialog::widget();
                     <p>
                         <button onclick='print()' class="btn btn-default"><i class="fas fa-print"></i> Print</button>
                         <?php if (!$model->is_canceled) : ?>
-                            <?= Html::a(Yii::t('app', 'Canceled'), ['delete', 'id' => $model->id], [
+                            <?= Html::a(Yii::t('app', 'Canceled'), ['canceled', 'id' => $model->id], [
                                 'class' => 'btn btn-danger',
                                 'data' => [
                                     'confirm' => Yii::t('app', 'Are you sure you want to cancel this sale?') . '<br>' . Yii::t('app', 'All transactions made because of this sale will be reversed.'),
