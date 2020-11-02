@@ -29,9 +29,14 @@ class SaleController extends Controller
                 'class' => AccessControl::class,
                 'rules' => [
                     [
-                        'actions' => ['index', 'invoice', 'canceled'],
+                        'actions' => ['index', 'canceled'],
                         'allow' => true,
                         'roles' => ['admin']
+                    ],
+                    [
+                        'actions' => ['invoice'],
+                        'allow' => true,
+                        'roles' => ['cashier']
                     ],
                 ],
             ],
