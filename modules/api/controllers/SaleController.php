@@ -26,6 +26,11 @@ class SaleController extends Controller
                 'class' => AccessControl::class,
                 'rules' => [
                     [
+                        'actions' => ['week'],
+                        'allow' => true,
+                        'roles' => ['admin']
+                    ],
+                    [
                         'actions' => ['index'],
                         'allow' => true,
                         'roles' => ['cashier']
@@ -45,6 +50,22 @@ class SaleController extends Controller
     {
         $sale = $this->findModel($id);
         return $sale;
+    }
+
+    public function actionWeek()
+    {
+        $data = ['dates' => [], 'values' => []];
+        for ($i = 1; $i < 8; $i++) {
+            $date = date('Y-m-d', strtotime("-$i day"));
+            $start = $date.' 00:00:00';
+            $end = $date.' 23:59:59';
+            $sale = Sale::find()
+                ->andWhere(['between', 'sale_at', $start, $end])->sum('amount_paid');
+            array_push($data['dates'], $date);
+            array_push($data['values'], (float) $sale);
+        }
+
+        return $data;
     }
 
     protected function findModel($id)
