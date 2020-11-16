@@ -25,8 +25,8 @@ class OrderSearch extends Order
     public function rules()
     {
         return [
-            [['id', 'is_quotation', 'company_id', 'setting_search_total_items', 'setting_search_total_value'], 'integer'],
-            [['code', 'note', 'created_at', 'updated_at', 'status'], 'safe'],
+            [['id', 'company_id', 'setting_search_total_items', 'setting_search_total_value'], 'integer'],
+            [['code', 'created_at', 'updated_at', 'status'], 'safe'],
             [['total_value', 'total_items'], 'number'],
         ];
     }
@@ -84,14 +84,11 @@ class OrderSearch extends Order
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'is_quotation' => $this->is_quotation,
             'updated_at' => $this->updated_at,
             'company_id' => $this->company_id,
         ]);
 
-
-        $query->andFilterWhere(['like', 'code', $this->code])
-            ->andFilterWhere(['like', 'note', $this->note]);
+        $query->andFilterWhere(['like', 'code', $this->code]);
 
         $this->filterDate($query);
         $this->filterTotalValue($query);

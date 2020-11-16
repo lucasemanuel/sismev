@@ -70,8 +70,7 @@ class Order extends ActiveRecord
         return [
             [['company_id'], 'required'],
             [['total_value'], DecimalValidator::class],
-            [['note'], 'string'],
-            [['is_quotation', 'company_id'], 'integer'],
+            [['company_id'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
             [['code'], 'string', 'max' => 20],
             [['total_value'], 'default', 'value' => 0],
@@ -88,8 +87,6 @@ class Order extends ActiveRecord
             'id' => Yii::t('app', 'ID'),
             'code' => Yii::t('app', 'Code'),
             'total_value' => Yii::t('app', 'Total Value'),
-            'note' => Yii::t('app', 'Note'),
-            'is_quotation' => Yii::t('app', 'Is Quotation'),
             'created_at' => Yii::t('app', 'Created At'),
             'updated_at' => Yii::t('app', 'Updated At'),
             'company_id' => Yii::t('app', 'Company ID'),
