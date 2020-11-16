@@ -2,7 +2,7 @@
 
 return [
     'class' => 'yii\db\Connection',
-    'dsn' => 'mysql:host=localhost;dbname=sismec',
+    'dsn' => 'mysql:host=127.0.0.1;dbname=sismec',
     'username' => 'sismec',
     'password' => 'sismec',
     'charset' => 'utf8',
