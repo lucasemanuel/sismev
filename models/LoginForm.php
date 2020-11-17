@@ -82,8 +82,7 @@ class LoginForm extends Model
      */
     public function getUser()
     {
-        if ($this->_user === false) {
-            $user = Employee::findByEmail($this->email);
+        if ($this->_user === false && ($user = Employee::findByEmail($this->email))) {
             $this->_user = $user->is_deleted ? null : $user;
         }
 
