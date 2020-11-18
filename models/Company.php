@@ -94,7 +94,7 @@ class Company extends ActiveRecord
             'email' => Yii::t('app', 'Email'),
             'created_at' => Yii::t('app', 'Created At'),
             'updated_at' => Yii::t('app', 'Updated At'),
-            'address_id' => Yii::t('app', 'Address ID'),
+            'address_id' => Yii::t('app', 'Address'),
             'phone_number' => Yii::t('app', 'Phone Number'),
         ];
     }
