@@ -26,6 +26,11 @@ class SaleController extends Controller
                 'class' => AccessControl::class,
                 'rules' => [
                     [
+                        'actions' => ['week'],
+                        'allow' => true,
+                        'roles' => ['admin']
+                    ],
+                    [
                         'actions' => ['index'],
                         'allow' => true,
                         'roles' => ['cashier']
@@ -45,6 +50,38 @@ class SaleController extends Controller
     {
         $sale = $this->findModel($id);
         return $sale;
+    }
+
+    public function actionWeek()
+    {
+        $data = [
+            'dates' => [],
+            'amount_paid' => [
+                'label' => Yii::t('app', 'Total sales'),
+                'values' => []
+            ],
+            'total_sale' => [
+                'label' => Yii::t('app', 'Sales value'),
+                'values' => []
+            ]
+        ];
+
+        for ($i = 7; $i > 0; $i--) {
+            $date = date('Y-m-d', strtotime("-$i day"));
+            $start = $date.' 00:00:00';
+            $end = $date.' 23:59:59';
+            $amount_paid = Sale::find()
+                ->andWhere(['between', 'sale_at', $start, $end])->sum('amount_paid');
+
+            $total_sale = Sale::find()
+                ->andWhere(['between', 'sale_at', $start, $end])->count();
+
+            array_push($data['dates'], Yii::$app->formatter->asDate($date));
+            array_push($data['amount_paid']['values'], (float) $amount_paid);
+            array_push($data['total_sale']['values'], $total_sale);
+        }
+
+        return $data;
     }
 
     protected function findModel($id)

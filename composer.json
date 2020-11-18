@@ -31,7 +31,8 @@
         "kartik-v/yii2-date-range": "^1.7",
         "yii2tech/ar-softdelete": "^1.0",
         "npm-asset/vue": "^2.6",
-        "kartik-v/yii2-grid": "@dev"
+        "kartik-v/yii2-grid": "@dev",
+        "npm-asset/chart.js": "^2.9"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",

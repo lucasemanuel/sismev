@@ -50,21 +50,13 @@ AdminLteAsset::register($this);
 					</a>
 
 					<div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-						<span class="dropdown-item dropdown-header">15 Notifications</span>
 						<div class="dropdown-divider"></div>
 						<a href=<?= Url::to(['/employee/profile']) ?> class="dropdown-item">
 							<i class="fas fa-user mr-2"></i> <?= Yii::t('app', 'Profile') ?>
 						</a>
-						<a href="#" class="dropdown-item">
-							<i class="fas fa-users mr-2"></i> 8 friend requests
-						</a>
-						<div class="dropdown-divider"></div>
-						<a href="#" class="dropdown-item">
-							<i class="fas fa-file mr-2"></i> 3 new reports
-						</a>
 						<div class="dropdown-divider"></div>
 						<a href=<?= Url::to(['site/logout']) ?> class="dropdown-item" data-method="post">
-							<i class="fas fa-sign-out-alt mr-2"></i> Logout
+							<i class="fas fa-sign-out-alt mr-2"></i><?= Yii::t('app', 'Logout') ?>
 						</a>
 					</div>
 				</li>
@@ -84,7 +76,7 @@ AdminLteAsset::register($this);
 				<nav class="mt-2">
 					<ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
 						<!-- Add icons to the links using the .nav-icon class with font-awesome or any other icon font library -->
-						<li class="nav-header"><?= strtoupper(Yii::t('app', 'Organization')) ?></li>
+						<li class="nav-header text-uppercase"><?= Yii::t('app', 'Organization') ?></li>
 						<li class="nav-item">
 							<a href="<?= Url::to(['/company']) ?>" class="nav-link">
 								<i class="nav-icon fas fa-building"></i>
@@ -94,14 +86,14 @@ AdminLteAsset::register($this);
 						<li class="nav-item">
 							<a href="<?= Url::to(['/employee']) ?>" class="nav-link">
 								<i class="nav-icon fas fa-users"></i>
-								<p><?= Yii::t('app', 'Employee') ?></p>
+								<p><?= Yii::t('app', 'Employees') ?></p>
 							</a>
 						</li>
-						<li class="nav-header"><?= strtoupper(Yii::t('app', 'Products')) ?></li>
+						<li class="nav-header text-uppercase"><?= Yii::t('app', 'Product') ?></li>
 						<li class="nav-item">
 							<a href="<?= Url::to(['/category']) ?>" class="nav-link">
 								<i class="nav-icon fas fa-tag"></i>
-								<p><?= Yii::t('app', 'Category') ?></p>
+								<p><?= Yii::t('app', 'Categories') ?></p>
 							</a>
 						</li>
 						<li class="nav-item has-treeview">
@@ -113,7 +105,7 @@ AdminLteAsset::register($this);
 								<li class="nav-item">
 									<a href="<?= Url::to(['/variation-set']) ?>" class="nav-link">
 										<i class="nav-icon far fa-circle"></i>
-										<p><?= Yii::t('app', 'Set') ?></p>
+										<p><?= Yii::t('app', 'Sets') ?></p>
 									</a>
 								</li>
 							</ul>
@@ -121,7 +113,7 @@ AdminLteAsset::register($this);
 								<li class="nav-item">
 									<a href="<?= Url::to(['/variation-attribute']) ?>" class="nav-link">
 										<i class="nav-icon far fa-circle"></i>
-										<p><?= Yii::t('app', 'Property') ?></p>
+										<p><?= Yii::t('app', 'Properties') ?></p>
 									</a>
 								</li>
 							</ul>
@@ -129,7 +121,7 @@ AdminLteAsset::register($this);
 						<li class="nav-item">
 							<a href="<?= Url::to(['/product']) ?>" class="nav-link">
 								<i class="nav-icon fas fa-box"></i>
-								<p><?= Yii::t('app', 'Product') ?></p>
+								<p><?= Yii::t('app', 'Products') ?></p>
 							</a>
 						</li>
 						<li class="nav-item">
@@ -138,7 +130,7 @@ AdminLteAsset::register($this);
 								<p><?= Yii::t('app', 'Operations') ?></p>
 							</a>
 						</li>
-						<li class="nav-header"><?= strtoupper(Yii::t('app', 'Finances')) ?></li>
+						<li class="nav-header text-uppercase"><?= Yii::t('app', 'Finance') ?></li>
 						<li class="nav-item">
 							<a href="<?= Url::to(['/expense']) ?>" class="nav-link">
 								<i class="nav-icon fas fa-file-invoice-dollar"></i>
@@ -151,7 +143,7 @@ AdminLteAsset::register($this);
 								<p><?= Yii::t('app', 'Payment Methods') ?></p>
 							</a>
 						</li>
-						<li class="nav-header"><?= strtoupper(Yii::t('app', 'Sell')) ?></li>
+						<li class="nav-header text-uppercase"><?= Yii::t('app', 'Sell') ?></li>
 						<li class="nav-item">
 							<a href="<?= Url::to(['/pos']) ?>" class="nav-link">
 								<i class="nav-icon fas fa-shopping-cart"></i>

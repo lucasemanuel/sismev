@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\LoginForm;
+use app\models\Sale;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
@@ -65,7 +66,29 @@ class SiteController extends Controller
             return $this->redirect(['site/login']);
         }
 
-        return $this->render('index');
+        $info = $this->getInfoDashBoard();
+
+        return $this->render('index', [
+            'datas' => $info
+        ]);
+    }
+
+    private function getInfoDashBoard()
+    {
+        $date = date('Y-m-d', strtotime("today"));
+        $start = $date.' 00:00:00';
+        $end = $date.' 23:59:59';
+
+        $total_price = Sale::find()
+            ->andWhere(['between', 'sale_at', $start, $end])->sum('amount_paid');
+
+        $total_sale = Sale::find()
+            ->andWhere(['between', 'sale_at', $start, $end])->count();
+
+        return [
+            'sales' => $total_sale,
+            'total_sales_price' => Yii::$app->formatter->asCurrency((float) $total_price),
+        ];
     }
 
     /**
