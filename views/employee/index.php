@@ -24,13 +24,10 @@ $gridColumns = [
     ],
     [
         'attribute' => 'birthday',
-        'format' => 'date',
-        'filterType' => GridView::FILTER_DATE,
+        'filterType' => MaskedInput::class,
         'filterWidgetOptions' => [
-            'pluginOptions' => [
-                'format' => 'dd/mm/yyyy',
-            ]
-        ],
+            'clientOptions' => ['alias' =>  'dd/mm/yyyy']
+        ]
     ],
     'email',
     [
@@ -39,12 +36,6 @@ $gridColumns = [
         'filterWidgetOptions' => [
             'mask' => ['(99) 9999-9999', '(99) 99999-9999'],
         ]
-    ],
-    [
-        'attribute' => 'is_manager',
-        'class' => '\kartik\grid\BooleanColumn',
-        'trueLabel' => Yii::t('app', 'Yes'),
-        'falseLabel' => Yii::t('app', 'No')
     ],
     [
         'attribute' => 'is_deleted',
@@ -58,9 +49,16 @@ $gridColumns = [
     ],
     [
         'class' => 'kartik\grid\ActionColumn',
+        'template' => '{view} {update}',
+        'visibleButtons' => [
+            'delete' => function ($model) {
+                return $model->id != Yii::$app->user->id;
+            },
+        ],
         'width' => '100px',
     ],
 ];
+
 ?>
 <div class="employee-index row">
     <div class="col">
@@ -85,8 +83,6 @@ $gridColumns = [
             'panel' => [
                 'type' => GridView::TYPE_DEFAULT,
                 'heading' => Html::encode($this->title),
-                // 'headingOptions' => ['class' => ''],
-                // 'footer' => false,
                 'afterOptions' => ['class' => ''],
             ],
         ]); ?>

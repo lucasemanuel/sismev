@@ -18,8 +18,8 @@ class EmployeeSearch extends Employee
     public function rules()
     {
         return [
-            [['id', 'is_manager', 'is_deleted', 'address_id', 'company_id'], 'integer'],
-            [['full_name', 'usual_name', 'ssn', 'birthday', 'email', 'password', 'created_at', 'updated_at', 'deleted_at', 'phone_number'], 'safe'],
+            [['is_deleted'], 'integer'],
+            [['full_name', 'ssn', 'birthday', 'email', 'phone_number'], 'safe'],
         ];
     }
 
@@ -59,31 +59,31 @@ class EmployeeSearch extends Employee
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'employee.id' => $this->id,
             'employee.birthday' => $this->getBirthDay(),
-            'employee.is_manager' => $this->is_manager,
             'employee.is_deleted' => $this->is_deleted,
-            'employee.created_at' => $this->created_at,
-            'employee.updated_at' => $this->updated_at,
-            'employee.deleted_at' => $this->deleted_at,
-            'employee.address_id' => $this->address_id,
-            'employee.company_id' => $this->company_id,
         ]);
 
         $query->andFilterWhere(['like', 'employee.full_name', $this->full_name])
-            ->andFilterWhere(['like', 'employee.usual_name', $this->usual_name])
             ->andFilterWhere(['like', 'employee.ssn', $this->ssn])
             ->andFilterWhere(['like', 'employee.email', $this->email])
-            ->andFilterWhere(['like', 'employee.phone_number', $this->phone_number])
-            ->andFilterWhere(['like', 'employee.password', $this->password]);
+            ->andFilterWhere(['like', 'employee.phone_number', $this->getPhoneNumber()]);
 
         return $dataProvider;
     }
 
     public function getBirthDay()
     {
-        return isset($this->birthday)
+        return $this->birthday && preg_match("/\d{2}\/\d{2}\/\d{4}/", $this->birthday)
             ? Yii::$app->formatter->asDateDefault($this->birthday)
-            : null;
+            : $this->birthday = null;
+    }
+
+    public function getPhoneNumber()
+    {
+        return $this->phone_number && (
+                preg_match("/\(\d{2}\)\ \d{4}\-\d{4}/", $this->phone_number)
+                || preg_match("/\(\d{2}\)\ \d{5}\-\d{4}/", $this->phone_number)
+            ) ? $this->phone_number
+            : $this->phone_number = null;
     }
 }
