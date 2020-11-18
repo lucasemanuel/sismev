@@ -1,6 +1,5 @@
 <?php
 
-use app\assets\AppAsset;
 use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\helpers\Url;
@@ -19,8 +18,9 @@ $gridColumns = [
     'name',
     [
         'class' => 'kartik\grid\ActionColumn',
-        'width' => '100px',
-        // 'template' => '{update} {delete}',
+        'deleteOptions' => [
+            'data-confirm' => Yii::t('app', 'Are you sure you want to delete this category?'),
+        ],
         'buttons' => [
             'update' => function($url, $model) {
                 return Html::a(
@@ -28,9 +28,9 @@ $gridColumns = [
                     $url,
                     ['value' => $url, 'title' => Yii::t('kvgrid', 'Update'), 'class' => 'btn-modal', 'data-toggle' => 'modal']
                 );
-
             }
-        ]
+        ],
+        'width' => '100px',
     ],
 ];
 ?>
@@ -38,8 +38,6 @@ $gridColumns = [
     <div class="row">
         <div class="col">
             <?= $this->render('@app/views/layouts/modal.php', ['options' => ['title' => Yii::t('app', 'Category')]]) ?>
-
-            <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
             <?= GridView::widget([
                 'id' => 'grid_categories',
@@ -64,8 +62,6 @@ $gridColumns = [
                 'panel' => [
                     'type' => GridView::TYPE_DEFAULT,
                     'heading' => Html::encode($this->title),
-                    // 'headingOptions' => ['class' => ''],
-                    // 'footer' => false,
                     'afterOptions' => ['class' => ''],
                 ],
             ]); ?>
