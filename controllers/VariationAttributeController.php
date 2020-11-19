@@ -46,9 +46,10 @@ class VariationAttributeController extends Controller
      * Lists all VariationAttribute models.
      * @return mixed
      */
-    public function actionIndex()
+    public function actionIndex($variation_set_id = null)
     {
         $searchModel = new VariationAttributeSearch();
+        $searchModel->variation_set_id = $variation_set_id;
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -81,7 +82,7 @@ class VariationAttributeController extends Controller
         $listVariationGroup = ArrayHelper::map(VariationSet::find()->orderBy('name')->all(), 'id', 'fullName');
 
         if ($model->load(Yii::$app->request->post()) && $model->save())
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect('index');
         else if (!Yii::$app->request->isAjax)
             throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
 
@@ -100,14 +101,14 @@ class VariationAttributeController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = new VariationAttribute();
+        $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save())
             return $this->redirect(['view', 'id' => $model->id]);
         else if (!Yii::$app->request->isAjax)
             throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
 
-        return $this->renderAjax('create', [
+        return $this->renderAjax('update', [
             'model' => $model,
         ]);
     }

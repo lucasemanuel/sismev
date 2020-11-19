@@ -5,8 +5,9 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\VariationAttribute */
 
-$this->title = Yii::t('app', 'Update Variation Attribute: {name}', [
+$this->title = Yii::t('app', 'Update Variation Attribute: {name} ({variation_set})', [
     'name' => $model->name,
+    'variation_set' => $model->variationSet->name,
 ]);
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Variation Attributes'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];

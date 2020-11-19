@@ -17,8 +17,8 @@ class VariationAttributeSearch extends VariationAttribute
     public function rules()
     {
         return [
-            [['id', 'variation_set_id'], 'integer'],
-            [['name', 'created_at', 'updated_at'], 'safe'],
+            [['variation_set_id'], 'integer'],
+            [['name'], 'safe'],
         ];
     }
 
@@ -48,6 +48,14 @@ class VariationAttributeSearch extends VariationAttribute
             'query' => $query,
         ]);
 
+
+        $dataProvider->sort->attributes = array_merge($dataProvider->sort->attributes, [
+            'variation_set_id' => [
+                'asc' => ['variation_set.name' => SORT_ASC],
+                'desc' => ['variation_set.name' => SORT_DESC],
+            ],
+        ]);
+
         $this->load($params);
 
         if (!$this->validate()) {
@@ -58,13 +66,10 @@ class VariationAttributeSearch extends VariationAttribute
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
             'variation_set_id' => $this->variation_set_id,
         ]);
 
-        $query->andFilterWhere(['like', 'name', $this->name]);
+        $query->andFilterWhere(['like', 'variation_attribute.name', $this->name]);
 
         return $dataProvider;
     }

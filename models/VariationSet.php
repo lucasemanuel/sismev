@@ -79,7 +79,7 @@ class VariationSet extends ActiveRecord
             'name' => Yii::t('app', 'Name'),
             'created_at' => Yii::t('app', 'Created At'),
             'updated_at' => Yii::t('app', 'Updated At'),
-            'category_id' => Yii::t('app', 'Category ID'),
+            'category_id' => Yii::t('app', 'Category'),
         ];
     }
 

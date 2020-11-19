@@ -36,6 +36,10 @@ $this->registerJsFile('@web/js/modal.js', ['depends' => [yii\web\JqueryAsset::cl
                             [
                                 'attribute' => 'variationSet.name',
                                 'label' => Yii::t('app', 'Variation')
+                            ],
+                            [
+                                'attribute' => 'variationSet.category.name',
+                                'label' => Yii::t('app', 'Category')
                             ]
                         ],
                     ]) ?>

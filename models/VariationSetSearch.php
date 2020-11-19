@@ -17,8 +17,8 @@ class VariationSetSearch extends VariationSet
     public function rules()
     {
         return [
-            [['id', 'category_id'], 'integer'],
-            [['name', 'created_at', 'updated_at'], 'safe'],
+            [['category_id'], 'integer'],
+            [['name'], 'safe'],
         ];
     }
 
@@ -48,6 +48,14 @@ class VariationSetSearch extends VariationSet
             'query' => $query,
         ]);
 
+
+        $dataProvider->sort->attributes = array_merge($dataProvider->sort->attributes, [
+            'category_id' => [
+                'asc' => ['category.name' => SORT_ASC],
+                'desc' => ['category.name' => SORT_DESC],
+            ],
+        ]);
+
         $this->load($params);
 
         if (!$this->validate()) {
@@ -58,9 +66,6 @@ class VariationSetSearch extends VariationSet
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
             'category_id' => $this->category_id,
         ]);
 

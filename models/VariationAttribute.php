@@ -82,7 +82,7 @@ class VariationAttribute extends ActiveRecord
             'name' => Yii::t('app', 'Name'),
             'created_at' => Yii::t('app', 'Created At'),
             'updated_at' => Yii::t('app', 'Updated At'),
-            'variation_set_id' => Yii::t('app', 'Variation Set ID'),
+            'variation_set_id' => Yii::t('app', 'Variation Set'),
         ];
     }
 

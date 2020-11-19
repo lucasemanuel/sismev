@@ -17,11 +17,16 @@ $this->registerJsFile('@web/js/modal.js', ['depends' => [yii\web\JqueryAsset::cl
 
 $gridColumns = [
     ['class' => 'kartik\grid\SerialColumn'],
-    'name', 
+    [
+        'attribute' => 'name',
+        'value' => function ($model) {
+            return Html::a($model->name, ['/variation-attribute', 'variation_set_id' => $model->id], $options = []);
+        },
+        'format' => 'html'
+    ],
     [
         'attribute' => 'category_id',
-        // 'width' => '310px',
-        'value' => function ($model, $key, $index, $widget) {
+        'value' => function ($model) {
             return $model->category->name;
         },
         'filterType' => GridView::FILTER_SELECT2,
@@ -29,13 +34,12 @@ $gridColumns = [
         'filterWidgetOptions' => [
             'pluginOptions' => ['allowClear' => true],
         ],
-        'filterInputOptions' => ['placeholder' => 'Any supplier'],
+        'filterInputOptions' => ['placeholder' => Yii::t('app', 'Select')],
         'group' => true,  // enable grouping
     ],
     [
         'class' => 'kartik\grid\ActionColumn',
         'width' => '100px',
-        // 'template' => '{update} {delete}',
         'buttons' => [
             'update' => function ($url, $model) {
                 return Html::a(
@@ -53,9 +57,6 @@ $gridColumns = [
         <?= $this->render('@app/views/layouts/modal.php', ['options' => ['title' => Yii::t('app', 'Variation Set')]]) ?>
 
         <h1><?= Html::encode($this->title) ?></h1>
-
-        <?php // echo $this->render('_search', ['model' => $searchModel]); 
-        ?>
 
         <?= GridView::widget([
             'id' => 'grid_categories',
@@ -80,8 +81,6 @@ $gridColumns = [
             'panel' => [
                 'type' => GridView::TYPE_DEFAULT,
                 'heading' => Html::encode($this->title),
-                // 'headingOptions' => ['class' => ''],
-                // 'footer' => false,
                 'afterOptions' => ['class' => ''],
             ],
         ]); ?>
