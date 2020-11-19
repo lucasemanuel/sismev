@@ -132,7 +132,12 @@ class CategoryController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+
+        if (empty($model->products))
+            $model->delete();
+        else 
+            Yii::$app->session->setFlash('warning', Yii::t('app', 'It is not possible to delete the category because the category is linked to some products.'));
 
         return $this->redirect(['index']);
     }
