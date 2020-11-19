@@ -59,7 +59,7 @@ class Category extends ActiveRecord
             [['created_at', 'updated_at'], 'safe'],
             [['company_id'], 'integer'],
             [['name'], 'unique'],
-            // [['name'], 'string', 'max' => 64],
+            [['name'], 'string', 'max' => 64],
             [['company_id'], 'exist', 'skipOnError' => true, 'targetClass' => Company::class, 'targetAttribute' => ['company_id' => 'id']],
         ];
     }
