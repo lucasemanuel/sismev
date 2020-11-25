@@ -80,10 +80,8 @@ class EmployeeSearch extends Employee
 
     public function getPhoneNumber()
     {
-        return $this->phone_number && (
-                preg_match("/\(\d{2}\)\ \d{4}\-\d{4}/", $this->phone_number)
-                || preg_match("/\(\d{2}\)\ \d{5}\-\d{4}/", $this->phone_number)
-            ) ? $this->phone_number
+        return $this->phone_number && (preg_match("/\(\d{2}\)\ \d{4}\-\d{4}/", $this->phone_number)
+            || preg_match("/\(\d{2}\)\ \d{5}\-\d{4}/", $this->phone_number)) ? $this->phone_number
             : $this->phone_number = null;
     }
 }
