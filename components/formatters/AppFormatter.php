@@ -43,6 +43,13 @@ class AppFormatter extends Formatter
         return number_format($value, 2, ',', '.');
     }
 
+    public function asActive($value)
+    {
+        return $value
+            ? Yii::t('app', 'No') 
+            : Yii::t('app', 'Yes');
+    }
+
     public function getCurrencySymbol()
     {
         $formatter = new NumberFormatter($this->locale, NumberFormatter::CURRENCY);
