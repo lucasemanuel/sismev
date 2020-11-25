@@ -27,7 +27,8 @@ $gridColumns = [
         'filterType' => MaskedInput::class,
         'filterWidgetOptions' => [
             'clientOptions' => ['alias' =>  'dd/mm/yyyy']
-        ]
+        ],
+        'format' => 'date'
     ],
     'email',
     [
