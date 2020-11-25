@@ -198,20 +198,22 @@ class EmployeeController extends Controller
     public function actionDelete($id)
     {
         $model = $this->findModel($id);
-        $transaction = Yii::$app->getDb()->beginTransaction();
 
         try {
             $address = Address::findOne($model->address_id);
-            if ($model->delete() && $address->delete()){
-                $transaction->commit();
-                return $this->redirect(['index']);
-            }
-    
-            throw new BadRequestHttpException(Yii::t('app', 'Failed to delete collaborator.'));
+
+            if ($model->operations || $model->sales)
+                throw new BadRequestHttpException(Yii::t('app', 'It is not possible to permanently delete the collaborator because there are sales or operations linked to that collaborator.'));
+            
+            $address
+                ? $address->delete()
+                : $model->delete();
+
         } catch (BadRequestHttpException $e) {
-            $transaction->rollBack();
-            throw $e;
+            Yii::$app->session->setFlash('warning', Yii::t('app', $e->getMessage()));
         }
+  
+        return $this->redirect(['index']);
     }
 
     public function actionSoftDelete($id)
