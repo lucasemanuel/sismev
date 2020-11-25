@@ -121,7 +121,21 @@ class VariationSetController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+
+        $varaitions_attributes = $model->variationAttributes;
+        
+        $is_possible_delete = true;
+        foreach ($varaitions_attributes as $var) {
+            if ($var->productVariationAttributes) {
+                $is_possible_delete = false;
+                break;
+            }
+        }
+
+        $is_possible_delete
+            ? $model->delete()
+            : Yii::$app->session->setFlash('warning', Yii::t('app', 'It is not possible to delete variation because there are products with that variation.'));
 
         return $this->redirect(['index']);
     }

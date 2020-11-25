@@ -122,7 +122,11 @@ class VariationAttributeController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+
+        !$model->ProductVariationAttribute
+            ? $model->delete()
+            : Yii::$app->session->setFlash('warning', Yii::t('app', 'It is not possible to delete variation because there are products with that variation.'));
 
         return $this->redirect(['index']);
     }
