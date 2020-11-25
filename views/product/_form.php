@@ -32,14 +32,12 @@ use yii\helpers\Html;
         ]) ?>
 
         <?php
-        $variation_sets = VariationSet::findByCategory($model->category);
+        $variation_sets = VariationSet::findByCategory($model->category->id);
         foreach ($variation_sets as $variation_set) {
-            // $variation = $model->getVariationAttributes()->andWhere(['variation_set_id' => $variation_set->id])->one();
             echo $form->field($model, "variations[$variation_set->id]")->widget(Select2::class, [
                 'data' => ArrayHelper::map($variation_set->variationAttributes, 'id', 'name'),
                 'options' => [
-                    // 'value' => is_null($variation) ? null : $variation->id,
-                    'placeholder' => ''
+                    'placeholder' => Yii::t('app', 'Select')
                 ],
                 'pluginOptions' => [
                     'allowClear' => true,
