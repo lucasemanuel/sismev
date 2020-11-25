@@ -52,8 +52,6 @@ $gridColumns = [
     <div class="col">
         <?= $this->render('@app/views/layouts/modal.php', ['options' => ['title' => Yii::t('app', 'Variation Attribute')]]) ?>
 
-        <h1><?= Html::encode($this->title) ?></h1>
-
         <?= GridView::widget([
             'id' => 'grid_categories',
             'dataProvider' => $dataProvider,
