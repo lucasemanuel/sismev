@@ -37,7 +37,7 @@ use yii\helpers\Html;
             echo $form->field($model, "variations[$variation_set->id]")->widget(Select2::class, [
                 'data' => ArrayHelper::map($variation_set->variationAttributes, 'id', 'name'),
                 'options' => [
-                    'placeholder' => Yii::t('app', 'Select')
+                    'placeholder' => Yii::t('app', 'Select'),
                 ],
                 'pluginOptions' => [
                     'allowClear' => true,
