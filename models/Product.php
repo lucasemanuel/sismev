@@ -113,11 +113,11 @@ class Product extends ActiveRecord
             'amount' => Yii::t('app', 'Amount'),
             'max_amount' => Yii::t('app', 'Max Amount'),
             'min_amount' => Yii::t('app', 'Min Amount'),
-            'is_deleted' => Yii::t('app', 'Is Deleted'),
+            'is_deleted' => Yii::t('app', 'Active'),
             'created_at' => Yii::t('app', 'Created At'),
             'updated_at' => Yii::t('app', 'Updated At'),
             'deleted_at' => Yii::t('app', 'Deleted At'),
-            'category_id' => Yii::t('app', 'Category ID'),
+            'category_id' => Yii::t('app', 'Category'),
         ];
     }
 
