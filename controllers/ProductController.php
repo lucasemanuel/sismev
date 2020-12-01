@@ -50,9 +50,10 @@ class ProductController extends Controller
      * Lists all Product models.
      * @return mixed
      */
-    public function actionIndex()
+    public function actionIndex($active = null)
     {
         $searchModel = new ProductSearch();
+        $searchModel->is_deleted = $active;
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -167,7 +168,7 @@ class ProductController extends Controller
         if (is_null($model->operations) && is_null($model->orderItems)) {
             $model->delete();
         } else {
-            Yii::$app->session->setFlash('warning', Yii::t('app', 'It is not possible to delete the product permanently, as the product is linked to input/output operations or is present in some order'));
+            Yii::$app->session->setFlash('warning', Yii::t('app', 'It is not possible to delete the product permanently, as the product is linked to input/output operations or is present in some order.'));
         }
 
         return $this->redirect(['index']);
