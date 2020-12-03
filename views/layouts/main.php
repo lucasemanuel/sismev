@@ -96,30 +96,14 @@ AdminLteAsset::register($this);
 								<p><?= Yii::t('app', 'Categories') ?></p>
 							</a>
 						</li>
-						<li class="nav-item has-treeview">
-							<a href="#" class="nav-link">
-								<i class="nav-icon fas fa-tags"></i>
-								<p><?= Yii::t('app', 'Variations') ?></p>
+						<li class="nav-item">
+						<a href="<?= Url::to(['/variation-set']) ?>" class="nav-link">
+							<i class="nav-icon fas fa-tags"></i>
+							<p><?= Yii::t('app', 'Variations') ?></p>
 							</a>
-							<ul class="nav nav-treeview">
-								<li class="nav-item">
-									<a href="<?= Url::to(['/variation-set']) ?>" class="nav-link">
-										<i class="nav-icon far fa-circle"></i>
-										<p><?= Yii::t('app', 'Sets') ?></p>
-									</a>
-								</li>
-							</ul>
-							<ul class="nav nav-treeview">
-								<li class="nav-item">
-									<a href="<?= Url::to(['/variation-attribute']) ?>" class="nav-link">
-										<i class="nav-icon far fa-circle"></i>
-										<p><?= Yii::t('app', 'Properties') ?></p>
-									</a>
-								</li>
-							</ul>
 						</li>
 						<li class="nav-item">
-							<a href="<?= Url::to(['/product']) ?>" class="nav-link">
+							<a href="<?= Url::to(['/product', 'active' => 0]) ?>" class="nav-link">
 								<i class="nav-icon fas fa-box"></i>
 								<p><?= Yii::t('app', 'Products') ?></p>
 							</a>

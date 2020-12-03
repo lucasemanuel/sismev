@@ -11,7 +11,7 @@ use yii\web\JsExpression;
 <div class="pos-form card card-primary card-outline">
 
     <div class="card-header">
-        <h3 class="card-title"><?= Yii::t('app', 'Add payments') ?></h3>
+        <h3 class="card-title"><?= Yii::t('app', 'Add payment') ?></h3>
     </div>
 
     <?php $form = ActiveForm::begin([
