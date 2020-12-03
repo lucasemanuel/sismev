@@ -19,7 +19,7 @@ use yii\db\Expression;
  *
  * @property Company $company
  * @property Product[] $products
- * @property VariationSet[] $variationSets
+ * @property Variation[] $variations
  */
 class Category extends ActiveRecord
 {
@@ -99,12 +99,12 @@ class Category extends ActiveRecord
     }
 
     /**
-     * Gets query for [[VariationSets]].
+     * Gets query for [[Variations]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getVariationSets()
+    public function getVariations()
     {
-        return $this->hasMany(VariationSet::class, ['category_id' => 'id']);
+        return $this->hasMany(Variation::class, ['category_id' => 'id']);
     }
 }

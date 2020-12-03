@@ -4,12 +4,12 @@ namespace app\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\VariationSet;
+use app\models\Variation;
 
 /**
- * VariationSetSearch represents the model behind the search form of `app\models\VariationSet`.
+ * VariationSearch represents the model behind the search form of `app\models\Variation`.
  */
-class VariationSetSearch extends VariationSet
+class VariationSearch extends Variation
 {
     /**
      * {@inheritdoc}
@@ -40,14 +40,13 @@ class VariationSetSearch extends VariationSet
      */
     public function search($params)
     {
-        $query = VariationSet::find();
+        $query = Variation::find();
 
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
-
 
         $dataProvider->sort->attributes = array_merge($dataProvider->sort->attributes, [
             'category_id' => [

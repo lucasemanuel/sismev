@@ -29,8 +29,8 @@ use yii\db\Expression;
  * @property Operation[] $operations
  * @property OrderItem[] $orderItems
  * @property Category $category
- * @property ProductVariationAttribute[] $productVariationAttributes
- * @property VariationAttribute[] $variationAttributes
+ * @property ProductVariation[] $productVariations
+ * @property Variation[] $variations
  */
 class Product extends ActiveRecord
 {
@@ -162,29 +162,29 @@ class Product extends ActiveRecord
     }
 
     /**
-     * Gets query for [[ProductVariationAttributes]].
+     * Gets query for [[ProductVariations]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getProductVariationAttributes()
+    public function getProductVariations()
     {
-        return $this->hasMany(ProductVariationAttribute::class, ['product_id' => 'id']);
+        return $this->hasMany(ProductVariation::class, ['product_id' => 'id']);
     }
 
     /**
-     * Gets query for [[VariationAttributes]].
+     * Gets query for [[Variations]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getVariationAttributes()
+    public function getVariations()
     {
-        return $this->hasMany(VariationAttribute::class, ['id' => 'variation_attribute_id'])->viaTable('product_variation_attribute', ['product_id' => 'id']);
+        return $this->hasMany(Variation::class, ['id' => 'variation_attribute_id'])->viaTable('product_variation_attribute', ['product_id' => 'id']);
     }
 
     public function __toString()
     {
         $variations = [];
-        foreach($this->variationAttributes as $variation)
+        foreach($this->variations as $variation)
             array_push($variations, $variation->name);
 
         if (empty($variations))
@@ -195,10 +195,10 @@ class Product extends ActiveRecord
 
     public function loadVariations()
     {
-        $variation_sets = VariationSet::findByCategory($this->category);
+        $variation_sets = Variation::findByCategory($this->category);
         
         foreach ($variation_sets as $variation_set) {
-            $variation = $this->getVariationAttributes()
+            $variation = $this->getVariations()
                 ->andWhere(['variation_set_id' => $variation_set->id])
                 ->one(); 
             
