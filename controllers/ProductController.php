@@ -5,14 +5,17 @@ namespace app\controllers;
 use app\models\Category;
 use app\models\Product;
 use app\models\ProductSearch;
+use app\models\ProductVariation;
 use app\models\VariationAttribute;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
+use yii\web\BadRequestHttpException;
 use yii\web\ConflictHttpException;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\UnprocessableEntityHttpException;
 
 /**
  * ProductController implements the CRUD actions for Product model.
@@ -104,23 +107,40 @@ class ProductController extends Controller
         $model = new Product();
         $model->category_id = $category;
 
-        if ($model->load(Yii::$app->request->post())) {  
-            if ($model->variations) {
-                $model->variations = array_filter($model->variations);
-                if ($this->modelExists($model))
-                    throw new ConflictHttpException(Yii::t('app', 'Could not save because the product already exists.'));
+        if ($model->load(Yii::$app->request->post())) {
+            $transaction = Product::getDb()->beginTransaction();
+            try {
+                if (!$model->save() && $errors = $model->errors)
+                    throw new UnprocessableEntityHttpException(array_shift($errors));
+
+                $variations = array_filter($model->variations_form);
+                foreach ($variations as $id => $value) {
+                    $this->saveProductVariation([
+                        'variation_id' => $id,
+                        'name' => $value,
+                        'product_id' => $model->id,
+                    ]);
+                }
+
+                $transaction->commit();
+                return $this->redirect(['view', 'id' => $model->id]);
+            } catch (\Exception $e) {
+                $transaction->rollBack();
+                Yii::$app->session->setFlash('warning', array_shift($e->getMessage()));
             }
-
-            $model->save();
-            if ($model->variations) 
-                foreach ($model->variations as $var_id) (VariationAttribute::findOne($var_id))->link('products', $model);
-
-            return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('create', [
             'model' => $model,
         ]);
+    }
+
+    private function saveProductVariation($attributes) {
+        $product_variation = new ProductVariation();
+        $product_variation->attributes = $attributes;
+        
+        if (!$product_variation->save())
+            throw new BadRequestHttpException(Yii::t('app', 'Failed to save the product, try again later.'));
     }
 
     /**
