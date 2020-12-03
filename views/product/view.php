@@ -38,10 +38,10 @@ echo Dialog::widget();
                                 'value' => $model->category->name
                             ],
                             [
-                                'label' => Yii::t('app', 'Variations'),
+                                'label' => Yii::t('app', 'Details'),
                                 'value' => function ($model) {
                                     $variations = [];
-                                    foreach ($model->variationAttributes as $variation)
+                                    foreach ($model->productVariations as $variation)
                                         array_push($variations, $variation->name);
 
                                     return implode(", ", $variations);

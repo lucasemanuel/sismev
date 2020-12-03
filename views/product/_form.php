@@ -1,6 +1,6 @@
 <?php
 
-use app\models\VariationSet;
+use app\models\Variation;
 use kartik\form\ActiveForm;
 use kartik\number\NumberControl;
 use kartik\select2\Select2;
@@ -10,6 +10,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\Product */
 /* @var $form yii\widgets\ActiveForm */
+
 ?>
 
 <div class="product-form">
@@ -32,14 +33,15 @@ use yii\helpers\Html;
         ]) ?>
 
         <?php
-        $variation_sets = VariationSet::findByCategory($model->category->id);
+        $variation_sets = Variation::findByCategory($model->category->id);
         foreach ($variation_sets as $variation_set) {
-            echo $form->field($model, "variations[$variation_set->id]")->widget(Select2::class, [
-                'data' => ArrayHelper::map($variation_set->variationAttributes, 'id', 'name'),
+            echo $form->field($model, "variations_form[$variation_set->id]")->widget(Select2::class, [
+                'data' => ArrayHelper::map($variation_set->productVariations, 'name', 'name'),
                 'options' => [
                     'placeholder' => Yii::t('app', 'Select'),
                 ],
                 'pluginOptions' => [
+                    'tags' => true,
                     'allowClear' => true,
                 ],
             ])->label($variation_set->name);
