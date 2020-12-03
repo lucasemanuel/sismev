@@ -5,6 +5,9 @@ namespace app\models;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\models\Product;
+use yii\db\ActiveQuery;
+use yii\db\conditions\LikeCondition;
+use yii\db\Expression;
 
 /**
  * ProductSearch represents the model behind the search form of `app\models\Product`.
@@ -83,21 +86,5 @@ class ProductSearch extends Product
             
 
         return $dataProvider;
-    }
-
-    public static function findInNameWithVariation(string $term)
-    {
-        $query = self::find()
-            ->andWhere(['is_deleted' => 0])
-            ->all();
-        $terms = explode(' ', $term);
-        return array_filter($query, function($product) use ($terms){
-            foreach ($terms as $term) {
-                $name = (string)$product;
-                if (!preg_match("/{$term}/i", $name))
-                    return false;
-            }
-            return true;
-        });
     }
 }
