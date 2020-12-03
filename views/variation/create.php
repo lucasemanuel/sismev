@@ -3,13 +3,13 @@
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\VariationSet */
+/* @var $model app\models\Variation */
 
-$this->title = Yii::t('app', 'Create Variation Set');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Variation Sets'), 'url' => ['index']];
+$this->title = Yii::t('app', 'Create Variation');
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Variations'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="variation-set-create">
+<div class="variation-create">
 
     <h1><?= Html::encode($this->title) ?></h1>
 

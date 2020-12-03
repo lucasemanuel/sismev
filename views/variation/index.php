@@ -7,23 +7,17 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 
 /* @var $this yii\web\View */
-/* @var $searchModel app\models\VariationSetSearch */
+/* @var $searchModel app\models\Variationearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app', 'Variation Sets');
+$this->title = Yii::t('app', 'Variation');
 $this->params['breadcrumbs'][] = $this->title;
 
 $this->registerJsFile('@web/js/modal.js', ['depends' => [yii\web\JqueryAsset::class]]);
 
 $gridColumns = [
     ['class' => 'kartik\grid\SerialColumn'],
-    [
-        'attribute' => 'name',
-        'value' => function ($model) {
-            return Html::a($model->name, ['/variation-attribute', 'variation_set_id' => $model->id], $options = []);
-        },
-        'format' => 'html'
-    ],
+    'name',
     [
         'attribute' => 'category_id',
         'value' => function ($model) {
@@ -52,9 +46,9 @@ $gridColumns = [
     ],
 ];
 ?>
-<div class="row variation-set-index">
+<div class="row variation-index">
     <div class="col">
-        <?= $this->render('@app/views/layouts/modal.php', ['options' => ['title' => Yii::t('app', 'Variation Set')]]) ?>
+        <?= $this->render('@app/views/layouts/modal.php', ['options' => ['title' => Yii::t('app', 'Variation')]]) ?>
 
         <?= GridView::widget([
             'id' => 'grid_categories',
