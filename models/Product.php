@@ -48,7 +48,7 @@ class Product extends ActiveRecord
         ]
     ];
 
-    public $variations;
+    public $variations_form;
 
     /**
      * {@inheritdoc}
@@ -89,7 +89,7 @@ class Product extends ActiveRecord
             [['unit_price', 'max_amount', 'min_amount', 'amount'], 'double', 'max' => '99999999.99'],
             [['unit_price', 'amount'], 'double', 'min' => '00.00'],
             [['is_deleted', 'category_id'], 'integer'],
-            [['created_at', 'updated_at', 'deleted_at', 'variations'], 'safe'],
+            [['created_at', 'updated_at', 'deleted_at', 'variations_form'], 'safe'],
             [['code'], 'string', 'max' => 32],
             [['name'], 'string', 'max' => 64],
             [['code'], 'trim'],
@@ -178,13 +178,13 @@ class Product extends ActiveRecord
      */
     public function getVariations()
     {
-        return $this->hasMany(Variation::class, ['id' => 'variation_attribute_id'])->viaTable('product_variation_attribute', ['product_id' => 'id']);
+        return $this->hasMany(Variation::class, ['id' => 'variation_id'])->viaTable('product_variation', ['product_id' => 'id']);
     }
 
     public function __toString()
     {
         $variations = [];
-        foreach($this->variations as $variation)
+        foreach($this->productVariations as $variation)
             array_push($variations, $variation->name);
 
         if (empty($variations))
