@@ -157,21 +157,34 @@ class ProductController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        $model->loadVariations();
+        $model->loadVariationsForm();
 
         if ($model->load(Yii::$app->request->post())) {
-            $model->variations = array_filter($model->variations);
+            $transaction = Product::getDb()->beginTransaction();
+            try {
+                $variations = array_filter($model->variations_form);
 
-            if ($this->modelExists($model))
-                throw new ConflictHttpException(Yii::t('app', 'Could not save because the product already exists.'));
+                if (!$model->save() && $errors = $model->errors) {
+                    throw new BadRequestHttpException(array_shift($errors)[0]);
+                }
 
-            $model->save();
-            $model->unlinkAll('variationAttributes', true);
+                ProductVariation::deleteAll(['product_id' => $model->id]);
+                
+                foreach ($variations as $id => $value) {
+                    $this->saveProductVariation([
+                        'variation_id' => $id,
+                        'name' => $value,
+                        'product_id' => $model->id,
+                    ]);
+                }
 
-            foreach ($model->variations as $var_id) (VariationAttribute::findOne($var_id))->link('products', $model);
-
-            return $this->redirect(['view', 'id' => $model->id]);
+                $transaction->commit();
+                return $this->redirect(['view', 'id' => $model->id]);
+            } catch (\Exception $e) {
+                $transaction->rollBack();
+            }
         }
+
 
         return $this->render('update', [
             'model' => $model,
