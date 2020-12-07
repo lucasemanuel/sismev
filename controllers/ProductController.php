@@ -8,6 +8,8 @@ use app\models\ProductSearch;
 use app\models\ProductVariation;
 use app\models\VariationAttribute;
 use Yii;
+use yii\db\Expression;
+use yii\db\Query;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
@@ -113,7 +115,6 @@ class ProductController extends Controller
                 if (!$model->save() && $errors = $model->errors)
                     throw new UnprocessableEntityHttpException(array_shift($errors));
 
-                $variations = array_filter($model->variations_form);
                 foreach ($variations as $id => $value) {
                     $this->saveProductVariation([
                         'variation_id' => $id,
@@ -126,7 +127,7 @@ class ProductController extends Controller
                 return $this->redirect(['view', 'id' => $model->id]);
             } catch (\Exception $e) {
                 $transaction->rollBack();
-                Yii::$app->session->setFlash('warning', array_shift($e->getMessage()));
+                Yii::$app->session->setFlash('warning', $e->getMessage());
             }
         }
 
@@ -135,10 +136,11 @@ class ProductController extends Controller
         ]);
     }
 
-    private function saveProductVariation($attributes) {
+    private function saveProductVariation($attributes)
+    {
         $product_variation = new ProductVariation();
         $product_variation->attributes = $attributes;
-        
+
         if (!$product_variation->save())
             throw new BadRequestHttpException(Yii::t('app', 'Failed to save the product, try again later.'));
     }
@@ -185,7 +187,7 @@ class ProductController extends Controller
     {
         $model = $this->findModel($id);
 
-        if (is_null($model->operations) && is_null($model->orderItems)) {
+        if (!$model->operations && !$model->orderItems) {
             $model->delete();
         } else {
             Yii::$app->session->setFlash('warning', Yii::t('app', 'It is not possible to delete the product permanently, as the product is linked to input/output operations or is present in some order.'));
@@ -224,35 +226,40 @@ class ProductController extends Controller
         throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
     }
 
-    protected function modelExists($model)
+    protected function modelExists($model, $variations)
     {
+        if (!$variations) {
+            $product = Product::find()
+                ->leftJoin('product_variation', 'product_variation.product_id = product.id')
+                ->andWhere(['product.name' => $model->name])
+                ->andWhere(['is', 'product_variation.product_id', new Expression('NULL')])
+                ->exists();
+
+            return $product;
+        }
+
         $query = Product::find()
-            ->with('variationAttributes')
             ->andWhere(['product.name' => $model->name])
             ->andWhere(['product.category_id' => $model->category_id])
-            ->innerJoin('product_variation_attribute', 'product_variation_attribute.product_id = product.id');
+            ->andWhere(['in', 'product_variation.name', array_values($variations)])
+            ->andWhere(['in', 'product_variation.variation_id', array_keys($variations)])
+            ->innerJoinWith('productVariations');
 
         if (!$model->isNewRecord)
             $query->andWhere(['not', ['product.id' => $model->id]]);
 
-        if (empty($model->variations))
-            return $query->one() !== null;
-
         $query = $query->asArray()->all();
 
-        $product_variations = array_map(function ($products) {
-            $variation_attributes = $products['variationAttributes'];
-            $array = [];
-            foreach ($variation_attributes as $variation_attr)
-                $array[$variation_attr['variation_set_id']] = $variation_attr['id'];
+        $product_variations = array_map(function ($product) {
+            $array = ArrayHelper::map($product['productVariations'], 'variation_id', 'name');
+            ksort($array);
             return $array;
         }, $query);
 
-        ksort($model->variations);
-        foreach ($product_variations as $variations) {
-            ksort($variations);
-            if (!array_diff($model->variations, $variations))
-                return true;
+        ksort($variations);
+        foreach ($product_variations as $vars) {
+            $array = array_merge(array_diff_assoc($variations, $vars), array_diff_assoc($vars, $variations));
+            if (!$array) return true;
         }
 
         return false;
