@@ -196,17 +196,10 @@ class Product extends ActiveRecord
         return $this->name." (".implode(", ", $variations).")";
     }
 
-    public function loadVariations()
+    public function loadVariationsForm()
     {
-        $variation_sets = Variation::findByCategory($this->category);
-        
-        foreach ($variation_sets as $variation_set) {
-            $variation = $this->getVariations()
-                ->andWhere(['variation_set_id' => $variation_set->id])
-                ->one(); 
-            
-            $this->variations[$variation_set->id] = is_null($variation) ? null : $variation->id;
-        }
+        foreach ($this->productVariations as $variation)
+            $this->variations_form[$variation->variation_id] = $variation->name;
     }
 
     public function fields()
