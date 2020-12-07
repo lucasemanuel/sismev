@@ -5,8 +5,6 @@ namespace app\models;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\models\Product;
-use yii\db\ActiveQuery;
-use yii\db\conditions\LikeCondition;
 use yii\db\Expression;
 
 /**
@@ -20,9 +18,9 @@ class ProductSearch extends Product
     public function rules()
     {
         return [
-            [['id', 'is_deleted'], 'integer'],
-            [['code', 'name', 'created_at', 'updated_at', 'deleted_at', 'category_id'], 'safe'],
-            [['unit_price', 'amount', 'max_amount', 'min_amount'], 'number'],
+            [['is_deleted'], 'integer'],
+            [['name', 'category_id'], 'safe'],
+            [['unit_price', 'amount'], 'number'],
         ];
     }
 
@@ -69,22 +67,40 @@ class ProductSearch extends Product
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
             'unit_price' => $this->unit_price,
             'amount' => $this->amount,
-            'max_amount' => $this->max_amount,
-            'min_amount' => $this->min_amount,
             'is_deleted' => $this->is_deleted,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-            'deleted_at' => $this->deleted_at,
         ]);
 
-        $query->andFilterWhere(['like', 'product.code', $this->code])
-            ->andFilterWhere(['like', 'category.name', $this->category_id])
-            ->andFilterWhere(['like', 'product.name', $this->name]);
-            
+        $query->andFilterWhere(['like', 'category.name', $this->category_id]);            
+        $this->filterName($query);
 
         return $dataProvider;
+    }
+
+    public function filterName(&$query) {
+        $subQuery = product::find();
+        $subQuery->joinWith('productVariations');
+        $subQuery->select(new Expression("product.*, product.name as full_name"));
+        $subQuery->andFilterWhere([
+            'unit_price' => $this->unit_price,
+            'amount' => $this->amount,
+            'is_deleted' => $this->is_deleted,
+        ]);
+        $subQuery->andFilterWhere(['like', 'category.name', $this->category_id]);   
+
+        $terms = explode(' ', $this->name);
+
+        $query->joinWith('productVariations');
+        $query->groupBy('product.id');
+
+        $query->select(new Expression("product.*, concat(product.name, group_concat(product_variation.name SEPARATOR '  ')) full_name"));
+
+        foreach ($terms as $term) {
+            $query->andFilterHaving(['like', 'full_name', $term]);
+            $subQuery->andWhere(['like', 'product.name', $term]);
+        }
+
+        $query->union($subQuery);
     }
 }
