@@ -6,5 +6,8 @@ return [
     'username' => 'sismec',
     'password' => 'sismec',
     'charset' => 'utf8',
-    'attributes' => [PDO::ATTR_CASE => PDO::CASE_LOWER]
+    'attributes' => [PDO::ATTR_CASE => PDO::CASE_LOWER],
+    'on afterOpen' => function($event) {
+        $event->sender->createCommand("SET sql_mode = ''")->execute();
+    }
 ];
