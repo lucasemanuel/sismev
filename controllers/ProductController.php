@@ -112,8 +112,11 @@ class ProductController extends Controller
         if ($model->load(Yii::$app->request->post())) {
             $transaction = Product::getDb()->beginTransaction();
             try {
-                if (!$model->save() && $errors = $model->errors)
-                    throw new UnprocessableEntityHttpException(array_shift($errors));
+                $variations = array_filter($model->variations_form);
+
+                if (!$model->save() && $errors = $model->errors) {
+                    throw new BadRequestHttpException(array_shift($errors)[0]);
+                }
 
                 foreach ($variations as $id => $value) {
                     $this->saveProductVariation([
@@ -127,7 +130,6 @@ class ProductController extends Controller
                 return $this->redirect(['view', 'id' => $model->id]);
             } catch (\Exception $e) {
                 $transaction->rollBack();
-                Yii::$app->session->setFlash('warning', $e->getMessage());
             }
         }
 
@@ -224,44 +226,5 @@ class ProductController extends Controller
         }
 
         throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
-    }
-
-    protected function modelExists($model, $variations)
-    {
-        if (!$variations) {
-            $product = Product::find()
-                ->leftJoin('product_variation', 'product_variation.product_id = product.id')
-                ->andWhere(['product.name' => $model->name])
-                ->andWhere(['is', 'product_variation.product_id', new Expression('NULL')])
-                ->exists();
-
-            return $product;
-        }
-
-        $query = Product::find()
-            ->andWhere(['product.name' => $model->name])
-            ->andWhere(['product.category_id' => $model->category_id])
-            ->andWhere(['in', 'product_variation.name', array_values($variations)])
-            ->andWhere(['in', 'product_variation.variation_id', array_keys($variations)])
-            ->innerJoinWith('productVariations');
-
-        if (!$model->isNewRecord)
-            $query->andWhere(['not', ['product.id' => $model->id]]);
-
-        $query = $query->asArray()->all();
-
-        $product_variations = array_map(function ($product) {
-            $array = ArrayHelper::map($product['productVariations'], 'variation_id', 'name');
-            ksort($array);
-            return $array;
-        }, $query);
-
-        ksort($variations);
-        foreach ($product_variations as $vars) {
-            $array = array_merge(array_diff_assoc($variations, $vars), array_diff_assoc($vars, $variations));
-            if (!$array) return true;
-        }
-
-        return false;
     }
 }

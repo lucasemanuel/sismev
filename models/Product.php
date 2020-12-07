@@ -4,6 +4,8 @@ namespace app\models;
 
 use app\components\traits\FilterTrait;
 use app\components\traits\UpdateCountersTrait;
+use app\components\validators\DecimalValidator;
+use app\components\validators\ProductExists;
 use Yii;
 use yii2tech\ar\softdelete\SoftDeleteBehavior;
 use yii\behaviors\TimestampBehavior;
@@ -86,12 +88,13 @@ class Product extends ActiveRecord
     {
         return [
             [['name', 'unit_price', 'category_id'], 'required'],
-            [['unit_price', 'max_amount', 'min_amount', 'amount'], 'double', 'max' => '99999999.99'],
-            [['unit_price', 'amount'], 'double', 'min' => '00.00'],
+            [['name'], ProductExists::class],
+            [['unit_price', 'max_amount', 'min_amount', 'amount'], DecimalValidator::class, 'min' => 0],
             [['is_deleted', 'category_id'], 'integer'],
             [['created_at', 'updated_at', 'deleted_at', 'variations_form'], 'safe'],
             [['code'], 'string', 'max' => 32],
             [['name'], 'string', 'max' => 64],
+            [['name'], 'trim'],
             [['code'], 'trim'],
             [['code'], 'unique'],
             [['min_amount'], 'compare', 'compareAttribute' => 'max_amount', 'operator' => '<='],
