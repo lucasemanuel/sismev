@@ -15,7 +15,12 @@ $this->registerJsFile('@web/js/modal.js', ['depends' => [yii\web\JqueryAsset::cl
 
 $gridColumns = [
     ['class' => 'kartik\grid\SerialColumn'],
-    'name',
+    [
+        'attribute' => 'name',
+        'value' => function ($model) {
+            return $model;
+        }
+    ],
     [
         'attribute' => 'category_id',
         'value' => function ($model) {
