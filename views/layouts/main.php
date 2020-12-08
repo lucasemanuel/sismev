@@ -97,7 +97,7 @@ AdminLteAsset::register($this);
 							</a>
 						</li>
 						<li class="nav-item">
-						<a href="<?= Url::to(['/variation-set']) ?>" class="nav-link">
+						<a href="<?= Url::to(['/variation']) ?>" class="nav-link">
 							<i class="nav-icon fas fa-tags"></i>
 							<p><?= Yii::t('app', 'Variations') ?></p>
 							</a>
