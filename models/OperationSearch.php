@@ -7,6 +7,7 @@ use yii\data\ActiveDataProvider;
 use app\models\Operation;
 use Yii;
 use yii\db\ActiveQuery;
+use yii\db\Expression;
 
 /**
  * OperationSearch represents the model behind the search form of `app\models\Operation`.
@@ -33,13 +34,15 @@ class OperationSearch extends Operation
 
     public function attributeLabels()
     {
-        return [
-            'product_id' => Yii::t('app', 'Product'),
-            'product_code' => Yii::t('app', 'Product code'),
-            'range_date' => Yii::t('app', 'Range Date'),
-            'setting_amount' => Yii::t('app', 'Amount search setting'),
-            'setting_product' => Yii::t('app', 'Product search setting'),
-        ];
+        return array_merge(
+            parent::attributeLabels(),
+            [
+                'product_code' => Yii::t('app', 'Product Code'),
+                'range_date' => Yii::t('app', 'Range Date'),
+                'setting_amount' => Yii::t('app', 'Amount search setting'),
+                'setting_product' => Yii::t('app', 'Product search setting'),
+            ]
+        );
     }
 
     /**
@@ -89,17 +92,9 @@ class OperationSearch extends Operation
         }
 
         // grid filtering conditions
-        $this->filterOperationsUndo($query);
-        $this->filterAmount($query);
-        $this->filterDate($query);
-        $this->filterProduct($query);
-        $query->andFilterWhere([
-            'id' => $this->id,
-            'in_out' => $this->in_out,
-            'employee_id' => $this->employee_id,
-        ]);
 
-        $query->andFilterWhere(['like', 'reason', $this->reason]);
+        $this->makeFiltersWhere($query);
+        $this->filterProduct($query);
 
         return $dataProvider;
     }
@@ -146,12 +141,56 @@ class OperationSearch extends Operation
             $this->filterProductByCode($query);
     }
 
-    public function filterProductByName(ActiveQuery $query)
+    public function filterProductByName(ActiveQuery &$query)
     {
+        $subQuery = self::createSubQueryToFilterProduct();
+        $this->makeFiltersWhere($subQuery);
 
+        $terms = explode(' ', $this->product_id);
+
+        $query->leftJoin('product p', 'p.id = operation.product_id');
+        $query->leftJoin('product_variation', 'product_variation.product_id = p.id');
+        $query->groupBy('p.id');
+
+        $query->select(new Expression("operation.*, concat(product.name, group_concat(product_variation.name SEPARATOR '  ')) full_name"));
+
+        foreach ($terms as $term) {
+            $query->andFilterHaving(['like', 'full_name', $term]);
+            $subQuery->andWhere(['like', 'product.name', $term]);
+        }
+
+        $query->union($subQuery);
+
+        $query->groupBy('operation.id');
+    }
+
+    private static function createSubQueryToFilterProduct()
+    {
+        $subQuery = Operation::find();
+
+        $subQuery->innerJoin('product', 'product.id = operation.product_id');
+        $subQuery->leftJoin('product_variation', 'product.id = product_variation.product_id');
+
+        $subQuery->select(new Expression("operation.*, product.name as full_name"));
+
+        return $subQuery;
+    }
+
+    protected function makeFiltersWhere(ActiveQuery &$query)
+    {
+        $this->filterOperationsUndo($query);
+        $this->filterAmount($query);
+        $this->filterDate($query);
+        $query->andFilterWhere([
+            'id' => $this->id,
+            'in_out' => $this->in_out,
+            'employee_id' => $this->employee_id,
+        ]);
+
+        $query->andFilterWhere(['like', 'reason', $this->reason]);
     }
     
-    public function filterProductByCode(ActiveQuery $query)
+    public function filterProductByCode(ActiveQuery &$query)
     {
         $query->andFilterWhere([
             'product.code' => $this->product_id,
