@@ -93,7 +93,6 @@ $gridColumns = [
 
             <?= GridView::widget([
                 'dataProvider' => $dataProvider,
-                'filterModel' => $searchModel,
                 'columns' => $gridColumns,
                 'responsive' => true,
                 'responsiveWrap' => false,
@@ -112,8 +111,6 @@ $gridColumns = [
                 'panel' => [
                     'type' => GridView::TYPE_DEFAULT,
                     'heading' => Html::encode($this->title),
-                    // 'headingOptions' => ['class' => ''],
-                    // 'footer' => false,
                     'afterOptions' => ['class' => ''],
                 ],
             ]); ?>
