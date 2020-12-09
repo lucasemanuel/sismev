@@ -37,6 +37,7 @@ class OperationSearch extends Operation
         return array_merge(
             parent::attributeLabels(),
             [
+                'view_operations' => Yii::t('app', 'View Operations'),
                 'product_code' => Yii::t('app', 'Product Code'),
                 'range_date' => Yii::t('app', 'Range Date'),
                 'setting_amount' => Yii::t('app', 'Amount search setting'),

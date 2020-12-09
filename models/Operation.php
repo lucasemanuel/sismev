@@ -8,6 +8,7 @@ use app\components\validators\ProductOutputValidator;
 use Yii;
 use yii2tech\ar\softdelete\SoftDeleteBehavior;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
 use yii\db\Expression;
 
 /**
@@ -26,7 +27,7 @@ use yii\db\Expression;
  * @property Employee $employee
  * @property Product $product
  */
-class Operation extends \yii\db\ActiveRecord
+class Operation extends ActiveRecord
 {
     use FilterTrait;
 
@@ -110,14 +111,14 @@ class Operation extends \yii\db\ActiveRecord
     {
         return [
             'id' => Yii::t('app', 'ID'),
-            'in_out' => Yii::t('app', 'In Out'),
+            'in_out' => Yii::t('app', 'In/Out'),
             'amount' => Yii::t('app', 'Amount'),
             'reason' => Yii::t('app', 'Reason'),
             'created_at' => Yii::t('app', 'Created At'),
-            'deleted_at' => Yii::t('app', 'Deleted At'),
-            'is_deleted' => Yii::t('app', 'Is Deleted'),
-            'product_id' => Yii::t('app', 'Product ID'),
-            'employee_id' => Yii::t('app', 'Employee ID'),
+            'deleted_at' => Yii::t('app', 'Undo At'),
+            'is_deleted' => Yii::t('app', 'Undone Operation'),
+            'product_id' => Yii::t('app', 'Product'),
+            'employee_id' => Yii::t('app', 'Employee'),
         ];
     }
 
@@ -146,6 +147,9 @@ class Operation extends \yii\db\ActiveRecord
         parent::afterSave($insert, $changedAttributes);
 
         $amount = $this->in_out == 0 ? $this->amount * -1 : $this->amount;
-        $this->product->updateCounters(['amount' => $amount]);
+
+        $product = $this->product;
+        $product->scenario = Product::SCENARIO_OPERATION;
+        $product->updateCounters(['amount' => $amount]);
     }
 }
