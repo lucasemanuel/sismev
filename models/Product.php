@@ -50,6 +50,9 @@ class Product extends ActiveRecord
         ]
     ];
 
+    const SCENARIO_OPERATION = 'operation';
+    const SCENARIO_SAVE = 'save';
+
     public $variations_form;
 
     /**
@@ -88,7 +91,7 @@ class Product extends ActiveRecord
     {
         return [
             [['name', 'unit_price', 'category_id'], 'required'],
-            [['name'], ProductExists::class],
+            [['name'], ProductExists::class,  'on' => self::SCENARIO_SAVE],
             [['unit_price', 'max_amount', 'min_amount', 'amount'], DecimalValidator::class, 'min' => 0],
             [['is_deleted', 'category_id'], 'integer'],
             [['created_at', 'updated_at', 'deleted_at', 'variations_form'], 'safe'],
@@ -101,6 +104,19 @@ class Product extends ActiveRecord
             [['amount'], 'default', 'value' => 0],
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::class, 'targetAttribute' => ['category_id' => 'id']],
         ];
+    }
+
+    public function scenarios()
+    {
+        $scenarios = Parent::scenarios();
+        
+        return array_merge(
+            $scenarios,
+            [
+                self::SCENARIO_SAVE => self::SCENARIO_DEFAULT,
+                self::SCENARIO_OPERATION => ['amount'],
+            ]
+        );
     }
 
     /**
@@ -187,13 +203,13 @@ class Product extends ActiveRecord
     public function __toString()
     {
         $variations = [];
-        foreach($this->productVariations as $variation)
+        foreach ($this->productVariations as $variation)
             array_push($variations, $variation->name);
 
         if (empty($variations))
             return $this->name;
 
-        return $this->name." (".implode(", ", $variations).")";
+        return $this->name . " (" . implode(", ", $variations) . ")";
     }
 
     public function loadVariationsForm()
@@ -205,7 +221,7 @@ class Product extends ActiveRecord
     public function fields()
     {
         $fields = parent::fields();
-        $fields['name'] = function() {
+        $fields['name'] = function () {
             return $this->__toString();
         };
 

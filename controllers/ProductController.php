@@ -110,6 +110,7 @@ class ProductController extends Controller
         $model->category_id = $category;
 
         if ($model->load(Yii::$app->request->post())) {
+            $model->scenario = Product::SCENARIO_SAVE;
             $transaction = Product::getDb()->beginTransaction();
             try {
                 $variations = array_filter($model->variations_form);
@@ -160,6 +161,7 @@ class ProductController extends Controller
         $model->loadVariationsForm();
 
         if ($model->load(Yii::$app->request->post())) {
+            $model->scenario = Product::SCENARIO_SAVE;
             $transaction = Product::getDb()->beginTransaction();
             try {
                 $variations = array_filter($model->variations_form);
