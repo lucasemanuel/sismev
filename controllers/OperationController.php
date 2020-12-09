@@ -89,7 +89,7 @@ class OperationController extends Controller
 
         return $this->render('create', [
             'model' => $model,
-            'products' => ArrayHelper::map(Product::find()->all(), 'id', function ($product) {
+            'products' => ArrayHelper::map(Product::find()->andWhere(['is_deleted' => false])->all(), 'id', function ($product) {
                 return $product->__toString();
             })
         ]);
@@ -108,6 +108,7 @@ class OperationController extends Controller
         
         if (!$model->is_deleted) {
             $product = $model->product;
+            $product->scenario = Product::SCENARIO_OPERATION;
             $amount = $model->in_out == 1 ? $model->amount * -1 : $model->amount;
             $product->amount += $amount;
 
