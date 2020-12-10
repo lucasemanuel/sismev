@@ -90,11 +90,11 @@ class PaymentMethod extends ActiveRecord
             'id' => Yii::t('app', 'ID'),
             'name' => Yii::t('app', 'Name'),
             'installment_limit' => Yii::t('app', 'Installment Limit'),
-            'is_deleted' => Yii::t('app', 'Is Deleted'),
+            'is_deleted' => Yii::t('app', 'Active'),
             'created_at' => Yii::t('app', 'Created At'),
             'updated_at' => Yii::t('app', 'Updated At'),
             'deleted_at' => Yii::t('app', 'Deleted At'),
-            'company_id' => Yii::t('app', 'Company ID'),
+            'company_id' => Yii::t('app', 'Company'),
         ];
     }
 
