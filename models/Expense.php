@@ -98,7 +98,7 @@ class Expense extends ActiveRecord
             'paid_at' => Yii::t('app', 'Paid At'),
             'created_at' => Yii::t('app', 'Created At'),
             'updated_at' => Yii::t('app', 'Updated At'),
-            'company_id' => Yii::t('app', 'Company ID'),
+            'company_id' => Yii::t('app', 'Company'),
         ];
     }
 
