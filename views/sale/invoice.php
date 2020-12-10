@@ -96,7 +96,7 @@ Dialog::widget();
                             <?php endforeach; ?>
                             <tr>
                                 <td colspan="6" class="font-weight-bold text-center">
-                                    <?= Yii::t('app', 'Total:') . ' ' . $model->order->toArray()['total_value'] ?>
+                                    <?= Yii::t('app', 'Total') . ': ' . $model->order->toArray()['total_value'] ?>
                                 </td>
                             </tr>
                         </tbody>
@@ -120,7 +120,7 @@ Dialog::widget();
                                 <?php endforeach; ?>
                                 <tr>
                                     <td colspan="6" class="font-weight-bold text-center">
-                                        <?= Yii::t('app', 'Total Paid:') . ' ' . $model->toArray()['total'] ?>
+                                        <?= Yii::t('app', 'Total') . ': ' . $model->toArray()['total'] ?>
                                     </td>
                                 </tr>
                             </tbody>
@@ -130,9 +130,9 @@ Dialog::widget();
                 <div class="col-lg-6 no-print text-right">
                     <p class="lead"><?= Yii::t('app', 'Actions') . ':' ?></p>
                     <p>
-                        <button onclick='print()' class="btn btn-default"><i class="fas fa-print"></i> Print</button>
+                        <button onclick='print()' class="btn btn-default"><i class="fas fa-print"></i><?= Yii::t('app', 'Print') ?></button>
                         <?php if (!$model->is_canceled) : ?>
-                            <?= Html::a(Yii::t('app', 'Canceled'), ['canceled', 'id' => $model->id], [
+                            <?= Html::a(Yii::t('app', 'Cancel'), ['canceled', 'id' => $model->id], [
                                 'class' => 'btn btn-danger',
                                 'data' => [
                                     'confirm' => Yii::t('app', 'Are you sure you want to cancel this sale?') . '<br>' . Yii::t('app', 'All transactions made because of this sale will be reversed.'),
