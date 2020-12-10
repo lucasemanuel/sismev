@@ -57,7 +57,7 @@ $this->registerCssFile('@web/css/detailView.css');
                         'attributes' => [
                             [
                                 'attribute' => 'is_deleted',
-                                'format' => 'boolean',
+                                'format' => 'active',
                                 'value' => $model->is_deleted
                             ],
                             'created_at:datetime',
