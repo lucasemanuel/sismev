@@ -18,7 +18,7 @@ $this->registerJsFile('@web/js/modal.js', ['depends' => [yii\web\JqueryAsset::cl
 <div class="expense-view">
     <div class="row">
         <div class="col-12">
-            <?= $this->render('@app/views/layouts/modal.php', ['options' => ['title' => Yii::t('app', 'Category')]]) ?>
+            <?= $this->render('@app/views/layouts/modal.php', ['options' => ['title' => Yii::t('app', 'Expense Pay')]]) ?>
 
             <div class="card card-outline">
                 <div class="card-header border-0">
@@ -86,7 +86,7 @@ $this->registerJsFile('@web/js/modal.js', ['depends' => [yii\web\JqueryAsset::cl
                     ],
                 ]) ?>
                 <?php if (!$model->is_paid): ?>
-                <?= Html::a(Yii::t('app', 'Pay'), Url::to(['pay', 'id' => $model->id]), [
+                <?= Html::a(Yii::t('app', 'To Pay'), Url::to(['pay', 'id' => $model->id]), [
                     'class' => 'btn btn-success btn-modal', 
                     'value' => Url::to(['pay', 'id' => $model->id]),
                     'data-toggle' => 'modal'
