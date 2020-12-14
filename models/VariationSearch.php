@@ -46,6 +46,7 @@ class VariationSearch extends Variation
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort'=> ['defaultOrder' => ['category_id' => SORT_ASC]],
         ]);
 
         $dataProvider->sort->attributes = array_merge($dataProvider->sort->attributes, [
