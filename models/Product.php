@@ -51,7 +51,7 @@ class Product extends ActiveRecord
     ];
 
     const SCENARIO_OPERATION = 'operation';
-    const SCENARIO_SAVE = 'save';
+    const SCENARIO_SAVE = 'default';
 
     public $variations_form;
 
@@ -109,14 +109,10 @@ class Product extends ActiveRecord
     public function scenarios()
     {
         $scenarios = Parent::scenarios();
-        
-        return array_merge(
-            $scenarios,
-            [
-                self::SCENARIO_SAVE => self::SCENARIO_DEFAULT,
-                self::SCENARIO_OPERATION => ['amount'],
-            ]
-        );
+         
+        $scenarios[self::SCENARIO_OPERATION] = ['amount'];
+
+        return $scenarios;
     }
 
     /**
