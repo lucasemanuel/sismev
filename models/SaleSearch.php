@@ -68,6 +68,7 @@ class SaleSearch extends Sale
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort'=> ['defaultOrder' => ['sale_at' => SORT_DESC]],
         ]);
 
         $dataProvider->sort->attributes = array_merge($dataProvider->sort->attributes, [

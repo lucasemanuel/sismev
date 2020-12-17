@@ -49,6 +49,7 @@ class ExpenseSearch extends Expense
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort'=> ['defaultOrder' => ['payday' => SORT_DESC]],
         ]);
 
         $this->load($params);

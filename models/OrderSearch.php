@@ -72,6 +72,7 @@ class OrderSearch extends Order
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort'=> ['defaultOrder' => ['created_at' => SORT_DESC]],
         ]);
 
         $dataProvider->sort->attributes = array_merge($dataProvider->sort->attributes, [
