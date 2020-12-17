@@ -36,7 +36,7 @@ $gridColumns = [
         'label' => Yii::t('app', 'Cashier'),
         'attribute' => 'employee_id',
         'value' => function ($model) {
-            return $model->employee->usual_name;
+            return $model->employee->full_name;
         },
     ],
     'sale_at:datetime',

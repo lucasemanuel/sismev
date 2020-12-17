@@ -25,7 +25,7 @@ use yii\web\JsExpression;
         <div class="row">
             <?= $form->field($model, 'payment_method_id', ['options' => ['class' => 'col-12']])->widget(Select2::class, [
                 'options' => [
-                    'placeholder' => Yii::t('app', 'Select payment method'),
+                    'placeholder' => '',
                 ],
                 'pluginOptions' => [
                     'allowClear' => true,

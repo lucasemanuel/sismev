@@ -98,7 +98,7 @@ class Employee extends ActiveRecord implements IdentityInterface
             [['password_new'], 'required', 'on' => self::SCENARIO_CHANGE_PASSWORD],
             [['password'], function ($attribute, $params, $validator) {
                 if (!Yii::$app->getSecurity()->validatePassword($this->password, $this->oldAttributes['password'])) {
-                    $this->addError($attribute, Yii::t('app', 'The password must be the same as the current one'));
+                    $this->addError($attribute, Yii::t('app', 'The password must be the same as the current one.'));
                 }
             }, 'on' => self::SCENARIO_CHANGE_PASSWORD],
             [['birthday', 'created_at', 'updated_at', 'deleted_at'], 'safe'],

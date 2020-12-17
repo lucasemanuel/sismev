@@ -27,7 +27,7 @@ Dialog::widget();
         <div class="col-12">
             <div class="info-box bg-danger">
                 <div class="info-box-content">
-                    <h2 class="font-weight-bold text-uppercase text-center"><?= Yii::t('app', 'Canceled sale') ?></h2>
+                    <h2 class="font-weight-bold text-uppercase text-center"><?= Yii::t('app', 'Canceled Sale') ?></h2>
                 </div>
             </div>
         </div>
@@ -65,7 +65,7 @@ Dialog::widget();
                     <b><?= Yii::t('app', 'Cashier') ?>:</b> <?= $model->employee->full_name ?><br>
                     <?php if ($model->is_canceled) : ?>
                         <b><?= Yii::t('app', 'Canceled Sale') ?></b><br>
-                        <b><?= Yii::t('app', 'Canceled in:') ?></b> <?= Yii::$app->formatter->asDateTime($model->canceled_at) ?><br>
+                        <b><?= Yii::t('app', 'Canceled At') ?>:</b> <?= Yii::$app->formatter->asDateTime($model->canceled_at) ?><br>
                     <?php endif; ?>
                 </div>
             </div>

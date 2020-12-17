@@ -58,7 +58,7 @@ class OrderItem extends ActiveRecord
                 'targetAttribute' => [
                     'order_id', 'product_id'
                 ],
-                'message' => Yii::t('app', 'This product has already been placed in the order')
+                'message' => Yii::t('app', 'This product has already been placed in the order.')
             ],
             [['amount', 'unit_price', 'order_id', 'product_id'], 'required'],
             [['amount', 'unit_price', 'total'], DecimalValidator::class],
@@ -81,7 +81,7 @@ class OrderItem extends ActiveRecord
             'amount' => Yii::t('app', 'Amount'),
             'unit_price' => Yii::t('app', 'Unit Price'),
             'default_price' => Yii::t('app', 'Default Price'),
-            'order_id' => Yii::t('app', 'Order ID'),
+            'order_id' => Yii::t('app', 'Order'),
             'product_id' => Yii::t('app', 'Product'),
         ];
     }

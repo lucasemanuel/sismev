@@ -1,8 +1,11 @@
 <?php
 
+use app\models\Employee;
 use kartik\daterange\DateRangePicker;
 use kartik\form\ActiveForm;
 use kartik\number\NumberControl;
+use kartik\select2\Select2;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
@@ -28,7 +31,16 @@ use yii\helpers\Html;
 
     <div class="card-body">
         <?= $form->field($model, 'order_id')->textInput(['maxlength' => 64]) ?>
-        <?= $form->field($model, 'employee_id')->textInput(['maxlength' => 128]) ?>
+
+        <?= $form->field($model, 'employee_id')->widget(Select2::class, [
+            'data' => ArrayHelper::map(Employee::find()->orderBy('full_name')->asArray()->all(), 'id', 'full_name'),
+            'options' => [
+                'placeholder' => Yii::t('app', 'All'),
+            ],
+            'pluginOptions' => [
+                'allowClear' => true,
+            ],
+        ]) ?>
 
         <?= $form->field($model, 'sale_at')->widget(DateRangePicker::class, [
             'presetDropdown' => true,
