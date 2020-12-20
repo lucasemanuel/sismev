@@ -31,7 +31,7 @@ $this->registerCss(
 	<!-- Automatic element centering -->
 	<div class="lockscreen-wrapper">
 		<div class="lockscreen-logo">
-			<a href=<?= Yii::$app->getHomeUrl() ?>><b>SISMEC</b></a>
+			<a href=<?= Yii::$app->getHomeUrl() ?>><b><?= Yii::$app->name ?></b></a>
 		</div>
 		<?= $content ?>
 	</div>
