@@ -106,6 +106,7 @@ return [
     'Enable' => 'Ativar',
     'Expense Pay' => 'Pagamento de Despesa',
     'Expenses' => 'Despesas',
+    'Export All' => 'Exportar',
     'Failed to register company.' => 'Falha ao registrar empresa.',
     'Failed to register your account.' => 'Falha ao cadastra sua conta.',
     'Failed to save the product, try again later.' => 'Falha ao salvar o produto, tente novamente mais tarde.',
@@ -131,6 +132,7 @@ return [
     'It is not possible to delete the category because the category is linked to some products.' => 'Não é possível excluir a categoria porque a categoria está vinculada a alguns produtos.',
     'It is not possible to delete the payment method, there are orders paid with this method.' => 'Não é possível excluir a forma de pagamento, existem pedidos usando esse meio de pagamento.',
     'It is not possible to delete the product permanently, as the product is linked to input/output operations or is present in some order.' => 'Não é possível excluir o produto permanentemente, pois o produto está vinculado a operações de entrada/saída ou está presente em alguma ordem.',
+    'It is not possible to delete variation because there are products with that variation.' => 'Você não pode excluir a variação porque existem produtos com essa variação.',
     'It is not possible to permanently delete the collaborator because there are sales or operations linked to that collaborator.' => 'Não é possível excluir permanentemente o colaborador porque existem vendas ou operações vinculadas a esse colaborador.',
     'Items' => 'Items',
     'Last week' => 'Última Semana',
@@ -270,5 +272,5 @@ return [
     'Zip code does not exist, try again with another zip code.' => 'CEP não existe, tente outro CEP.',
     'Apply Time' => '',
     'Details' => '',
-    'It is not possible to delete variation because there are products with that variation.' => '',
+    'Order value' => 'Valor do pedido',
 ];
