@@ -69,7 +69,7 @@ class Employee extends ActiveRecord implements IdentityInterface
                 'value' => new Expression('NOW()'),
                 'attributes' => [
                     self::EVENT_BEFORE_INSERT => ['created_at'],
-                    self::EVENT_BEFORE_UPDATE => ['updated_at'],
+                    self::EVENT_BEFORE_UPDATE => ['created_at', 'updated_at'],
                     SoftDeleteBehavior::EVENT_BEFORE_SOFT_DELETE => ['deleted_at']
                 ]
             ],
@@ -98,7 +98,7 @@ class Employee extends ActiveRecord implements IdentityInterface
             [['password_new'], 'required', 'on' => self::SCENARIO_CHANGE_PASSWORD],
             [['password'], function ($attribute, $params, $validator) {
                 if (!Yii::$app->getSecurity()->validatePassword($this->password, $this->oldAttributes['password'])) {
-                    $this->addError($attribute, Yii::t('app', 'The password must be the same as the current one'));
+                    $this->addError($attribute, Yii::t('app', 'The password must be the same as the current one.'));
                 }
             }, 'on' => self::SCENARIO_CHANGE_PASSWORD],
             [['birthday', 'created_at', 'updated_at', 'deleted_at'], 'safe'],
@@ -150,12 +150,12 @@ class Employee extends ActiveRecord implements IdentityInterface
             'email' => Yii::t('app', 'Email'),
             'password' => Yii::t('app', 'Password'),
             'is_manager' => Yii::t('app', 'Is Manager'),
-            'is_deleted' => Yii::t('app', 'Is Deleted'),
+            'is_deleted' => Yii::t('app', 'Active'),
             'created_at' => Yii::t('app', 'Created At'),
             'updated_at' => Yii::t('app', 'Updated At'),
             'deleted_at' => Yii::t('app', 'Deleted At'),
-            'address_id' => Yii::t('app', 'Address ID'),
-            'company_id' => Yii::t('app', 'Company ID'),
+            'address_id' => Yii::t('app', 'Address'),
+            'company_id' => Yii::t('app', 'Company'),
             'phone_number' => Yii::t('app', 'Phone Number'),
             'password_repeat' => Yii::t('app', 'Password Repeat'),
             'password_new' => Yii::t('app', 'New Password'),

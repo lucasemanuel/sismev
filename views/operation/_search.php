@@ -21,7 +21,7 @@ use yii\helpers\Html;
         <h3 class="card-title"><?= Yii::t('app', 'Advanced Search') ?></h3>
         <div class="card-tools">
             <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                <i class="fas fa-minus"></i>
+                <i class="fas fa-plus"></i>
             </button>
         </div>
     </div> <!-- /.card-body -->

@@ -14,7 +14,7 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <h1><?= Html::encode($this->title) ?></h1>
 
-<div class="category-form">
+<div class="pay-form">
 
     <?php $form = ActiveForm::begin(); ?>
 
@@ -26,7 +26,7 @@ $this->params['breadcrumbs'][] = $this->title;
     ]) ?>
 
     <div class="form-group">
-        <?= Html::submitButton(Yii::t('app', 'Submit'), ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton(Yii::t('app', 'To Pay'), ['class' => 'btn btn-success']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

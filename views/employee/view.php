@@ -75,7 +75,7 @@ $this->registerCssFile('@web/css/detailView.css');
                         'attributes' => [
                             [
                                 'attribute' => 'is_deleted',
-                                'format' => 'boolean',
+                                'format' => 'active',
                                 'value' => $model->is_deleted
                             ],
                             'created_at:datetime',
@@ -102,7 +102,7 @@ $this->registerCssFile('@web/css/detailView.css');
                         <?= Html::a(Yii::t('app', 'Disable'), ['soft-delete', 'id' => $model->id], [
                             'class' => 'btn btn-warning',
                             'data' => [
-                                'confirm' => Yii::t('app', 'Are you sure you want to disable this employee?'),
+                                'confirm' => Yii::t('app', 'Are you sure you want to delete this employee? Disabled users cannot log into the system.'),
                                 'method' => 'post',
                             ],
                         ]) ?>

@@ -13,6 +13,9 @@ use yii\helpers\Html;
     
     <?php $form = ActiveForm::begin([
         'id' => 'form_category',
+        'enableClientValidation' => false,
+        'enableAjaxValidation' => true,
+        'validationUrl' => ['validation', 'id' => $model->id]
     ]); ?>
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>

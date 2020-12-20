@@ -1,43 +1,39 @@
 <?php
 
-use app\models\VariationSet;
+use app\models\Category;
 use kartik\grid\GridView;
-use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
 use yii\helpers\Url;
 
 /* @var $this yii\web\View */
-/* @var $searchModel app\models\VariationAttributeSearch */
+/* @var $searchModel app\models\Variationearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app', 'Variation Attributes');
+$this->title = Yii::t('app', 'Variation');
 $this->params['breadcrumbs'][] = $this->title;
 
 $this->registerJsFile('@web/js/modal.js', ['depends' => [yii\web\JqueryAsset::class]]);
 
-$listVariationGroup = ArrayHelper::map(VariationSet::find()->orderBy('name')->all(), 'id', 'fullName');
-
 $gridColumns = [
     ['class' => 'kartik\grid\SerialColumn'],
-    'name', 
+    'name',
     [
-        'attribute' => 'variation_set_id',
-        // 'width' => '310px',
-        'value' => function ($model, $key, $index, $widget) {
-            return $model->variationSet->name." ({$model->variationSet->category->name})";
+        'attribute' => 'category_id',
+        'value' => function ($model) {
+            return $model->category->name;
         },
         'filterType' => GridView::FILTER_SELECT2,
-        'filter' => $listVariationGroup,
+        'filter' => ArrayHelper::map(Category::find()->orderBy('name')->asArray()->all(), 'id', 'name'),
         'filterWidgetOptions' => [
             'pluginOptions' => ['allowClear' => true],
         ],
-        'filterInputOptions' => ['placeholder' => 'Any supplier'],
+        'filterInputOptions' => ['placeholder' => Yii::t('app', 'Select')],
         'group' => true,  // enable grouping
     ],
     [
         'class' => 'kartik\grid\ActionColumn',
         'width' => '100px',
-        // 'template' => '{update} {delete}',
         'buttons' => [
             'update' => function ($url, $model) {
                 return Html::a(
@@ -50,14 +46,9 @@ $gridColumns = [
     ],
 ];
 ?>
-<div class="row variation-attribute-index">
+<div class="row variation-index">
     <div class="col">
-        <?= $this->render('@app/views/layouts/modal.php', ['options' => ['title' => Yii::t('app', 'Category')]]) ?>
-
-        <h1><?= Html::encode($this->title) ?></h1>
-
-        <?php // echo $this->render('_search', ['model' => $searchModel]); 
-        ?>
+        <?= $this->render('@app/views/layouts/modal.php', ['options' => ['title' => Yii::t('app', 'Variation')]]) ?>
 
         <?= GridView::widget([
             'id' => 'grid_categories',
@@ -82,8 +73,6 @@ $gridColumns = [
             'panel' => [
                 'type' => GridView::TYPE_DEFAULT,
                 'heading' => Html::encode($this->title),
-                // 'headingOptions' => ['class' => ''],
-                // 'footer' => false,
                 'afterOptions' => ['class' => ''],
             ],
         ]); ?>

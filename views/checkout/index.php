@@ -93,7 +93,7 @@ Dialog::widget();
                     <tbody>
                         <tr v-for="(item, index) in items" is="payment_items" :key="item.id" :index="index" :name="item.name" :installments="item.installments" :value="item.value"></tr>
                         <tr>
-                            <td colspan="5" class="font-weight-bold text-right"><?= Yii::t('app', 'Total paid:') ?> {{ totalPaid }}</td>
+                            <td colspan="5" class="font-weight-bold text-right"><?= Yii::t('app', 'Total Paid:') ?> {{ totalPaid }}</td>
                         </tr>
                     </tbody>
                 </table>

@@ -2,7 +2,7 @@
 
 namespace app\modules\api\controllers;
 
-use app\models\ProductSearch;
+use app\modules\api\models\ProductSearch;
 use yii\filters\AccessControl;
 use yii\filters\ContentNegotiator;
 use yii\web\Controller;

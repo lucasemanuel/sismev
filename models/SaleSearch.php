@@ -15,7 +15,7 @@ class SaleSearch extends Sale
 {
     public $order_total_value;
     public $setting_search_order_total_value = 0;
-    public $status = [ 'sold', 'canceled' ];
+    public $status = ['sold', 'canceled'];
 
     /**
      * {@inheritdoc}
@@ -23,10 +23,21 @@ class SaleSearch extends Sale
     public function rules()
     {
         return [
-            [['id', 'is_sold', 'is_canceled', 'order_id', 'setting_search_order_total_value'], 'integer'],
+            [['id', 'is_sold', 'is_canceled', 'order_id', 'setting_search_order_total_value', 'employee_id'], 'integer'],
             [['amount_paid', 'discount', 'order_total_value'], 'number'],
-            [['sale_at', 'canceled_at', 'updated_at', 'employee_id', 'status'], 'safe'],
+            [['sale_at', 'canceled_at', 'updated_at', 'status'], 'safe'],
         ];
+    }
+
+    public function attributeLabels()
+    {
+        return array_merge(
+            parent::attributeLabels(),
+            [
+                'setting_search_order_total_value' => Yii::t('app', 'Setting Search Order Total Value'),
+                'order_total_value' => Yii::t('app', 'Order Total Value')
+            ]
+        );
     }
 
     /**
@@ -57,6 +68,7 @@ class SaleSearch extends Sale
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort'=> ['defaultOrder' => ['sale_at' => SORT_DESC]],
         ]);
 
         $dataProvider->sort->attributes = array_merge($dataProvider->sort->attributes, [
@@ -90,10 +102,10 @@ class SaleSearch extends Sale
             'is_sold' => $this->is_sold,
             'canceled_at' => $this->canceled_at,
             'updated_at' => $this->updated_at,
+            'employee_id' => $this->employee_id
         ]);
 
         $query->andFilterWhere(['like', 'order.code', $this->order_id]);
-        $query->andFilterWhere(['like', 'employee.usual_name', $this->employee_id]);
 
         $this->filterDate($query);
         $this->filterOrderValue($query);
@@ -130,13 +142,13 @@ class SaleSearch extends Sale
     {
         if (!empty($this->status) && count($this->status) < 2) {
             $value = current($this->status);
-            
+
             if ($value == 'canceled')
                 $query->andFilterWhere(['is_canceled' => 1]);
             else
                 $query->andFilterWhere(['is_canceled' => 0]);
         } else {
-            $this->status = [ 'sold', 'canceled' ];
+            $this->status = ['sold', 'canceled'];
         }
     }
 }

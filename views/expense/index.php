@@ -3,6 +3,7 @@
 use kartik\grid\GridView;
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\widgets\MaskedInput;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\ExpenseSearch */
@@ -29,23 +30,19 @@ $gridColumns = [
     ],
     [
         'attribute' => 'payday',
-        'format' => 'date',
-        'filterType' => GridView::FILTER_DATE,
+        'filterType' => MaskedInput::class,
         'filterWidgetOptions' => [
-            'pluginOptions' => [
-                'format' => 'dd/mm/yyyy',
-            ]
+            'clientOptions' => ['alias' =>  'dd/mm/yyyy']
         ],
+        'format' => 'date'
     ],
     [
         'attribute' => 'paid_at',
-        'format' => 'date',
-        'filterType' => GridView::FILTER_DATE,
+        'filterType' => MaskedInput::class,
         'filterWidgetOptions' => [
-            'pluginOptions' => [
-                'format' => 'dd/mm/yyyy',
-            ]
+            'clientOptions' => ['alias' =>  'dd/mm/yyyy']
         ],
+        'format' => 'date'
     ],
     [
         'attribute' => 'is_paid',
@@ -63,9 +60,7 @@ $gridColumns = [
 ?>
 <div class="expense-index">
     <div class="row">
-        <div class="col">            
-            <?php //echo $this->render('_search', ['model' => $searchModel]); ?>
-
+        <div class="col">
             <?= GridView::widget([
                 'dataProvider' => $dataProvider,
                 'filterModel' => $searchModel,
@@ -87,8 +82,6 @@ $gridColumns = [
                 'panel' => [
                     'type' => GridView::TYPE_DEFAULT,
                     'heading' => Html::encode($this->title),
-                    // 'headingOptions' => ['class' => ''],
-                    // 'footer' => false,
                     'afterOptions' => ['class' => ''],
                 ],
             ]); ?>

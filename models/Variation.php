@@ -9,7 +9,7 @@ use yii\db\ActiveRecord;
 use yii\db\Expression;
 
 /**
- * This is the model class for table "variation_set".
+ * This is the model class for table "variation".
  *
  * @property int $id
  * @property string $name
@@ -17,17 +17,18 @@ use yii\db\Expression;
  * @property string|null $updated_at
  * @property int $category_id
  *
- * @property VariationAttribute[] $variationAttributes
+ * @property ProductVariation[] $productVariations
+ * @property Product[] $products
  * @property Category $category
  */
-class VariationSet extends ActiveRecord
+class Variation extends ActiveRecord
 {
     use FilterTrait;
 
     const JOINS = [
         [
             'table' => 'category',
-            'on' => 'variation_set.category_id = category.id'
+            'on' => 'variation.category_id = category.id'
         ],
         [
             'table' => 'company',
@@ -35,14 +36,12 @@ class VariationSet extends ActiveRecord
         ],
     ];
 
-    private $fullName;
-    
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'variation_set';
+        return 'variation';
     }
 
     public function behaviors()
@@ -65,6 +64,20 @@ class VariationSet extends ActiveRecord
             [['created_at', 'updated_at'], 'safe'],
             [['category_id'], 'integer'],
             [['name'], 'string', 'max' => 64],
+            [['name'], 'trim'],
+            [['name'], function ($attribute, $params, $validator) { 
+                if ($this->category_id && $this->$attribute) {
+                    $exists = self::find()
+                        ->andWhere([
+                            'category_id' => $this->category_id,
+                            'variation.name' => $this->$attribute])
+                        ->exists();
+                    if ($exists) $this->addError($attribute, Yii::t('yii', '{attribute} "{value}" has already been taken.', [
+                        'attribute' => $this->getAttributeLabel('name'),
+                        'value' => $this->$attribute
+                    ]));
+                }
+            }],
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::class, 'targetAttribute' => ['category_id' => 'id']],
         ];
     }
@@ -75,22 +88,31 @@ class VariationSet extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('app', 'ID'),
             'name' => Yii::t('app', 'Name'),
             'created_at' => Yii::t('app', 'Created At'),
             'updated_at' => Yii::t('app', 'Updated At'),
-            'category_id' => Yii::t('app', 'Category ID'),
+            'category_id' => Yii::t('app', 'Category'),
         ];
     }
 
     /**
-     * Gets query for [[VariationAttributes]].
+     * Gets query for [[ProductVariations]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getVariationAttributes()
+    public function getProductVariations()
     {
-        return $this->hasMany(VariationAttribute::class, ['variation_set_id' => 'id']);
+        return $this->hasMany(ProductVariation::class, ['variation_id' => 'id']);
+    }
+
+    /**
+     * Gets query for [[Products]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProducts()
+    {
+        return $this->hasMany(Product::class, ['id' => 'product_id'])->viaTable('product_variation', ['variation_id' => 'id']);
     }
 
     /**

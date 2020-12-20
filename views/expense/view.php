@@ -1,5 +1,6 @@
 <?php
 
+use kartik\dialog\Dialog;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\DetailView;
@@ -11,6 +12,8 @@ $this->title = $model->name;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Expenses'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
+Dialog::widget();
+
 $this->registerCssFile('@web/css/detailView.css');
 $this->registerJsFile('@web/js/modal.js', ['depends' => [yii\web\JqueryAsset::class]]);
 
@@ -18,7 +21,7 @@ $this->registerJsFile('@web/js/modal.js', ['depends' => [yii\web\JqueryAsset::cl
 <div class="expense-view">
     <div class="row">
         <div class="col-12">
-            <?= $this->render('@app/views/layouts/modal.php', ['options' => ['title' => Yii::t('app', 'Category')]]) ?>
+            <?= $this->render('@app/views/layouts/modal.php', ['options' => ['title' => Yii::t('app', 'Expense Pay')]]) ?>
 
             <div class="card card-outline">
                 <div class="card-header border-0">
@@ -81,12 +84,12 @@ $this->registerJsFile('@web/js/modal.js', ['depends' => [yii\web\JqueryAsset::cl
                 <?= Html::a(Yii::t('app', 'Delete'), ['delete', 'id' => $model->id], [
                     'class' => 'btn btn-danger',
                     'data' => [
-                        'confirm' => Yii::t('app', 'Are you sure you want to delete this item?'),
+                        'confirm' => Yii::t('app', 'Are you sure you want to delete this expense?'),
                         'method' => 'post',
                     ],
                 ]) ?>
                 <?php if (!$model->is_paid): ?>
-                <?= Html::a(Yii::t('app', 'Pay'), Url::to(['pay', 'id' => $model->id]), [
+                <?= Html::a(Yii::t('app', 'To Pay'), Url::to(['pay', 'id' => $model->id]), [
                     'class' => 'btn btn-success btn-modal', 
                     'value' => Url::to(['pay', 'id' => $model->id]),
                     'data-toggle' => 'modal'

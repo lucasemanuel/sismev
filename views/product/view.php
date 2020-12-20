@@ -38,10 +38,10 @@ echo Dialog::widget();
                                 'value' => $model->category->name
                             ],
                             [
-                                'attribute' => 'variations',
+                                'label' => Yii::t('app', 'Details'),
                                 'value' => function ($model) {
                                     $variations = [];
-                                    foreach ($model->variationAttributes as $variation)
+                                    foreach ($model->productVariations as $variation)
                                         array_push($variations, $variation->name);
 
                                     return implode(", ", $variations);
@@ -75,8 +75,7 @@ echo Dialog::widget();
                         'attributes' => [
                             [
                                 'attribute' => 'is_deleted',
-                                'format' => 'boolean',
-                                'value' => $model->is_deleted
+                                'format' => 'active',
                             ],
                             'created_at:datetime',
                             'updated_at:datetime',
@@ -116,7 +115,7 @@ echo Dialog::widget();
                 <?= Html::a(Yii::t('app', 'Delete'), ['delete', 'id' => $model->id], [
                     'class' => 'btn btn-danger',
                     'data' => [
-                        'confirm' => Yii::t('app', 'Are you sure you want to delete this item?'),
+                        'confirm' => Yii::t('app', 'Are you sure you want to delete this product?'),
                         'method' => 'post',
                     ],
                 ]) ?>

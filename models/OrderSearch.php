@@ -31,6 +31,18 @@ class OrderSearch extends Order
         ];
     }
 
+    public function attributeLabels()
+    {
+        return array_merge(
+            parent::attributeLabels(),
+            [
+                'total_items' => Yii::t('app', 'Total Items'),
+                'status' => Yii::t('app', 'Status'),
+                'setting_search_total_items' => Yii::t('app', 'Setting Search Total Items'),
+                'setting_search_total_value' => Yii::t('app', 'Setting Search Total Value')
+            ]
+        );
+    }
     /**
      * {@inheritdoc}
      */
@@ -60,6 +72,7 @@ class OrderSearch extends Order
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort'=> ['defaultOrder' => ['created_at' => SORT_DESC]],
         ]);
 
         $dataProvider->sort->attributes = array_merge($dataProvider->sort->attributes, [

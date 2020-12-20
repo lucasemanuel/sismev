@@ -4,11 +4,13 @@ namespace app\controllers;
 
 use app\models\Category;
 use app\models\CategorySearch;
+use kartik\form\ActiveForm;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 
 /**
  * CategoryController implements the CRUD actions for Category model.
@@ -25,7 +27,7 @@ class CategoryController extends Controller
                 'class' => AccessControl::class,
                 'rules' => [
                     [
-                        'actions' => ['index', 'view', 'create', 'update', 'delete'],
+                        'actions' => ['index', 'view', 'create', 'update', 'delete', 'validation'],
                         'allow' => true,
                         'roles' => ['admin']
                     ],
@@ -88,6 +90,18 @@ class CategoryController extends Controller
         ]);
     }
 
+    public function actionValidation($id = null)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $model = $id ? $this->findModel($id) : new Category();
+
+        if (!Yii::$app->request->isAjax)
+            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+
+        if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) 
+            return ActiveForm::validate($model);
+    }
+
     /**
      * Updates an existing Category model.
      * If update is successful, the browser will be redirected to the 'view' page.
@@ -118,7 +132,12 @@ class CategoryController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+
+        if (empty($model->products))
+            $model->delete();
+        else 
+            Yii::$app->session->setFlash('warning', Yii::t('app', 'It is not possible to delete the category because the category is linked to some products.'));
 
         return $this->redirect(['index']);
     }

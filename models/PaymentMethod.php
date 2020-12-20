@@ -50,7 +50,7 @@ class PaymentMethod extends ActiveRecord
                 'class' => TimestampBehavior::class,
                 'value' => new Expression('NOW()'),
                 'attributes' => [
-                    self::EVENT_BEFORE_INSERT => ['created_at'],
+                    self::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
                     self::EVENT_BEFORE_UPDATE => ['updated_at'],
                     SoftDeleteBehavior::EVENT_BEFORE_SOFT_DELETE => ['deleted_at']
                 ]
@@ -90,11 +90,11 @@ class PaymentMethod extends ActiveRecord
             'id' => Yii::t('app', 'ID'),
             'name' => Yii::t('app', 'Name'),
             'installment_limit' => Yii::t('app', 'Installment Limit'),
-            'is_deleted' => Yii::t('app', 'Is Deleted'),
+            'is_deleted' => Yii::t('app', 'Active'),
             'created_at' => Yii::t('app', 'Created At'),
             'updated_at' => Yii::t('app', 'Updated At'),
             'deleted_at' => Yii::t('app', 'Deleted At'),
-            'company_id' => Yii::t('app', 'Company ID'),
+            'company_id' => Yii::t('app', 'Company'),
         ];
     }
 

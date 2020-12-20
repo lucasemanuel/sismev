@@ -3,16 +3,16 @@
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\VariationSet */
+/* @var $model app\models\Variation */
 
-$this->title = Yii::t('app', 'Update Variation Set: {name}', [
+$this->title = Yii::t('app', 'Update Variation: {name}', [
     'name' => $model->name,
 ]);
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Variation Sets'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Variation'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = Yii::t('app', 'Update');
 ?>
-<div class="variation-set-update">
+<div class="variation-update">
 
     <h1><?= Html::encode($this->title) ?></h1>
 

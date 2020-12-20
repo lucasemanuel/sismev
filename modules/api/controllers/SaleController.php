@@ -57,11 +57,11 @@ class SaleController extends Controller
         $data = [
             'dates' => [],
             'amount_paid' => [
-                'label' => Yii::t('app', 'Total sales'),
+                'label' => Yii::t('app', 'Sales value'),
                 'values' => []
             ],
             'total_sale' => [
-                'label' => Yii::t('app', 'Sales value'),
+                'label' => Yii::t('app', 'Total sales'),
                 'values' => []
             ]
         ];

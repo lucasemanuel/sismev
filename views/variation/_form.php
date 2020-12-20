@@ -5,11 +5,11 @@ use yii\bootstrap4\ActiveForm;
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\VariationSet */
+/* @var $model app\models\Variation */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="variation-set-form">
+<div class="variation-form">
 
     <?php $form = ActiveForm::begin(); ?>
 

@@ -43,7 +43,7 @@ $this->registerCssFile('@web/css/detailView.css');
                             ],
                             'total_value:currency',
                             [
-                                'label' => Yii::t('app', 'Total items'),
+                                'label' => Yii::t('app', 'Total Items'),
                                 'format' => 'raw',
                                 'value' => Yii::$app->formatter->asAmount($model->getTotalItems()),
                             ],

@@ -1,20 +1,21 @@
 <?php
 
 use app\widgets\Alert;
+use kartik\dialog\Dialog;
 use yii\helpers\Html;
 use yii\web\YiiAsset;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $searchModel app\models\CompanySearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = $model->name;
 $this->params['breadcrumbs'][] = $this->title;
 
 YiiAsset::register($this);
-$this->registerCssFile('@web/css/detailView.css');
+Dialog::widget();
 
+$this->registerCssFile('@web/css/detailView.css');
 $this->registerCss(
     <<< 'CSS'
         .image-company {
@@ -113,7 +114,7 @@ $this->registerCss(
                     <?= Html::a(Yii::t('app', 'Delete'), ['delete'], [
                         'class' => 'btn btn-danger',
                         'data' => [
-                            'confirm' => Yii::t('app', 'Are you sure you want to delete this item?'),
+                            'confirm' => Yii::t('app', 'Are you sure you want to delete the company from the system? All data will be permanently deleted.'),
                             'method' => 'post',
                         ],
                     ]) ?>

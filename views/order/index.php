@@ -42,7 +42,6 @@ $gridColumns = [
     ],
     [
         'class' => 'kartik\grid\ActionColumn',
-        'template' => '{view} {delete} {update}',
         'width' => '100px',
         'deleteOptions' => [
             'data-confirm' => Yii::t('app', 'Are you sure you want to delete this order?'),
@@ -76,7 +75,7 @@ $gridColumns = [
 
 $btn = '';
 if (Yii::$app->user->identity->is_manager) {
-    $btn =  Html::a(Yii::t('app', 'Clear'), ['clear'], [
+    $btn =  Html::a(Yii::t('app', 'Clear empty orders'), ['clear'], [
         'class' => 'btn btn-danger',
         'data' => [
             'confirm' => Yii::t('app', 'Are you sure you want to delete all empty orders?'),

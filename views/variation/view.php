@@ -5,18 +5,18 @@ use yii\helpers\Url;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\VariationSet */
+/* @var $model app\models\Variation */
 
 $this->title = $model->name;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Variation Sets'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Variations'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
 $this->registerCssFile('@web/css/detailView.css');
 $this->registerJsFile('@web/js/modal.js', ['depends' => [yii\web\JqueryAsset::class]]);
 
 ?>
-<div class="variation-set-view">
-    <?= $this->render('@app/views/layouts/modal.php', ['options' => ['title' => Yii::t('app', 'Variation Set')]]) ?>
+<div class="variation-view">
+    <?= $this->render('@app/views/layouts/modal.php', ['options' => ['title' => Yii::t('app', 'Variation')]]) ?>
 
     <div class="row">
         <div class="col-12">

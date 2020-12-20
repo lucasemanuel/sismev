@@ -1,5 +1,6 @@
 <?php
 
+use kartik\dialog\Dialog;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\DetailView;
@@ -13,6 +14,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
 $this->registerCssFile('@web/css/detailView.css');
 $this->registerJsFile('@web/js/modal.js', ['depends' => [yii\web\JqueryAsset::class]]);
+
+Dialog::widget();
 
 ?>
 <div class="category-view">
@@ -72,7 +75,7 @@ $this->registerJsFile('@web/js/modal.js', ['depends' => [yii\web\JqueryAsset::cl
                 <?= Html::a(Yii::t('app', 'Delete'), ['delete', 'id' => $model->id], [
                     'class' => 'btn btn-danger',
                     'data' => [
-                        'confirm' => Yii::t('app', 'Are you sure you want to delete this employee?'),
+                        'confirm' => Yii::t('app', 'Are you sure you want to delete this category?'),
                         'method' => 'post',
                     ],
                 ]) ?>

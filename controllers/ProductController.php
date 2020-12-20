@@ -5,14 +5,19 @@ namespace app\controllers;
 use app\models\Category;
 use app\models\Product;
 use app\models\ProductSearch;
+use app\models\ProductVariation;
 use app\models\VariationAttribute;
 use Yii;
+use yii\db\Expression;
+use yii\db\Query;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
+use yii\web\BadRequestHttpException;
 use yii\web\ConflictHttpException;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\UnprocessableEntityHttpException;
 
 /**
  * ProductController implements the CRUD actions for Product model.
@@ -50,9 +55,10 @@ class ProductController extends Controller
      * Lists all Product models.
      * @return mixed
      */
-    public function actionIndex()
+    public function actionIndex($active = null)
     {
         $searchModel = new ProductSearch();
+        $searchModel->is_deleted = $active;
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -103,23 +109,43 @@ class ProductController extends Controller
         $model = new Product();
         $model->category_id = $category;
 
-        if ($model->load(Yii::$app->request->post())) {  
-            if ($model->variations) {
-                $model->variations = array_filter($model->variations);
-                if ($this->modelExists($model))
-                    throw new ConflictHttpException(Yii::t('app', 'Could not save because the product already exists.'));
+        if ($model->load(Yii::$app->request->post())) {
+            $model->scenario = Product::SCENARIO_SAVE;
+            $transaction = Product::getDb()->beginTransaction();
+            try {
+                $variations = array_filter($model->variations_form);
+
+                if (!$model->save() && $errors = $model->errors) {
+                    throw new BadRequestHttpException(array_shift($errors)[0]);
+                }
+
+                foreach ($variations as $id => $value) {
+                    $this->saveProductVariation([
+                        'variation_id' => $id,
+                        'name' => $value,
+                        'product_id' => $model->id,
+                    ]);
+                }
+
+                $transaction->commit();
+                return $this->redirect(['view', 'id' => $model->id]);
+            } catch (\Exception $e) {
+                $transaction->rollBack();
             }
-
-            $model->save();
-            if ($model->variations) 
-                foreach ($model->variations as $var_id) (VariationAttribute::findOne($var_id))->link('products', $model);
-
-            return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('create', [
             'model' => $model,
         ]);
+    }
+
+    private function saveProductVariation($attributes)
+    {
+        $product_variation = new ProductVariation();
+        $product_variation->attributes = $attributes;
+
+        if (!$product_variation->save())
+            throw new BadRequestHttpException(Yii::t('app', 'Failed to save the product, try again later.'));
     }
 
     /**
@@ -132,21 +158,35 @@ class ProductController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        $model->loadVariations();
+        $model->loadVariationsForm();
 
         if ($model->load(Yii::$app->request->post())) {
-            $model->variations = array_filter($model->variations);
+            $model->scenario = Product::SCENARIO_SAVE;
+            $transaction = Product::getDb()->beginTransaction();
+            try {
+                $variations = array_filter($model->variations_form);
 
-            if ($this->modelExists($model))
-                throw new ConflictHttpException(Yii::t('app', 'Could not save because the product already exists.'));
+                if (!$model->save() && $errors = $model->errors) {
+                    throw new BadRequestHttpException(array_shift($errors)[0]);
+                }
 
-            $model->save();
-            $model->unlinkAll('variationAttributes', true);
+                ProductVariation::deleteAll(['product_id' => $model->id]);
+                
+                foreach ($variations as $id => $value) {
+                    $this->saveProductVariation([
+                        'variation_id' => $id,
+                        'name' => $value,
+                        'product_id' => $model->id,
+                    ]);
+                }
 
-            foreach ($model->variations as $var_id) (VariationAttribute::findOne($var_id))->link('products', $model);
-
-            return $this->redirect(['view', 'id' => $model->id]);
+                $transaction->commit();
+                return $this->redirect(['view', 'id' => $model->id]);
+            } catch (\Exception $e) {
+                $transaction->rollBack();
+            }
         }
+
 
         return $this->render('update', [
             'model' => $model,
@@ -164,10 +204,10 @@ class ProductController extends Controller
     {
         $model = $this->findModel($id);
 
-        if (is_null($model->operations) && is_null($model->orderItems)) {
+        if (!$model->operations && !$model->orderItems) {
             $model->delete();
         } else {
-            Yii::$app->session->setFlash('warning', Yii::t('app', 'It is not possible to delete the product permanently, as the product is linked to input/output operations or is present in some order'));
+            Yii::$app->session->setFlash('warning', Yii::t('app', 'It is not possible to delete the product permanently, as the product is linked to input/output operations or is present in some order.'));
         }
 
         return $this->redirect(['index']);
@@ -201,39 +241,5 @@ class ProductController extends Controller
         }
 
         throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
-    }
-
-    protected function modelExists($model)
-    {
-        $query = Product::find()
-            ->with('variationAttributes')
-            ->andWhere(['product.name' => $model->name])
-            ->andWhere(['product.category_id' => $model->category_id])
-            ->innerJoin('product_variation_attribute', 'product_variation_attribute.product_id = product.id');
-
-        if (!$model->isNewRecord)
-            $query->andWhere(['not', ['product.id' => $model->id]]);
-
-        if (empty($model->variations))
-            return $query->one() !== null;
-
-        $query = $query->asArray()->all();
-
-        $product_variations = array_map(function ($products) {
-            $variation_attributes = $products['variationAttributes'];
-            $array = [];
-            foreach ($variation_attributes as $variation_attr)
-                $array[$variation_attr['variation_set_id']] = $variation_attr['id'];
-            return $array;
-        }, $query);
-
-        ksort($model->variations);
-        foreach ($product_variations as $variations) {
-            ksort($variations);
-            if (!array_diff($model->variations, $variations))
-                return true;
-        }
-
-        return false;
     }
 }

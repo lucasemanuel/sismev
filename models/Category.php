@@ -19,7 +19,7 @@ use yii\db\Expression;
  *
  * @property Company $company
  * @property Product[] $products
- * @property VariationSet[] $variationSets
+ * @property Variation[] $variations
  */
 class Category extends ActiveRecord
 {
@@ -58,6 +58,7 @@ class Category extends ActiveRecord
             [['name', 'company_id'], 'required'],
             [['created_at', 'updated_at'], 'safe'],
             [['company_id'], 'integer'],
+            [['name'], 'unique'],
             [['name'], 'string', 'max' => 64],
             [['company_id'], 'exist', 'skipOnError' => true, 'targetClass' => Company::class, 'targetAttribute' => ['company_id' => 'id']],
         ];
@@ -73,7 +74,7 @@ class Category extends ActiveRecord
             'name' => Yii::t('app', 'Name'),
             'created_at' => Yii::t('app', 'Created At'),
             'updated_at' => Yii::t('app', 'Updated At'),
-            'company_id' => Yii::t('app', 'Company ID'),
+            'company_id' => Yii::t('app', 'Company'),
         ];
     }
 
@@ -98,12 +99,12 @@ class Category extends ActiveRecord
     }
 
     /**
-     * Gets query for [[VariationSets]].
+     * Gets query for [[Variations]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getVariationSets()
+    public function getVariations()
     {
-        return $this->hasMany(VariationSet::class, ['category_id' => 'id']);
+        return $this->hasMany(Variation::class, ['category_id' => 'id']);
     }
 }

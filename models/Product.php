@@ -4,6 +4,8 @@ namespace app\models;
 
 use app\components\traits\FilterTrait;
 use app\components\traits\UpdateCountersTrait;
+use app\components\validators\DecimalValidator;
+use app\components\validators\ProductExists;
 use Yii;
 use yii2tech\ar\softdelete\SoftDeleteBehavior;
 use yii\behaviors\TimestampBehavior;
@@ -29,8 +31,8 @@ use yii\db\Expression;
  * @property Operation[] $operations
  * @property OrderItem[] $orderItems
  * @property Category $category
- * @property ProductVariationAttribute[] $productVariationAttributes
- * @property VariationAttribute[] $variationAttributes
+ * @property ProductVariation[] $productVariations
+ * @property Variation[] $variations
  */
 class Product extends ActiveRecord
 {
@@ -48,7 +50,10 @@ class Product extends ActiveRecord
         ]
     ];
 
-    public $variations;
+    const SCENARIO_OPERATION = 'operation';
+    const SCENARIO_SAVE = 'default';
+
+    public $variations_form;
 
     /**
      * {@inheritdoc}
@@ -86,18 +91,28 @@ class Product extends ActiveRecord
     {
         return [
             [['name', 'unit_price', 'category_id'], 'required'],
-            [['unit_price', 'max_amount', 'min_amount', 'amount'], 'double', 'max' => '99999999.99'],
-            [['unit_price', 'amount'], 'double', 'min' => '00.00'],
+            [['name'], ProductExists::class,  'on' => self::SCENARIO_SAVE],
+            [['unit_price', 'max_amount', 'min_amount', 'amount'], DecimalValidator::class, 'min' => 0],
             [['is_deleted', 'category_id'], 'integer'],
-            [['created_at', 'updated_at', 'deleted_at', 'variations'], 'safe'],
+            [['created_at', 'updated_at', 'deleted_at', 'variations_form'], 'safe'],
             [['code'], 'string', 'max' => 32],
             [['name'], 'string', 'max' => 64],
+            [['name'], 'trim'],
             [['code'], 'trim'],
             [['code'], 'unique'],
             [['min_amount'], 'compare', 'compareAttribute' => 'max_amount', 'operator' => '<='],
             [['amount'], 'default', 'value' => 0],
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::class, 'targetAttribute' => ['category_id' => 'id']],
         ];
+    }
+
+    public function scenarios()
+    {
+        $scenarios = Parent::scenarios();
+         
+        $scenarios[self::SCENARIO_OPERATION] = ['amount'];
+
+        return $scenarios;
     }
 
     /**
@@ -113,11 +128,11 @@ class Product extends ActiveRecord
             'amount' => Yii::t('app', 'Amount'),
             'max_amount' => Yii::t('app', 'Max Amount'),
             'min_amount' => Yii::t('app', 'Min Amount'),
-            'is_deleted' => Yii::t('app', 'Is Deleted'),
+            'is_deleted' => Yii::t('app', 'Active'),
             'created_at' => Yii::t('app', 'Created At'),
             'updated_at' => Yii::t('app', 'Updated At'),
             'deleted_at' => Yii::t('app', 'Deleted At'),
-            'category_id' => Yii::t('app', 'Category ID'),
+            'category_id' => Yii::t('app', 'Category'),
         ];
     }
 
@@ -162,54 +177,47 @@ class Product extends ActiveRecord
     }
 
     /**
-     * Gets query for [[ProductVariationAttributes]].
+     * Gets query for [[ProductVariations]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getProductVariationAttributes()
+    public function getProductVariations()
     {
-        return $this->hasMany(ProductVariationAttribute::class, ['product_id' => 'id']);
+        return $this->hasMany(ProductVariation::class, ['product_id' => 'id']);
     }
 
     /**
-     * Gets query for [[VariationAttributes]].
+     * Gets query for [[Variations]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getVariationAttributes()
+    public function getVariations()
     {
-        return $this->hasMany(VariationAttribute::class, ['id' => 'variation_attribute_id'])->viaTable('product_variation_attribute', ['product_id' => 'id']);
+        return $this->hasMany(Variation::class, ['id' => 'variation_id'])->viaTable('product_variation', ['product_id' => 'id']);
     }
 
     public function __toString()
     {
         $variations = [];
-        foreach($this->variationAttributes as $variation)
+        foreach ($this->productVariations as $variation)
             array_push($variations, $variation->name);
 
         if (empty($variations))
             return $this->name;
 
-        return $this->name." (".implode(", ", $variations).")";
+        return $this->name . " (" . implode(", ", $variations) . ")";
     }
 
-    public function loadVariations()
+    public function loadVariationsForm()
     {
-        $variation_sets = VariationSet::findByCategory($this->category);
-        
-        foreach ($variation_sets as $variation_set) {
-            $variation = $this->getVariationAttributes()
-                ->andWhere(['variation_set_id' => $variation_set->id])
-                ->one(); 
-            
-            $this->variations[$variation_set->id] = is_null($variation) ? null : $variation->id;
-        }
+        foreach ($this->productVariations as $variation)
+            $this->variations_form[$variation->variation_id] = $variation->name;
     }
 
     public function fields()
     {
         $fields = parent::fields();
-        $fields['name'] = function() {
+        $fields['name'] = function () {
             return $this->__toString();
         };
 

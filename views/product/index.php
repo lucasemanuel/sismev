@@ -15,7 +15,12 @@ $this->registerJsFile('@web/js/modal.js', ['depends' => [yii\web\JqueryAsset::cl
 
 $gridColumns = [
     ['class' => 'kartik\grid\SerialColumn'],
-    'name',
+    [
+        'attribute' => 'name',
+        'value' => function ($model) {
+            return $model;
+        }
+    ],
     [
         'attribute' => 'category_id',
         'value' => function ($model) {
@@ -46,7 +51,20 @@ $gridColumns = [
         ],
     ],
     [
+        'attribute' => 'is_deleted',
+        'label' => Yii::t('app', 'Active'),
+        'class' => '\kartik\grid\BooleanColumn',
+        'trueLabel' => Yii::t('app', 'No'),
+        'falseLabel' => Yii::t('app', 'Yes'),
+        'value' => function ($model) {
+            return !$model->is_deleted;
+        }
+    ],
+    [
         'class' => 'kartik\grid\ActionColumn',
+        'deleteOptions' => [
+            'data-confirm' => Yii::t('app', 'Are you sure you want to delete this product?'),
+        ],
         'width' => '100px',
     ],
 ];
@@ -57,8 +75,6 @@ $gridColumns = [
         <div class="col">
             <?= $this->render('@app/views/layouts/modal.php', ['options' => ['title' => Yii::t('app', 'Category')]]) ?>
             
-            <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
             <?= GridView::widget([
                 'dataProvider' => $dataProvider,
                 'filterModel' => $searchModel,
@@ -81,8 +97,6 @@ $gridColumns = [
                 'panel' => [
                     'type' => GridView::TYPE_DEFAULT,
                     'heading' => Html::encode($this->title),
-                    // 'headingOptions' => ['class' => ''],
-                    // 'footer' => false,
                     'afterOptions' => ['class' => ''],
                 ],
             ]); ?>

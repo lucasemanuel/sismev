@@ -11,7 +11,7 @@ use yii\web\JsExpression;
 <div class="pos-form card card-primary card-outline">
 
     <div class="card-header">
-        <h3 class="card-title"><?= Yii::t('app', 'Add payments') ?></h3>
+        <h3 class="card-title"><?= Yii::t('app', 'Add Payment') ?></h3>
     </div>
 
     <?php $form = ActiveForm::begin([
@@ -25,7 +25,7 @@ use yii\web\JsExpression;
         <div class="row">
             <?= $form->field($model, 'payment_method_id', ['options' => ['class' => 'col-12']])->widget(Select2::class, [
                 'options' => [
-                    'placeholder' => Yii::t('app', 'Select payment method'),
+                    'placeholder' => '',
                 ],
                 'pluginOptions' => [
                     'allowClear' => true,

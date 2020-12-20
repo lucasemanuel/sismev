@@ -49,6 +49,7 @@ class ExpenseSearch extends Expense
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort'=> ['defaultOrder' => ['payday' => SORT_DESC]],
         ]);
 
         $this->load($params);
@@ -79,15 +80,15 @@ class ExpenseSearch extends Expense
 
     public function getPaidAt()
     {
-        return isset($this->paid_at)
+        return $this->paid_at && preg_match("/\d{2}\/\d{2}\/\d{4}/", $this->paid_at)
             ? Yii::$app->formatter->asDateDefault($this->paid_at)
-            : null;
+            : $this->paid_at = null;
     }
 
     public function getPayday()
     {
-        return isset($this->payday)
+        return $this->payday && preg_match("/\d{2}\/\d{2}\/\d{4}/", $this->payday)
             ? Yii::$app->formatter->asDateDefault($this->payday)
-            : null;
+            : $this->payday = null;
     }
 }

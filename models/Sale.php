@@ -87,8 +87,8 @@ class Sale extends ActiveRecord
             'sale_at' => Yii::t('app', 'Sale At'),
             'canceled_at' => Yii::t('app', 'Canceled At'),
             'updated_at' => Yii::t('app', 'Updated At'),
-            'employee_id' => Yii::t('app', 'Employee ID'),
-            'order_id' => Yii::t('app', 'Order ID'),
+            'employee_id' => Yii::t('app', 'Employee'),
+            'order_id' => Yii::t('app', 'Order'),
         ];
     }
 

@@ -71,8 +71,8 @@ class Pay extends ActiveRecord
             'id' => Yii::t('app', 'ID'),
             'value' => Yii::t('app', 'Value'),
             'installments' => Yii::t('app', 'Installments'),
-            'payment_method_id' => Yii::t('app', 'Payment Method ID'),
-            'sale_id' => Yii::t('app', 'Sale ID'),
+            'payment_method_id' => Yii::t('app', 'Payment Method'),
+            'sale_id' => Yii::t('app', 'Sale'),
         ];
     }
 
