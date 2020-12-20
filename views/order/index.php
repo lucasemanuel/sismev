@@ -1,5 +1,6 @@
 <?php
 
+use kartik\export\ExportMenu;
 use kartik\grid\GridView;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -108,6 +109,14 @@ $this->registerCSS(
                 'toolbar' =>  [
                     $btn,
                     '{toggleData}',
+                    ExportMenu::widget([
+                        'dataProvider' => $dataProvider,
+                        'columns' => $gridColumns,
+                        'dropdownOptions' => [
+                            'label' => Yii::t('app','Export All'),
+                            'class' => 'btn btn-outline-secondary'
+                        ]
+                    ])
                 ],
                 'panel' => [
                     'type' => GridView::TYPE_DEFAULT,
