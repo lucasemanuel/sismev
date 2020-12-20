@@ -194,7 +194,7 @@ AdminLteAsset::register($this);
 		<footer class="main-footer">
 			<strong>&copy; <?= Yii::$app->name . ' ' . date('Y') ?></strong> <?= Yii::powered() ?>
 			<div class="float-right d-sm-inline-block">
-				<b>Version</b> - dev
+				<b><?= Yii::t('app', 'Version') ?></b> <?= Yii::$app->params['version'] ?>
 			</div>
 		</footer>
 
