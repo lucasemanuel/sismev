@@ -89,6 +89,7 @@ class Sale extends ActiveRecord
             'updated_at' => Yii::t('app', 'Updated At'),
             'employee_id' => Yii::t('app', 'Employee'),
             'order_id' => Yii::t('app', 'Order'),
+            'order_total_value' => Yii::t('app', 'Order value'),
         ];
     }
 

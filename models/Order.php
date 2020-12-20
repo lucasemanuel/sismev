@@ -87,6 +87,7 @@ class Order extends ActiveRecord
             'id' => Yii::t('app', 'ID'),
             'code' => Yii::t('app', 'Code'),
             'total_value' => Yii::t('app', 'Total Value'),
+            'total_items' => Yii::t('app', 'Total Items'),
             'created_at' => Yii::t('app', 'Created At'),
             'updated_at' => Yii::t('app', 'Updated At'),
             'company_id' => Yii::t('app', 'Company'),
