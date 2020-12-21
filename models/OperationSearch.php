@@ -145,37 +145,19 @@ class OperationSearch extends Operation
 
     public function filterProductByName(ActiveQuery &$query)
     {
-        $subQuery = self::createSubQueryToFilterProduct();
-        $this->makeFiltersWhere($subQuery);
-
         $terms = explode(' ', $this->product_id);
 
         $query->leftJoin('product p', 'p.id = operation.product_id');
         $query->leftJoin('product_variation', 'product_variation.product_id = p.id');
         $query->groupBy('p.id');
 
-        $query->select(new Expression("operation.*, concat(product.name, group_concat(product_variation.name SEPARATOR '  ')) full_name"));
+        $query->select(new Expression("operation.*, concat_ws(' ', product.name, NULL, group_concat(product_variation.name SEPARATOR '  ')) full_name"));
 
         foreach ($terms as $term) {
             $query->andFilterHaving(['like', 'full_name', $term]);
-            $subQuery->andWhere(['like', 'product.name', $term]);
         }
 
-        $query->union($subQuery);
-
         $query->groupBy('operation.id');
-    }
-
-    private static function createSubQueryToFilterProduct()
-    {
-        $subQuery = Operation::find();
-
-        $subQuery->innerJoin('product', 'product.id = operation.product_id');
-        $subQuery->leftJoin('product_variation', 'product.id = product_variation.product_id');
-
-        $subQuery->select(new Expression("operation.*, product.name as full_name"));
-
-        return $subQuery;
     }
 
     protected function makeFiltersWhere(ActiveQuery &$query)

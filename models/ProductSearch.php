@@ -68,40 +68,23 @@ class ProductSearch extends Product
 
         // grid filtering conditions
         $this->makeFiltersWhere($query);
-        
-        $subQuery = $this->createSubQueryToFilterByName();
-        $this->makeFiltersWhere($subQuery);
-
-        $this->filterName($query, $this->name, $subQuery);
+        $this->filterName($query, $this->name);
 
         return $dataProvider;
     }
 
-    public static function filterName(ActiveQuery &$query, $name, ActiveQuery $subQuery, $select = '')
+    public static function filterName(ActiveQuery &$query, $name)
     {
         $terms = explode(' ', $name);
 
         $query->leftJoin('product_variation', 'product.id = product_variation.product_id');
         $query->groupBy('product.id');
 
-        $query->select(new Expression("product.*, concat(product.name, group_concat(product_variation.name SEPARATOR '  ')) full_name".$select));
+        $query->select(new Expression("product.*, concat_ws(' ', product.name, NULL, group_concat(product_variation.name SEPARATOR ' ')) full_name"));
 
         foreach ($terms as $term) {
             $query->andFilterHaving(['like', 'full_name', $term]);
-            $subQuery->andWhere(['like', 'product.name', $term]);
         }
-
-        $query->union($subQuery);
-    }
-    
-    private static function createSubQueryToFilterByName()
-    {
-        $subQuery = Product::find();
-
-        $subQuery->joinWith('productVariations');
-        $subQuery->select(new Expression("product.*, product.name as full_name"));
-
-        return $subQuery;
     }
 
     protected function makeFiltersWhere(ActiveQuery &$query)
