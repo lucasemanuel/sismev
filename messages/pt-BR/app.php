@@ -88,7 +88,7 @@ return [
     'Create Product' => 'Criar Produto',
     'Create Variation' => 'Criar Variação',
     'Create an Account' => 'Criar conta',
-    'Created At' => 'Criado em',
+    'Created At' => 'Registrado em',
     'Credit Card' => 'Cartão de Crédito',
     'Debit Card' => 'Cartão de Débito',
     'Default Price' => 'Preço Padrão',
@@ -271,6 +271,6 @@ return [
     'Zip Code' => 'CEP',
     'Zip code does not exist, try again with another zip code.' => 'CEP não existe, tente outro CEP.',
     'Apply Time' => '',
-    'Details' => '',
+    'Details' => 'Detalhes',
     'Order value' => 'Valor do pedido',
 ];
