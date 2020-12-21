@@ -25,10 +25,12 @@ class ProductExists extends Validator
             $product = Product::find()
                 ->leftJoin('product_variation', 'product_variation.product_id = product.id')
                 ->andWhere(['product.name' => $model->name])
-                ->andWhere(['is', 'product_variation.product_id', new Expression('NULL')])
-                ->exists();
+                ->andWhere(['is', 'product_variation.product_id', new Expression('NULL')]);
 
-            return $product;
+            if (!$model->isNewRecord)
+                $product->andWhere(['not', ['product.id' => $model->id]]);
+            
+            return $product->exists();
         }
 
         $query = Product::find()
