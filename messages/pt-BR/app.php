@@ -260,7 +260,7 @@ return [
     'Usual Name' => 'Nome Casual',
     'Valid operations' => 'Operações válidas',
     'Value' => 'Valor',
-    'Variation' => 'Variation',
+    'Variation' => 'Variação',
     'Variations' => 'Variações',
     'Version' => 'Versão',
     'View Operations' => 'Visualizar Operações',
