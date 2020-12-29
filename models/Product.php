@@ -92,6 +92,7 @@ class Product extends ActiveRecord
         return [
             [['name', 'unit_price', 'category_id'], 'required'],
             [['name'], ProductExists::class,  'on' => self::SCENARIO_SAVE],
+            [['max_amount', 'min_amount', 'amount'], 'double'],
             [['unit_price', 'max_amount', 'min_amount', 'amount'], DecimalValidator::class, 'min' => 0],
             [['is_deleted', 'category_id'], 'integer'],
             [['created_at', 'updated_at', 'deleted_at', 'variations_form'], 'safe'],
