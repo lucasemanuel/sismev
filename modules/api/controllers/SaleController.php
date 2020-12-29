@@ -71,10 +71,12 @@ class SaleController extends Controller
             $start = $date.' 00:00:00';
             $end = $date.' 23:59:59';
             $amount_paid = Sale::find()
-                ->andWhere(['between', 'sale_at', $start, $end])->sum('amount_paid');
+                ->andWhere(['between', 'sale_at', $start, $end])
+                ->andWhere(['is_canceled' => 0])->sum('amount_paid');
 
             $total_sale = Sale::find()
-                ->andWhere(['between', 'sale_at', $start, $end])->count();
+                ->andWhere(['between', 'sale_at', $start, $end])
+                ->andWhere(['is_canceled' => 0])->count();
 
             array_push($data['dates'], Yii::$app->formatter->asDate($date));
             array_push($data['amount_paid']['values'], (float) $amount_paid);

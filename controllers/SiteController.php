@@ -80,10 +80,12 @@ class SiteController extends Controller
         $end = $date.' 23:59:59';
 
         $total_price = Sale::find()
-            ->andWhere(['between', 'sale_at', $start, $end])->sum('amount_paid');
+            ->andWhere(['between', 'sale_at', $start, $end])
+            ->andWhere(['is_canceled' => 0])->sum('amount_paid');
 
         $total_sale = Sale::find()
-            ->andWhere(['between', 'sale_at', $start, $end])->count();
+            ->andWhere(['between', 'sale_at', $start, $end])
+            ->andWhere(['is_canceled' => 0])->count();
 
         return [
             'sales' => $total_sale,
