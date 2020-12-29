@@ -6,18 +6,13 @@ use app\models\Category;
 use app\models\Product;
 use app\models\ProductSearch;
 use app\models\ProductVariation;
-use app\models\VariationAttribute;
 use Yii;
-use yii\db\Expression;
-use yii\db\Query;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 use yii\web\BadRequestHttpException;
-use yii\web\ConflictHttpException;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\web\UnprocessableEntityHttpException;
 
 /**
  * ProductController implements the CRUD actions for Product model.
