@@ -1,5 +1,6 @@
 <?php
 
+use kartik\export\ExportMenu;
 use kartik\grid\GridView;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -57,6 +58,14 @@ $gridColumns = [
     ],
 ];
 
+$this->registerCSS(
+    <<< CSS
+        .kv-panel-before .btn {
+            margin-left: 8px;
+        }
+    CSS
+);
+
 ?>
 <div class="expense-index">
     <div class="row">
@@ -78,6 +87,14 @@ $gridColumns = [
                         'options' => ['class' => 'btn-group mr-2']
                     ],
                     '{toggleData}',
+                    ExportMenu::widget([
+                        'dataProvider' => $dataProvider,
+                        'columns' => $gridColumns,
+                        'dropdownOptions' => [
+                            'label' => Yii::t('app','Export All'),
+                            'class' => 'btn btn-outline-secondary'
+                        ]
+                    ])
                 ],
                 'panel' => [
                     'type' => GridView::TYPE_DEFAULT,
