@@ -68,8 +68,8 @@ class Employee extends ActiveRecord implements IdentityInterface
                 'class' => TimestampBehavior::class,
                 'value' => new Expression('NOW()'),
                 'attributes' => [
-                    self::EVENT_BEFORE_INSERT => ['created_at'],
-                    self::EVENT_BEFORE_UPDATE => ['created_at', 'updated_at'],
+                    self::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    self::EVENT_BEFORE_UPDATE => ['updated_at'],
                     SoftDeleteBehavior::EVENT_BEFORE_SOFT_DELETE => ['deleted_at']
                 ]
             ],
