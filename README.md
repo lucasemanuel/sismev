@@ -6,19 +6,26 @@
     <br>
 </p>
 
-CONFIGURATION
--------------
+## install
 
-### Database
+Criar banco de dados e usuário (exemplo usando mysql)
+``` 
+CREATE DATABASE sismec;
+CREATE USER 'sismec'@'localhost' IDENTIFIED BY 'sismec';
+GRANT ALL PRIVILEGES ON sismec.* TO 'sismec'@'localhost';
+```
 
-## Create the database 'sismec'
+Instalar dependências
+```
+composer install
+```
 
-``` CREATE DATABASE sismec; ```
+Criar regras de acesso
+```
+php yii rbac/init
+```
 
-## Create the user 'dev'
-
-``` CREATE USER 'sismec'@'localhost' IDENTIFIED BY 'sismec' ```
-
-## Grant to dev user all permission to the dev database
-
-``` GRANT ALL PRIVILEGES ON sismec.* TO 'sismec'@'localhost'; ```
+Subir servidor
+```
+php yii serve
+```
