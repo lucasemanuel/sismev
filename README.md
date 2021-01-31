@@ -2,11 +2,35 @@
     <a href="https://github.com/yiisoft" target="_blank">
         <img src="https://avatars0.githubusercontent.com/u/993323" height="100px">
     </a>
-    <h1 align="center">SISMEV</h1>
-    <br>
 </p>
 
-## install
+# Sistema Simplificado para Microempresas Varejistas (SISMEV) <a name = "sismev"></a>
+
+Trabalho de Conclusão de Curso, concluindo quesito obrigatório do curso de Tecnologia em Sistemas para Internet no Instituto Federal de Educação, Ciência e Tecnologia do Rio Grande do Norte. O SISMEV é um projeto software local com suporte personalizado, com público-alvo de microempresas varejistas, sendo uma ferramenta para assistir a firma, fornecendo informações recuperadas a partir de dados introduzidos no sistema, capacitando assim o gerente em suas tomadas de decisão para manutenção e crescimento da empresa.
+
+## Features <a name = "features"></a>
+- Módulo de PDV;
+- Módulo de Despesas;
+- Controle de Estoque;
+- Multiusuário
+- Papeis com limitação para uso de funcionalidades;
+- Criação de relatórios personalizados;
+- Gerencia de produtos com variação;
+- Categorização de produto;
+
+## Built Using <a name = "built_using"></a>
+- Yii
+- Vue
+- Axios
+- Bootstrap
+
+## Pre Requirements <a name = "requirements"></a>
+Instalar extesões do PHP, verificar com comando
+```
+php -S localhost:8888 requirements.php
+```
+
+## install <a name = "install"></a>
 
 Criar banco de dados e usuário (exemplo usando mysql)
 ``` 
@@ -18,6 +42,11 @@ GRANT ALL PRIVILEGES ON sismec.* TO 'sismec'@'localhost';
 Instalar dependências
 ```
 composer install
+```
+
+Executar migrações
+```
+php yii migrate
 ```
 
 Criar regras de acesso
