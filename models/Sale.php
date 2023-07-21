@@ -5,6 +5,7 @@ namespace app\models;
 use app\components\Seller;
 use app\components\traits\FilterTrait;
 use app\components\validators\DecimalValidator;
+use app\components\validators\DocumentValidator;
 use Yii;
 use yii\db\ActiveRecord;
 
@@ -16,13 +17,15 @@ use yii\db\ActiveRecord;
  * @property float|null $discount
  * @property int|null $is_sold
  * @property int|null $is_canceled
+ * @property string|null $consumer_name
+ * @property string|null $consumer_document
  * @property string|null $sale_at
  * @property string|null $canceled_at
  * @property string|null $updated_at
- * @property int $employee_id 
+ * @property int $employee_id
  * @property int $order_id
  *
- * @property Employee $employee 
+ * @property Employee $employee
  * @property Pay[] $pays
  * @property Order $order
  */
@@ -66,6 +69,8 @@ class Sale extends ActiveRecord
             [['discount'], 'number', 'max' => DecimalValidator::MAX],
             [['amount_paid', 'discount', 'is_canceled', 'is_sold'], 'default', 'value' => 0],
             [['is_sold', 'is_canceled', 'order_id', 'employee_id'], 'integer'],
+            [['consumer_name'], 'string', 'min' => 2, 'max' => 32],
+            ['consumer_document', DocumentValidator::class],
             [['sale_at', 'canceled_at', 'updated_at'], 'safe'],
             [['employee_id', 'order_id'], 'required'],
             [['employee_id'], 'exist', 'skipOnError' => true, 'targetClass' => Employee::class, 'targetAttribute' => ['employee_id' => 'id']],
@@ -84,6 +89,8 @@ class Sale extends ActiveRecord
             'discount' => Yii::t('app', 'Discount'),
             'is_sold' => Yii::t('app', 'Is Sold'),
             'is_canceled' => Yii::t('app', 'Is Canceled'),
+            'consumer_name' => Yii::t('app', 'Buyer\'s Name'),
+            'consumer_document' => Yii::t('app', 'CNPJ/CPF Consumer'),
             'sale_at' => Yii::t('app', 'Sale At'),
             'canceled_at' => Yii::t('app', 'Canceled At'),
             'updated_at' => Yii::t('app', 'Updated At'),
@@ -126,6 +133,8 @@ class Sale extends ActiveRecord
     public function fields()
     {
         return [
+            'consumer_name',
+            'consumer_document',
             'total' => function () {
                 $this->amount_paid = isset($this->amount_paid) ? $this->amount_paid : 0;
                 return Yii::$app->formatter->asCurrency($this->amount_paid);

@@ -6,6 +6,7 @@ use kartik\select2\Select2;
 use yii\bootstrap4\Html;
 use yii\helpers\Url;
 use yii\web\JsExpression;
+use yii\widgets\MaskedInput;
 
 ?>
 <div class="pos-form card card-primary card-outline">
@@ -25,11 +26,11 @@ use yii\web\JsExpression;
         <div class="row">
             <?= $form->field($model, 'payment_method_id', ['options' => ['class' => 'col-12']])->widget(Select2::class, [
                 'options' => [
-                    'placeholder' => '',
+                    'placeholder' => Yii::t('app', 'Select'),
                 ],
                 'pluginOptions' => [
                     'allowClear' => true,
-                    'minimumInputLength' => 2,
+                    // 'minimumInputLength' => 2,
                     'language' => [
                         'errorLoading' => new JsExpression(
                             "() => { return '" . Yii::t('app', 'Waiting for results...') . "'; }"
@@ -47,7 +48,7 @@ use yii\web\JsExpression;
                     'templateSelection' => new JsExpression('payment => { return payment.name; }'),
                 ],
                 'pluginEvents' => [
-                    'select2:select' => new JsExpression('payment => { 
+                    'select2:select' => new JsExpression('payment => {
                         const { installment_limit } = payment.params.data;
                         $("#pay-installments").prop("max", installment_limit);
                         $("#pay-installments").val(1);
@@ -81,6 +82,7 @@ use yii\web\JsExpression;
             <?= $form->field($model, 'sale_id')->hiddenInput()->label(false); ?>
         </div>
     </div>
+
     <div class="card-footer">
         <div class="d-flex justify-content-end">
             <?= Html::submitButton(Yii::t('app', 'Add Payment'), ['class' => 'btn btn-success', 'v-on:click' => 'pushPay']) ?>
@@ -89,4 +91,37 @@ use yii\web\JsExpression;
 
     <?php $form = ActiveForm::end(); ?>
 
+</div>
+
+<div class="pos-form card card-success card-outline">
+
+    <div class="card-header">
+        <h3 class="card-title"><?= Yii::t('app', 'Consumer Information') ?></h3>
+    </div>
+
+    <?php $form = ActiveForm::begin([
+        'enableAjaxValidation' => true,
+        'enableClientValidation' => false,
+        'validationUrl' => ['/api/sale/validation'],
+        'validateOnSubmit' => false,
+    ]); ?>
+
+    <div class="card-body">
+        <div class="row">
+            <?= $form->field($model->sale, 'consumer_name', ['options' => ['class' => 'col-12']])->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model->sale, 'consumer_document', ['options' => ['class' => 'col-12']])->widget(MaskedInput::class, [
+                'mask' => ['999.999.999-99','99.999.999/9999-99'],
+            ]) ?>
+
+            <?= $form->field($model->sale, 'id')->hiddenInput()->label(false); ?>
+        </div>
+    </div>
+
+    <div class="card-footer">
+        <div class="d-flex justify-content-end">
+            <?= Html::submitButton(Yii::t('app', 'Update'), ['class' => 'btn btn-success', 'v-on:click' => 'updateSale']) ?>
+        </div>
+    </div>
+
+    <?php $form = ActiveForm::end(); ?>
 </div>

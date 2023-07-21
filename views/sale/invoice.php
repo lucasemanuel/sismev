@@ -32,7 +32,7 @@ Dialog::widget();
             </div>
         </div>
     <?php endif; ?>
-    
+
     <div class="col-12">
         <div class="invoice p-3 mb-3">
             <div class="row">
@@ -63,6 +63,8 @@ Dialog::widget();
                     <b><?= Yii::t('app', 'Sold in:') ?></b> <?= Yii::$app->formatter->asDateTime($model->sale_at) ?><br>
                     <b><?= Yii::t('app', 'Amount Paid:') ?></b> <?= Yii::$app->formatter->asCurrency($model->amount_paid) ?><br>
                     <b><?= Yii::t('app', 'Cashier') ?>:</b> <?= $model->employee->full_name ?><br>
+                    <b><?= Yii::t('app', 'Buyer\'s Name') ?>:</b> <?= Yii::$app->formatter->asNull($model->consumer_name) ?><br>
+                    <b><?= Yii::t('app', 'CNPJ/CPF Consumer') ?>:</b> <?= Yii::$app->formatter->asNull($model->consumer_document) ?><br>
                     <?php if ($model->is_canceled) : ?>
                         <b><?= Yii::t('app', 'Canceled Sale') ?></b><br>
                         <b><?= Yii::t('app', 'Canceled At') ?>:</b> <?= Yii::$app->formatter->asDateTime($model->canceled_at) ?><br>
@@ -130,7 +132,7 @@ Dialog::widget();
                 <div class="col-lg-6 no-print text-right">
                     <p class="lead"><?= Yii::t('app', 'Actions') . ':' ?></p>
                     <p>
-                        <button onclick='print()' class="btn btn-default"><i class="fas fa-print"></i><?= Yii::t('app', 'Print') ?></button>
+                        <button onclick='print()' class="btn btn-default"><i class="fas fa-print"></i> <?= Yii::t('app', 'Print') ?></button>
                         <?php if (!$model->is_canceled) : ?>
                             <?= Html::a(Yii::t('app', 'Cancel'), ['canceled', 'id' => $model->id], [
                                 'class' => 'btn btn-danger',
