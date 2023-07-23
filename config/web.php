@@ -2,19 +2,20 @@
 
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
+$env = (object) $_ENV;
 
 $config = [
     'id' => 'basic',
-    'name' => 'SISMEV',
+    'name' => $env->APP_NAME ?? 'SISMEV',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
     ],
-    'language' => 'pt-BR',
+    'language' => $env->APP_LANGUAGE ?? 'en-US',
     'sourceLanguage' => 'en-US',
-    'timeZone' => 'America/Fortaleza',
+    'timeZone' => $env->APP_TIMEZONE ?? 'America/Fortaleza',
     'components' => [
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
@@ -78,7 +79,7 @@ $config = [
             'class' => 'app\components\formatters\AppFormatter',
             'dateFormat' => 'php:d/m/Y',
             'datetimeFormat' => 'php:d/m/Y H:i:s',
-            // 'defaultTimeZone' => 'America/Fortaleza',
+            'defaultTimeZone' => $env->APP_TIMEZONE ?? 'America/Fortaleza',
             // 'numberFormatterSymbols' => 'R$',
             'thousandSeparator' => '.',
             'decimalSeparator' => ',',
@@ -92,7 +93,7 @@ $config = [
         'api' => [
             'class' => 'app\modules\api\Module'
         ]
-    ],  
+    ],
     'params' => $params,
 ];
 
