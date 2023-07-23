@@ -279,4 +279,6 @@ return [
     'Success' => 'Sucesso',
     'Updated Consumer Information!' => 'Informações do consumidor atualizado!',
     'There Was No Change In Consumer Information.' => 'Não houve alteração nas informações do consumidor.',
+    '{attribute} must contain between {min} and {max} characters.' => '"{attribute}" deve conter entre {min} e {max} caracteres.',
+    '{attribute} is not a valid document.' => '"{attribute}" não é um documento válido.',
 ];

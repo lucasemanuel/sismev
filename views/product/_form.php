@@ -20,17 +20,7 @@ use yii\helpers\Html;
     <div class="card-body">
         <?= $form->field($model, 'code')->textInput(['maxlength' => true]) ?>
 
-        <?= $form->field($model, 'name')->widget(Select2::class, [
-            'data' => ArrayHelper::map($model::find()->all(), 'name', 'name'),
-            'options' => [
-                'placeholder' => '',
-                'value' => $model->name,
-            ],
-            'pluginOptions' => [
-                'tags' => true,
-                'allowClear' => true,
-            ],
-        ]) ?>
+        <?= $form->field($model, 'name')->textInput(); ?>
 
         <?php
         $variation_sets = Variation::findByCategory($model->category->id);
