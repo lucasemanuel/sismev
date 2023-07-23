@@ -63,7 +63,7 @@ class PayController extends Controller
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return [
-                'pay' => $model, 
+                'pay' => $model,
                 'total' => $model->sale->toArray()['total']
             ];
         }
@@ -79,7 +79,7 @@ class PayController extends Controller
 
         $model->delete($id);
 
-        return [ 
+        return [
             'total' => Sale::findOne($saleId)->amount_paid
         ];
     }
@@ -94,26 +94,25 @@ class PayController extends Controller
         }
     }
 
-    public function actionQuery($q = null, $id = null)
+    public function actionQuery($q = null)
     {
         $out = ['results' => ['id' => '', 'name' => '', 'max_installments' => '']];
 
-        if (!is_null($q)) {
-            $data = PaymentMethod::find()
-                ->andWhere(new LikeCondition('payment_method.name', 'LIKE', $q))
-                ->andWhere(['is_deleted' => 0])
-                ->asArray()
-                ->all();
-            
-            $out['results'] = $data;
-        }
+        $data = PaymentMethod::find()
+            ->andWhere(new LikeCondition('payment_method.name', 'LIKE', $q))
+            ->andWhere(['is_deleted' => 0])
+            ->asArray()
+            ->all();
+
+        $out['results'] = $data;
+
         return $out;
     }
 
     protected function findModel($id)
     {
         $model = Pay::find()
-            ->andWhere(['id' => $id])
+            ->andWhere(['pay.id' => $id])
             ->one();
 
         if ($model !== null)

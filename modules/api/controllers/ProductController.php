@@ -36,12 +36,11 @@ class ProductController extends Controller
     {
         $out = ['results' => ['id' => '', 'name' => '', 'price' => '']];
 
-        if (!is_null($q)) {
-            $data = ProductSearch::findInNameWithVariation(trim($q));
-            $out['results'] = array_map(function($product) {
-                return $product->toArray();
-            }, array_values($data));
-        }
+        $data = ProductSearch::findInNameWithVariation(trim($q));
+        $out['results'] = array_map(function($product) {
+            return $product->toArray();
+        }, array_values($data));
+
         return $out;
     }
 }
