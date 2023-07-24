@@ -40,25 +40,24 @@ $coupon_print_logo = $coupon_print_icon_key_exists && $coupon_print_image_exists
 
 SaleAsset::register($this);
 Dialog::widget();
+
+if (!$coupon_print_logo) {
+    $params = ['file' => $coupon_print_logo_file, 'key' => 'COUPON_LOGO'];
+    $message = !$coupon_print_icon_key_exists
+        ? 'The {key} Key Does Not Exist In The .env File Or Has No Value.'
+        : 'Image {file} Does Not Exist.';
+
+    Yii::$app->session->addFlash('warning', Yii::t('app', $message, $params));
+}
+
+if (!isset($env->QRCODE_TEXT) || empty($env->QRCODE_TEXT)) {
+    $params = ['key' => 'QRCODE_TEXT'];
+    $message = 'The {key} Key Does Not Exist In The .env File Or Has No Value.';
+
+    Yii::$app->session->addFlash('warning', Yii::t('app', $message, $params));
+}
+
 ?>
-<?php if (!$coupon_print_logo): ?>
-    <div class="alert alert-warning alert-dismissible">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-        <?= Yii::t('app', !$coupon_print_icon_key_exists
-                          ? 'The {key} Key Does Not Exist In The .env File Or Has No Value.'
-                          : 'Image {file} Does Not Exist.', ['file' => $coupon_print_logo_file, 'key' => 'COUPON_LOGO'])
-        ?>
-    </div>
-<?php endif ?>
-
-<?php if (!isset($env->QRCODE_TEXT) || empty($env->QRCODE_TEXT)): ?>
-    <div class="alert alert-warning alert-dismissible">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-        <?= Yii::t('app', 'The {key} Key Does Not Exist In The .env File Or Has No Value.', ['key' => 'QRCODE_TEXT'])
-        ?>
-    </div>
-<?php endif ?>
-
 <div class="coupon d-none">
     <small><?= $company->trade_name ?></small>
     <div class="info">
@@ -103,10 +102,6 @@ Dialog::widget();
             <small><?= $pay['name'] ?><span><?= Yii::$app->formatter->asAmount(Yii::$app->formatter->asFloat($pay['value'])) ?></span></small>
         <?php endforeach; ?>
     </div>
-
-    <!-- <div>
-        <small><?= Yii::t('app', 'Total Tax') ?><span><?= Yii::$app->formatter->asCurrency(Yii::$app->formatter->asFloat($model->order->toArray()['total_value']) * .1) ?> (10%)</span></small>
-    </div> -->
 
     <?php if (isset($env->QRCODE_TEXT)): ?>
         <div class="logo"<?php if (!$coupon_print_logo) echo ' style="justify-content:center"' ?>>

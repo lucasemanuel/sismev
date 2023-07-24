@@ -283,7 +283,6 @@ return [
     '{attribute} is not a valid document.' => '"{attribute}" não é um documento válido.',
     'Print Coupon' => 'Imprimir Cupom',
     'Attendant' => 'Atendente',
-    'Total Tax' => 'Total de Imposto',
     'Non-Tax Coupon' => 'Cupom Não Fiscal',
     'Item Code Description Qty.un.VL.Unit($)' => 'Item Código Descrição Qtd.un.VL.Unit(R$)',
     'Item ($)' => 'Item (R$)',
