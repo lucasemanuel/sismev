@@ -1,7 +1,16 @@
 <?php
 
+use app\assets\SaleAsset;
 use kartik\dialog\Dialog;
 use yii\helpers\Html;
+use yii\helpers\Url;
+
+use Endroid\QrCode\Color\Color;
+use Endroid\QrCode\Encoding\Encoding;
+use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelLow;
+use Endroid\QrCode\QrCode;
+use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
+use Endroid\QrCode\Writer\PngWriter;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Sale */
@@ -20,8 +29,101 @@ $this->registerCss(
     CSS
 );
 
+$env = (object) $_ENV;
+
+$coupon_print_icon = '<i class="fas fa-print"></i>';
+$coupon_print_icon_file = Yii::getAlias('@webroot') . DS . 'images' . DS . ($_ENV['COUPON_PRINT_ICON'] ?? null);
+$coupon_print_logo_file = Yii::getAlias('@webroot') . DS . 'images' . DS . ($_ENV['COUPON_LOGO'] ?? null);
+$coupon_print_icon_key_exists = isset($_ENV['COUPON_LOGO']) && !empty($_ENV['COUPON_LOGO']);
+$coupon_print_image_exists = file_exists($coupon_print_logo_file);
+$coupon_print_logo = $coupon_print_icon_key_exists && $coupon_print_image_exists;
+
+SaleAsset::register($this);
 Dialog::widget();
+
+if (!$coupon_print_logo) {
+    $params = ['file' => $coupon_print_logo_file, 'key' => 'COUPON_LOGO'];
+    $message = !$coupon_print_icon_key_exists
+        ? 'The {key} Key Does Not Exist In The .env File Or Has No Value.'
+        : 'Image {file} Does Not Exist.';
+
+    Yii::$app->session->addFlash('warning', Yii::t('app', $message, $params));
+}
+
+if (!isset($env->QRCODE_TEXT) || empty($env->QRCODE_TEXT)) {
+    $params = ['key' => 'QRCODE_TEXT'];
+    $message = 'The {key} Key Does Not Exist In The .env File Or Has No Value.';
+
+    Yii::$app->session->addFlash('warning', Yii::t('app', $message, $params));
+}
+
 ?>
+<div class="coupon d-none">
+    <small><?= $company->trade_name ?></small>
+    <div class="info">
+        <?php if ($company->address) echo "<small>{$company->address}</small>"; ?>
+        <small>CNPJ: <?= $company->ein ?></small>
+        <small><?= Yii::t('app', 'Attendant') ?>: <?= $model->employee->usual_name ?></small>
+    </div>
+
+    <div class="info-order">
+        <small><?= $model->sale_at ? Yii::$app->formatter->asDateTime($model->sale_at) : '<i>(sem data)</i>' ?><span>#<?= $model->order->code ?></span></small>
+    </div>
+
+    <?php if ($model->consumer_name) : ?>
+        <div>
+            <?php if ($model->consumer_name && $model->consumer_document) : ?><small><?= Yii::t('app', 'CNPJ/CPF Consumer') ?>: <?= $model->consumer_document ?></small><?php endif ?>
+            <?php if ($model->consumer_name) : ?><small><?= Yii::t('app', 'Buyer\'s Name') ?>: <?= $model->consumer_name ?></small><?php endif ?>
+        </div>
+    <?php endif ?>
+
+    <div class="receipt">
+        <h1 class="tax-receipt"><?= Yii::t('app', 'Non-Tax Coupon') ?></h1>
+        <small><?= Yii::t('app', 'Item Code Description Qty.un.VL.Unit($)') ?></small>
+        <small><?= Yii::t('app', 'Item ($)') ?></small>
+    </div>
+
+    <div class="receipt">
+        <?php $index = 1; foreach ($model->order->orderItems as $item) : ?>
+            <small><?= str_pad($index, 3, "0", STR_PAD_LEFT) ?>&nbsp;&nbsp;<?= $item->product->code ?><span><?= $item->product ?></span></small>
+            <small class="tab">
+                <?= Yii::$app->formatter->asInteger($item->amount) ?>un x <?= Yii::$app->formatter->asAmount($item->unit_price) ?>
+                <span><?= Yii::$app->formatter->asAmount($item->total) ?></span>
+            </small>
+        <?php $index++; endforeach; ?>
+
+        <small class="bold">
+            Total&nbsp;&nbsp;R$
+            <span><?= Yii::$app->formatter->asAmount(Yii::$app->formatter->asFloat($model->order->toArray()['total_value'])) ?></span>
+        </small>
+
+        <?php foreach ($model->pays as $pay) : ?>
+            <?php $pay = $pay->toArray(); ?>
+            <small><?= $pay['name'] ?><span><?= Yii::$app->formatter->asAmount(Yii::$app->formatter->asFloat($pay['value'])) ?></span></small>
+        <?php endforeach; ?>
+    </div>
+
+    <?php if (isset($env->QRCODE_TEXT)): ?>
+        <div class="logo"<?php if (!$coupon_print_logo) echo ' style="justify-content:center"' ?>>
+            <?php $writer = new PngWriter();
+
+                // Create QR code
+                $qrCode = QrCode::create($env->QRCODE_TEXT)
+                    ->setEncoding(new Encoding('UTF-8'))
+                    ->setErrorCorrectionLevel(new ErrorCorrectionLevelLow())
+                    ->setSize(150)
+                    ->setMargin(0)
+                    ->setRoundBlockSizeMode(new RoundBlockSizeModeMargin())
+                    ->setForegroundColor(new Color(0, 0, 0))
+                    ->setBackgroundColor(new Color(255, 255, 255));
+
+                $result = $writer->write($qrCode);
+            ?><img src="<?= $result->getDataUri() ?>">
+            <?php if ($coupon_print_logo): ?><img src="<?= Url::base() . '/images/' . $env->COUPON_LOGO ?>"><?php endif ?>
+        </div>
+    <?php endif ?>
+</div>
+
 <div class="sale-view row">
     <?php if ($model->is_canceled): ?>
         <div class="col-12">
@@ -32,7 +134,7 @@ Dialog::widget();
             </div>
         </div>
     <?php endif; ?>
-    
+
     <div class="col-12">
         <div class="invoice p-3 mb-3">
             <div class="row">
@@ -63,6 +165,8 @@ Dialog::widget();
                     <b><?= Yii::t('app', 'Sold in:') ?></b> <?= Yii::$app->formatter->asDateTime($model->sale_at) ?><br>
                     <b><?= Yii::t('app', 'Amount Paid:') ?></b> <?= Yii::$app->formatter->asCurrency($model->amount_paid) ?><br>
                     <b><?= Yii::t('app', 'Cashier') ?>:</b> <?= $model->employee->full_name ?><br>
+                    <b><?= Yii::t('app', 'Buyer\'s Name') ?>:</b> <?= Yii::$app->formatter->asNull($model->consumer_name) ?><br>
+                    <b><?= Yii::t('app', 'CNPJ/CPF Consumer') ?>:</b> <?= Yii::$app->formatter->asNull($model->consumer_document) ?><br>
                     <?php if ($model->is_canceled) : ?>
                         <b><?= Yii::t('app', 'Canceled Sale') ?></b><br>
                         <b><?= Yii::t('app', 'Canceled At') ?>:</b> <?= Yii::$app->formatter->asDateTime($model->canceled_at) ?><br>
@@ -130,7 +234,9 @@ Dialog::widget();
                 <div class="col-lg-6 no-print text-right">
                     <p class="lead"><?= Yii::t('app', 'Actions') . ':' ?></p>
                     <p>
-                        <button onclick='print()' class="btn btn-default"><i class="fas fa-print"></i><?= Yii::t('app', 'Print') ?></button>
+                        <?php if (file_exists($coupon_print_icon_file) && is_file($coupon_print_icon_file)) $coupon_print_icon = @file_get_contents($coupon_print_icon_file); ?>
+                        <button onclick="printCoupon()" class="btn btn-success"><?= $coupon_print_icon ?> <?= Yii::t('app', 'Print Coupon') ?></button>
+                        <button onclick='print()' class="btn btn-default"><i class="fas fa-print"></i> <?= Yii::t('app', 'Print') ?></button>
                         <?php if (!$model->is_canceled) : ?>
                             <?= Html::a(Yii::t('app', 'Cancel'), ['canceled', 'id' => $model->id], [
                                 'class' => 'btn btn-danger',

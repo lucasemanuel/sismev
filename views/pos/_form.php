@@ -29,7 +29,7 @@ use yii\web\JsExpression;
                 ],
                 'pluginOptions' => [
                     'allowClear' => true,
-                    'minimumInputLength' => 1,
+                    // 'minimumInputLength' => 1,
                     'language' => [
                         'errorLoading' => new JsExpression(
                             "() => { return '" . Yii::t('app', 'Waiting for results...') . "'; }"
@@ -47,7 +47,7 @@ use yii\web\JsExpression;
                     'templateSelection' => new JsExpression('product => { return product.name; }'),
                 ],
                 'pluginEvents' => [
-                    'select2:select' => new JsExpression('product => { 
+                    'select2:select' => new JsExpression('product => {
                         const { unit_price } = product.params.data;
                         setPrice(unit_price);
                     }'),

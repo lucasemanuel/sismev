@@ -69,7 +69,7 @@ class VariationSearch extends Variation
             'category_id' => $this->category_id,
         ]);
 
-        $query->andFilterWhere(['like', 'name', $this->name]);
+        $query->andFilterWhere(['like', 'variation.name', $this->name]);
 
         return $dataProvider;
     }

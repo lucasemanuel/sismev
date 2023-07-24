@@ -84,6 +84,11 @@ class Address extends \yii\db\ActiveRecord
 
     public function __toString()
     {
-        return "$this->street, $this->number, $this->neighborhood, $this->city - $this->federated_unit, $this->zip_code ($this->complement)";
+        $address = "$this->street, $this->number, $this->neighborhood, $this->city - $this->federated_unit, $this->zip_code";
+
+        if (!empty($this->complement))
+            $address .= " ({$this->complement})";
+
+        return $address;
     }
 }

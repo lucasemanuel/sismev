@@ -7,7 +7,6 @@
 
 namespace app\assets;
 
-use yii\bootstrap4\BootstrapAsset;
 use yii\bootstrap4\BootstrapPluginAsset;
 use yii\web\AssetBundle;
 use yii\web\YiiAsset;
@@ -25,12 +24,13 @@ class AppAsset extends AssetBundle
 
     public $css = [
         'css/site.css',
-        'css/fix-toast.css'
+        'css/fix-toast.css',
+        'css/print.css',
     ];
 
     public $js = [
     ];
-    
+
     public $depends = [
         YiiAsset::class,
         BootstrapAsset::class,

@@ -10,6 +10,7 @@ use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
+use yii\widgets\ActiveForm;
 
 class SaleController extends Controller
 {
@@ -31,7 +32,7 @@ class SaleController extends Controller
                         'roles' => ['admin']
                     ],
                     [
-                        'actions' => ['index'],
+                        'actions' => ['index', 'update', 'validation'],
                         'allow' => true,
                         'roles' => ['cashier']
                     ],
@@ -41,6 +42,8 @@ class SaleController extends Controller
                 'class' => VerbFilter::class,
                 'actions' => [
                     'index' => ['GET'],
+                    'update' => ['POST'],
+                    'validation' => ['POST'],
                 ],
             ],
         ];
@@ -84,6 +87,41 @@ class SaleController extends Controller
         }
 
         return $data;
+    }
+
+    public function actionValidation()
+    {
+        $model = new Sale();
+
+        if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return ActiveForm::validate($model);
+        }
+    }
+
+    public function actionUpdate()
+    {
+        $data = (Object) Yii::$app->request->post('Sale');
+        $model = self::findModel($data->id);
+
+        if ($model->consumer_name === $data->consumer_name && $model->consumer_document === $data->consumer_document) {
+            return [
+                'title' => Yii::t('app', 'Not Modified'),
+                'message' => Yii::t('app', 'There Was No Change In Consumer Information.'),
+                'status' => 304
+            ];
+        }
+
+        $model->updateAttributes($data);
+
+        if ($model->hasErrors())
+            return $model->getFirstErrors();
+
+        return [
+            'title' => Yii::t('app', 'Success'),
+            'message' => Yii::t('app', 'Updated Consumer Information!'),
+            'status' => 200
+        ];
     }
 
     protected function findModel($id)

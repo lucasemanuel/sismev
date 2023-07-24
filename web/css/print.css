@@ -1,0 +1,113 @@
+
+body.print-coupon {
+    font-family: Arial, sans-serif!important;
+    min-width: 302px!important;
+}
+
+body.print-coupon nav,
+body.print-coupon aside,
+body.print-coupon footer,
+body.print-coupon .alert,
+body.print-coupon .content-header,
+body.print-coupon .sale-view {
+    display: none!important;
+}
+
+body.print-coupon .content-wrapper {
+    background-color: white!important;
+    margin-top: 0!important;
+}
+
+body.print-coupon .coupon {
+    display: block;
+    width: 302px;
+    margin: 0 auto;
+    padding: 10px;
+}
+
+body.print-coupon .coupon div {
+    display: block;
+    padding: 4px 0;
+    border-bottom: 1px dashed #000;
+}
+
+body.print-coupon .coupon small {
+    display: block;
+}
+
+body.print-coupon .coupon > small {
+    font-weight: 600;
+    text-align: center;
+}
+
+body.print-coupon .coupon .info p {
+    margin: 5px 0;
+}
+
+body.print-coupon .coupon small {
+    text-transform: uppercase;
+    padding: 1px 0;
+}
+
+body.print-coupon .coupon .receipt small {
+    font-size: 13px;
+}
+
+body.print-coupon .coupon span {
+    float: right;
+}
+
+body.print-coupon .coupon .tax-receipt {
+    margin: 4px 0 2px;
+    font-weight: lighter;
+    text-align: center;
+}
+
+body.print-coupon .coupon .info-order p {
+    margin: 0;
+}
+
+body.print-coupon .coupon .items p {
+    margin: 3px 0;
+}
+
+body.print-coupon .coupon .total {
+    text-align: right;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+body.print-coupon .coupon .total p {
+    margin: 10px 0 0;
+}
+
+body.print-coupon .coupon .logo {
+    display: flex;
+    padding: 10px;
+    justify-content: space-between;
+    align-items: center;
+}
+
+body.print-coupon .coupon .logo img:last-child {
+    height: 130px;
+}
+
+body.print-coupon .float-right {
+    float: right;
+}
+
+body.print-coupon .bold {
+    font-weight: 600;
+}
+
+body.print-coupon .tab {
+    margin-left: 50px;
+}
+
+svg.coupon-print-icon {
+    height: 1rem;
+}
+
+svg.coupon-print-icon path {
+    fill: white;
+}

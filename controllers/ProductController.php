@@ -126,6 +126,7 @@ class ProductController extends Controller
                 return $this->redirect(['view', 'id' => $model->id]);
             } catch (\Exception $e) {
                 $transaction->rollBack();
+                throw new NotFoundHttpException($e->getMessage());
             }
         }
 
@@ -166,7 +167,7 @@ class ProductController extends Controller
                 }
 
                 ProductVariation::deleteAll(['product_id' => $model->id]);
-                
+
                 foreach ($variations as $id => $value) {
                     $this->saveProductVariation([
                         'variation_id' => $id,

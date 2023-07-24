@@ -12,10 +12,39 @@ const app = new Vue({
         this.load();
     },
     methods: {
-        pushPay() {
-            $('form').yiiActiveForm('validate', true);
+        updateSale() {
+            $('form#w2').yiiActiveForm('validate', true);
 
-            const form = document.querySelector('form');
+            const form = document.querySelector('form#w2');
+            const formData = new FormData(form);
+
+            axios.post('/api/sale/update', formData)
+                .then(({ data }) => {
+                    if (data) {
+                        const { title, message, status } = data;
+
+                        if (title && message) {
+                            const cls = status === 200 ? 'success' : 'warning';
+
+                            $(document).Toasts('create', {
+                                title: `${title}!`,
+                                body: message,
+                                autohide: true,
+                                delay: 5000,
+                                class: [`bg-${cls}`, 'fix-toast']
+                            });
+                        }
+                    }
+                })
+                .catch(({ response }) => {
+                    const { name, message } = response.data;
+                    showToast(name, message);
+                });
+        },
+        pushPay() {
+            $('form#w1').yiiActiveForm('validate', true);
+
+            const form = document.querySelector('form#w1');
             const formData = new FormData(form);
 
             axios.post('/api/pay/create', formData)

@@ -1,5 +1,10 @@
 <?php
 
+// set environment and debug mode
+require_once __DIR__ . '/../config/Configurator.php';
+
+\app\config\Configurator::init(true);
+
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 

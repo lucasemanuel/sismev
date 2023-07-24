@@ -10,7 +10,7 @@ class AppFormatter extends Formatter
 {
     public function asDateTimeDefault($value)
     {
-        if ($value === null)     
+        if ($value === null)
             return $this->nullDisplay;
 
         $value = explode(" ", $value);
@@ -20,7 +20,7 @@ class AppFormatter extends Formatter
 
     public function asDateDefault($value)
     {
-        if ($value === null)     
+        if ($value === null)
             return $this->nullDisplay;
 
         return implode("-",array_reverse(explode("/", $value)));
@@ -28,25 +28,39 @@ class AppFormatter extends Formatter
 
     public function asInputOrOutput($value)
     {
-        return $value == 0 
-            ? Yii::t('app', 'Output') 
+        return $value == 0
+            ? Yii::t('app', 'Output')
             : Yii::t('app', 'Input');
     }
 
     public function asAmount($value)
     {
-        if ($value === null)     
+        if ($value === null)
             return $this->nullDisplay;
         else if (empty($value))
             $value = 0;
-    
+
         return number_format($value, 2, ',', '.');
+    }
+
+    public function asFloat($value)
+    {
+        if ($value === null)
+            return $this->nullDisplay;
+        else if (empty($value))
+            $value = 0;
+
+        preg_match_all('/[\d,\.]/', $value, $match);
+
+        $value = str_replace(',', '.', join($match[0]));
+
+        return floatval($value);
     }
 
     public function asActive($value)
     {
         return $value
-            ? Yii::t('app', 'No') 
+            ? Yii::t('app', 'No')
             : Yii::t('app', 'Yes');
     }
 
@@ -54,5 +68,13 @@ class AppFormatter extends Formatter
     {
         $formatter = new NumberFormatter($this->locale, NumberFormatter::CURRENCY);
         return $formatter->getSymbol(NumberFormatter::CURRENCY_SYMBOL);
+    }
+
+    public function asNull($value)
+    {
+        if (is_null($value) || empty($value))
+            return $this->nullDisplay;
+
+        return $value;
     }
 }
